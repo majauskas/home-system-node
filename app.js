@@ -1,63 +1,67 @@
 
-var app = require('http').createServer(handler)
-  , io = require('socket.io').listen(app)
-  , url= require('url')
-  , fs = require('fs');
 
-app.listen(8080);
+var express = require('express');
+var app = express();
+var path = require('path');
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
-// Http handler function
-function handler (req, res) {
+var movies = require('./routes/movies');
 
-    // Using URL to parse the requested URL
-    var path = url.parse(req.url).pathname;
-      
-    // Managing the root route
-    if (path == '/') {
-    
-        index = fs.readFile(__dirname+'/public/index.html', 
-            function(error,data) {
-                res.writeHead(200,{'Content-Type': 'text/html'});
-                res.end(data);
-            });
-    // Managing the route for the javascript files
-    } else if( /\.(js)$/.test(path) ) {
-        index = fs.readFile(__dirname+'/public'+path, function(error,data) {
-                res.writeHead(200,{'Content-Type': 'text/javascript'});
-                res.end(data);
-            });
-    }else if( /\.(css)$/.test(path) ) {
-        index = fs.readFile(__dirname+'/public'+path, function(error,data) {
-                res.writeHead(200,{'Content-Type': 'text/css'});
-                res.end(data);
-            });
-    }else if( /\.(gif|png)$/.test(path) ) {
-        index = fs.readFile(__dirname+'/public'+path, function(error,data) {
-                res.writeHead(200,{'Content-Type': 'text/html'});
-                res.end(data);
-            });
-    } else {
-        res.writeHead(404);
-        res.end("Error: 404 - File not found.");
-    }
-
-}
-           
-// Web Socket Connection
-io.sockets.on('connection', function (socket) {
-
-  // If we recieved a command from a client to start watering lets do so
-  socket.on('ping', function(data) {
-      console.log("ping "+ data.duration);
+mongoose.connect('mongodb://10.221.160.78/home-system');
 
 
-      delay = data["duration"];
+//app.set('view engine', 'html');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use('/api', movies);
+app.use(express.static(path.join(__dirname, 'public')));
+module.exports = app;
 
-      // Set a timer for when we should stop watering
-      setTimeout(function(){
-          socket.emit("pong");
-      }, delay*1000);
+var server = app.listen(process.env.PORT || 8080, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+  console.log('app listening at http://%s:%s', host, port);
 
-  });
-  
 });
+
+//Web Socket Connection
+var io = require('socket.io')(server);
+io.sockets.on('connection', function (socket) {
+	
+	socket.on('message', function (data) {console.log("message: "+ data); });
+	socket.on('disconnect', function () {console.log("socket disconnect");  });
+	
+	
+	socket.on('ferret', function (arg1,arg2, back) {
+		back('ok');
+	});	
+	
+	socket.on('ping', function(data) {
+	    console.log(data);
+	    var delay = data.duration;
+	
+	    setTimeout(function(){
+	        socket.emit("pong");
+//	    	socket.broadcast.emit("pong");
+	    }, delay*1000);
+	
+	});
+
+});
+
+
+
+
+//List products
+//app.get('/api/products', function(req, res) {
+//	return ProductModel.find(function(err, products) {
+//		if (!err) {
+//			return res.send(products);
+//		} else {
+//			return console.log(err);
+//		}
+//	});
+//}); 
+
+
