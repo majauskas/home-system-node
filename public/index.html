@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
+<link rel="stylesheet" href="css/main.css" />
+
+
+<script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
+<script type="text/javascript" src="js/socket.io.js"></script> 
+<script type="text/javascript" src="js/client.js"></script>	
+	
+
+
+	
+</head>
+
+	<body>
+
+
+<!-- 		<div data-url="prescrizione-page-0" id="prescrizione-page-0" data-role="page" data-dom-cache="true" class="ui-page-active" data-theme="f">   -->
+<div id="home-page" data-role="page" data-theme="b" class="ui-page-active">
+	<div data-role="header" style="overflow:hidden;">
+		<h1>Home</h1>
+<!-- 	    <a href="#" data-icon="gear" class="ui-btn-right">Options</a> -->
+	</div>
+	
+	<div role="main" class="ui-content" style="text-align: center;">
+<!-- 		   width="35px" height="35px"  -->
+<!-- 		   <img src="images/System-Security-Warning-icon.png" /> -->
+		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-allarme">
+		    <input name="radio-choice-h-2" id="radio-choice-h-2a" value="0" desc="OFF"  type="radio">
+		    <label for="radio-choice-h-2a">Off</label>
+		    <input name="radio-choice-h-2" id="radio-choice-h-2b" value="1" desc="AWAY" type="radio">
+		    <label for="radio-choice-h-2b">Away</label>
+		    <input name="radio-choice-h-2" id="radio-choice-h-2c" value="2" desc="HOME" type="radio">
+		    <label for="radio-choice-h-2c">Home</label>
+		</fieldset>
+		
+
+	</div>
+			
+	<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false"  data-theme="b">
+	    <div data-role="navbar" class="nav-glyphish-example" data-grid="b">
+	    <ul>
+	        <li><a href="#security-page" id="menu-security" data-icon="custom">Security</a></li>
+	        <li><a href="#" id="menu-events" data-icon="custom">Events</a></li>
+	        <li><a href="#" id="menu-lights" data-icon="custom">Lights</a></li>
+	    </ul>
+	    </div>
+	</div>
+
+</div> 
+
+
+	 
+		 
+		 
+
+<div id="security-page" data-role="page" data-theme="b">
+	<div data-role="header" style="overflow:hidden;">
+		<h1>Security</h1>
+	</div>
+	
+	<div role="main" class="ui-content" style="text-align: center;">
+
+		<ul data-role="listview" data-inset="false">
+		    <li><a href="#" id="liDispositivi">
+		        <img src="images/Devices-48.png" width="100%" height="100%">
+			    <h2>Dispositivi</h2>
+			    <p>Visualizza / Cerca dispositivi</p></a>
+		    </li>
+		</ul>
+
+
+		
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
+		<div class="ui-btn-left">
+					<a  data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+				</div>
+				<h1></h1>
+				<div class="ui-btn-right">
+<!-- 					<a id="btCercaDispositivi" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Cerca Dispositivi</a> -->
+<!-- 					<a id="btStopScanning" data-role="button" data-mini="true" data-icon="delete" data-inline="true" data-theme="c">Stop Scanning</a> -->
+				</div>
+		</div>	
+	</div>
+
+</div> 				
+
+
+
+
+
+
+
+
+<div id="dispositivi-page" data-role="page" data-theme="b">
+	<div data-role="header" style="overflow:hidden;">
+		<h1>Dispositivi</h1>
+	</div>
+	
+	<div role="main" class="ui-content" style="text-align: center;">
+
+
+
+		
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
+		<div class="ui-btn-left">
+					<a data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+				</div>
+				<h1></h1>
+				<div class="ui-btn-right">
+<!-- 					<a id="btCercaDispositivi" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Cerca Dispositivi</a> -->
+					<a id="btAggiungiDispositivo" data-role="button" data-mini="true" data-icon="add" data-inline="true" data-theme="c">Aggiungi</a>
+				</div>
+		</div>	
+		
+		
+		
+			
+	</div>
+	
+	
+	<div data-role="popup" id="popupDispositivo" style="width: 400px" class="ui-corner-all" data-dismissible="false"  data-shadow="true" data-overlay-theme="a">
+	    <form>
+	        <div style="padding:10px 20px;">
+	            <label for="binCode">Bin Code:</label>
+				<input type="text" name="binCode" id="binCode" value="">
+				<label for="decCode">Dec Code:</label>
+				<input type="text" name="decCode" id="decCode" value="">
+				<label for="nomeDispositivo">Nome:</label>
+				<input type="text" name="nomeDispositivo" id="nomeDispositivo" value="">
+				<label for="selectTipoDispositivo" class="select">Tipo:</label>
+				<select name="selectTipoDispositivo" id="selectTipoDispositivo"data-mini="true">
+				   <option value=""></option>
+				    <option value="T">Telecomando</option>
+				    <option value="S1">Sensore 1</option>
+				    <option value="S2">Sensore 2</option>
+				</select>
+	
+	            <button id="btAggiungiOk" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
+	        </div>
+	    </form>
+	</div>	
+
+
+</div> 
+
+
+
+		
+<!--	 *********************************************************************************************************
+	 			ERROR-PAGE
+		 ********************************************************************************************************* -->
+		<div data-url="error-page" id="error-page" data-role="page" data-theme="d">
+
+
+			<div data-role="header"  data-position="inline" data-fullscreen="false" data-theme="f">						
+<!-- 			    <img src="images/logo.png"  width="35px" height="35px" class="ui-btn-left" />					 -->
+				<a data-icon="home" data-iconpos="notext" class="ui-btn-left btHome moving" style="margin-left: 40px">Home</a>
+				<h1><span class="get-position-of-h1"></span></h1>
+				<div class="ui-btn-right">
+					<label data-inline="true" style="font-size: small;" class="headerCittadinoIdentificato"></label>
+				</div>	
+			</div>
+
+			<div data-role="content">		
+
+				<div class="ui-body ui-body-e">
+					<h4 style="margin:.5em 0" id="exception-code"></h4>
+					<h4 style="margin:.5em 0" id="exception-message"></h4>
+					<p id="exception-roi"></p>
+				</div>				
+
+				<div data-role="header" data-theme="z">
+					<a data-rel="back" class="ui-btn-left" data-mini="true" data-icon="arrow-l" data-role="button" data-theme="c" data-iconpos="left">Indietro</a>
+					<h3></h3>					
+				</div>					
+					
+			</div>
+		
+		</div>		
+
+
+	
+	</body>
+
+</html>
