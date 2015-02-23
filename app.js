@@ -123,10 +123,16 @@ app.get('/message', function(req, res) {
 //		res.send(data);
 //	});
 
-	Message.findOne({}).sort('-date').exec(function(err, data) {
-		console.log(data); 
-		res.send(data);
-	});
+//	Message.findOne({}).sort('-date').exec(function(err, data) {
+//		console.log(data); 
+//		res.send(data);
+//	});
+	Message.update({message:"name2"}, 
+		    {$set : {date: Date.now()}}, 
+		    {upsert : true, multi:true}, function (err, data) {
+		    	console.log(err, data); 
+		        res.send(data);
+	});	
 	 
 });
 
