@@ -1,7 +1,7 @@
 {
 	// --------------------------------------------------------------------
 	// JSHint Nodeclipse Configuration v0.15.1 
-	// Strict Edition with some relaxations and switch to Node.js, no `use strict`
+	// Strict EJSHintdition with some relaxations and switch to Node.js, no `use strict`
 	// by Ory Band, Michael Haschke, Paul Verest
 	// https://github.com/Nodeclipse/nodeclipse-1/blob/master/org.nodeclipse.ui/templates/common-templates/.jshintrc
 	// JSHint Documentation is at http://www.jshint.com/docs/options/
@@ -64,7 +64,7 @@
 	"esnext" : false, // Allow ES.next (ECMAScript 6) specific features such as `const` and `let`.
 	"evil" : false, // Tolerate use of `eval`.
 	"expr" : false, // Tolerate `ExpressionStatement` as Programs.
-	"funcscope" : false, // Tolerate declarations of variables inside of control structures while accessing them later from the outside.
+	"funcscope" : true, // Tolerate declarations of variables inside of control structures while accessing them later from the outside.
 	"globalstrict" : false, // Allow global "use strict" (also enables 'strict').
 	"iterator" : false, // Allow usage of __iterator__ property.
 	"lastsemic" : false, // Tolerat missing semicolons when the it is omitted for the last statement in a one-line block.
