@@ -35,7 +35,6 @@ var Message = mongoose.model('Message');
 var AlarmState = mongoose.model('AlarmState');
 
 //app.set('view engine', 'html');
-//app.set('base', '/home-system');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -57,8 +56,8 @@ app.get('/home-system', function(req, res) {
 // Web Socket Connection
 var io = require('socket.io')(server);
 io.sockets.on('connection', function (socket) {
-	socket.on('message', function (data) {console.log("message: "+ data); });
-	socket.on('disconnect', function () {console.log("socket disconnect");  });
+//	socket.on('message', function (data) {console.log("message: "+ data); });
+//	socket.on('disconnect', function () {console.log("socket disconnect");  });
 	
 	
 	socket.on('ferret', function (arg1,arg2, back) {
