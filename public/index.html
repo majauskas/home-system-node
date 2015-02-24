@@ -12,10 +12,11 @@
 
 <script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
+<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
 <script type="text/javascript" src="js/socket.io.js"></script> 
 
-<script type="text/javascript" src="js/client.js"></script>	
-<script type="text/javascript" src="js/alarm.js"></script>		
+<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
+<script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>		
 
 
 	
@@ -63,34 +64,58 @@
 		 
 		 
 
-<div id="security-page" data-role="page" data-theme="b">
-	<div data-role="header" style="overflow:hidden;">
+<div id="security-page" data-role="page">
+	<div data-role="header" style="overflow:hidden;" data-theme="b">
 		<h1>Security</h1>
 	</div>
 	
-	<div role="main" class="ui-content" style="text-align: center;">
+	<div role="main" class="ui-content" style="text-align: center;" data-theme="a">
 
-		<ul data-role="listview" data-inset="false">
-		    <li><a href="#" id="liDispositivi">
-		        <img src="images/Devices-48.png" width="100%" height="100%">
-			    <h2>Dispositivi</h2>
-			    <p>Visualizza / Cerca dispositivi</p></a>
-		    </li>
-		</ul>
-
-
+			<table id="table-wifi-sensors" class="tablesorter alternate_color" cellpadding="10" border="1" style="border-collapse: collapse; width:100%; height:100%"> 
+				<thead id="thead-wifi-sensors"></thead>
+				<tbody id="tbody-wifi-sensors"></tbody>
+			</table>
+			
+			<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
+      				<tr style='font-size: 12px; font-weight: normal; color: black;'>
+       					<td>${binCode}</td>
+      					<td>${decCode}</td> 
+       					<td>${name}</td>
+						<td>${description}</td>
+						<td>${batteryState}</td>
+       					<td style='width:20px;padding-top:0px; padding-bottom:0px;'><a  style='padding-top:1px' data-rel='popup' data-role='button' data-theme='c' data-icon='arrow-r' data-iconpos='notext'></a></td>   
+      				</tr>
+    		</script>
+	
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
-		<div class="ui-btn-left">
-					<a  data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
-				</div>
-				<h1></h1>
-				<div class="ui-btn-right">
-<!-- 					<a id="btCercaDispositivi" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Cerca Dispositivi</a> -->
-<!-- 					<a id="btStopScanning" data-role="button" data-mini="true" data-icon="delete" data-inline="true" data-theme="c">Stop Scanning</a> -->
-				</div>
+			<div class="ui-btn-left">
+				<a  data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+			</div>
+			<h1></h1>
+			<div class="ui-btn-right">
+				<a id="btSearchWifiSensors" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Cerca Dispositivi</a>
+<!-- 			<a id="btStopScanning" data-role="button" data-mini="true" data-icon="delete" data-inline="true" data-theme="c">Stop Scanning</a> -->
+			</div>
 		</div>	
 	</div>
+	
+	<div data-role="popup" id="popupWifiSensor" style="width: 400px" class="ui-corner-all" data-dismissible="false"  data-shadow="true" data-overlay-theme="a">
+
+	        <div style="padding:10px 20px;">
+	            <label data-inline="true" for="binCode">Bin Code:</label>
+				<input disabled name="binCode" id="binCode" value="">
+				<label for="decCode">Dec Code:</label>
+				<input  disabled type="text" name="decCode" id="decCode" value="">
+				<label for="name">Nome:</label>
+				<input type="text" name="name" id="name" value="">
+				<label for="description">Descrizione:</label>
+				<input type="text" name="description" id="description" value="">
+			
+			    <input id="btWiFiSensorAdd" data-icon="check" value="Conferma" type="button">
+			    <input id="btWiFiSensorClose" data-icon="delete" value="Chiudi" type="button">
+	        </div>
+	</div>	
 
 </div> 				
 
@@ -126,29 +151,6 @@
 		
 			
 	</div>
-	
-	
-	<div data-role="popup" id="popupDispositivo" style="width: 400px" class="ui-corner-all" data-dismissible="false"  data-shadow="true" data-overlay-theme="a">
-	    <form>
-	        <div style="padding:10px 20px;">
-	            <label for="binCode">Bin Code:</label>
-				<input type="text" name="binCode" id="binCode" value="">
-				<label for="decCode">Dec Code:</label>
-				<input type="text" name="decCode" id="decCode" value="">
-				<label for="nomeDispositivo">Nome:</label>
-				<input type="text" name="nomeDispositivo" id="nomeDispositivo" value="">
-				<label for="selectTipoDispositivo" class="select">Tipo:</label>
-				<select name="selectTipoDispositivo" id="selectTipoDispositivo"data-mini="true">
-				   <option value=""></option>
-				    <option value="T">Telecomando</option>
-				    <option value="S1">Sensore 1</option>
-				    <option value="S2">Sensore 2</option>
-				</select>
-	
-	            <button id="btAggiungiOk" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
-	        </div>
-	    </form>
-	</div>	
 
 
 </div> 
