@@ -145,14 +145,16 @@ app.get('/WifiSensor/:binCode', function(req, res) {
 	});
 });
 app.put('/WifiSensor', function(req, res) {
-	console.log("put WifiSensor: ", req.body);
+//	console.log("put WifiSensor: ", req.body);
 	WifiSensor.update({binCode : req.body.binCode}, req.body, {upsert : true}, function (err, data) {
         res.send({});
 	});	
 });
-
-
-
+app.del('/WifiSensor', function(req, res) {
+	WifiSensor.remove(req.body, function (err, data) {
+		 res.send({});
+	 });
+});
 
 
 

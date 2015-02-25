@@ -22,7 +22,7 @@ $(function() {
 	
 	$("#security-page").on("click", "#btSearchWifiSensors", function (event) {
 		
-		UTILITY.alertPopup("", "Ricerca Dispositivi attivata.<br>Premi un tasto del telecomando o attiva un sensore", function (event) {
+		UTILITY.alertPopup(null, "Ricerca Dispositivi attivata.<br>Premi un tasto del telecomando o attiva un sensore", function (event) {
 			UTILITY.hideAlertPopup();
 			isActiveSearchWifiSensors = false;
 		});
@@ -30,9 +30,10 @@ $(function() {
 		
 	});	
 	
-	$("#security-page").on("click", "#btWiFiSensorAdd", function (event) {
+	$("#new-sensor-page, #edit-sensor-page").on("click", "#btWiFiSensorConferma", function (event) {
 
-		var data = jQuery.parseJSON($("#popupWifiSensor").attr("data"));
+		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+		
 		
 		$.ajax({
 			type:'PUT', url:"/WifiSensor",
@@ -41,34 +42,89 @@ $(function() {
 				bits : data.bits,
 				binCode :  data.binCode,
 				decCode :  data.decCode,
-				name :  $('#popupWifiSensor #name').val(),
-				description :  $('#popupWifiSensor #description').val(),
+				name :  $.mobile.activePage.find('#name').val(),
+				description :  $.mobile.activePage.find('#description').val(),
 				sensorState : "1",
 				batteryState : "1",
 				date : new Date()
 			},			
 			success: function(response) {
-//				console.log(response);
-//				setTimeout(function() {
-					$('#popupWifiSensor').popup("close");
-//				}, 100);
-				 
+
+				$.ajax({
+					type : 'GET',
+					url : "/WifiSensor",
+					success: function(response) {
+						
+						$("#listview-wifi-sensors").empty();
+						$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+						$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );
+						
+						$.mobile.changePage("#security-page");
+						$("#listview-wifi-sensors").listview("refresh");	
+						
+//						UTILITY.alertPopup(null, "Il sensore è stato aggiunto");
+						 
+			        }
+				});						
+				
+				
 	        }
 		});		
-		
-			
-		
-		
+
 	});	
 
-	$("#security-page").on("click", "#btWiFiSensorClose", function (event) {
+	
+	$("#edit-sensor-page").on("click", "#btWiFiSensorDelete", function (event) {
+
+		UTILITY.areYouSure("Elimina il sensore?", function() {
+
+			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+			
+			$.ajax({
+				type:'DELETE', url:"/WifiSensor",
+				dataType : "json",
+				data : {
+					binCode :  data.binCode
+				},			
+				success: function(response) {
+
+					$.ajax({
+						type : 'GET',
+						url : "/WifiSensor",
+						success: function(response) {
+							
+							$("#listview-wifi-sensors").empty();
+							$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+							$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );
+							
+							$.mobile.changePage("#security-page");
+							$("#listview-wifi-sensors").listview("refresh");	
+							 
+				        }
+					});						
+					
+					
+		        }
+			});				
+			
+		});
 		
+	
+
+	});		
+	
+	
+	$("#listview-wifi-sensors").on("click", "li", function (event) {
 		
-		$('#popupWifiSensor').popup("close");
+		var data = jQuery.parseJSON($(this).attr("data"));
+		$('#edit-sensor-page #binCode').val(data.binCode);
+		$('#edit-sensor-page #decCode').val(data.decCode);	
+		$('#edit-sensor-page #name').val(data.name);
+		$('#edit-sensor-page #description').val(data.description);
+		$("#edit-sensor-page").attr("data", $(this).attr("data"));
 		
+		$.mobile.changePage("#edit-sensor-page");
 	});
-	
-	
 	
 
 });
@@ -89,30 +145,17 @@ socket.on('433mhz', function (device) {
 	if(isActiveSearchWifiSensors){
 		isActiveSearchWifiSensors = false;
 		
-		
 		$.ajax({
 			type:'GET', url:"/WifiSensor/"+device.binCode,		
 			success: function(response) {
-				UTILITY.hideAlertPopup();
-				if(response.lenght === 0){
-					$('#popupWifiSensor #binCode').val(device.binCode);
-					$('#popupWifiSensor #decCode').val(device.decCode);
-//					$('#popupWifiSensor #name').val(device.name);
-//					$('#popupWifiSensor #description').val(device.description);
+				if(response.length == 0){
+					$('#new-sensor-page #binCode').val(device.binCode);
+					$('#new-sensor-page #decCode').val(device.decCode);
+					$("#new-sensor-page").attr("data",JSON.stringify(device));
+					$.mobile.changePage("#new-sensor-page");
 					
-					$("#popupWifiSensor").attr("data",JSON.stringify(device));
-					
-
-//					UTILITY.hideAlertPopup();
-
-					setTimeout(function() {
-						$('#popupWifiSensor').popup("open");
-					}, 100);						
 				}else{
-//					setTimeout(function() {
-						UTILITY.alertPopup("", "Sensore: "+device.binCode+" è gia registrato..");	
-//					}, 100);	
-									
+					UTILITY.alertPopup("", "Sensore: "+device.binCode+" è gia registrato..");	
 				}
 				 
 	        }
@@ -123,14 +166,8 @@ socket.on('433mhz', function (device) {
 	
 });
 
-//socket.on('getDevices', function (data) {
-//	
-//	console.log("getDevices "+ data);
-//	
-//});
 
 
-var isHomePageCreated = false;
 
 $(document).on("pagecreate","#home-page", function(){
 
@@ -142,60 +179,25 @@ $(document).on("pagecreate","#home-page", function(){
         	$( "#controlgroup-allarme input[value='"+response.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
         }
 	});	
-	
-	$("#thead-wifi-sensors").html("");
-	$("#tbody-wifi-sensors").html("");
-	
+
 	$.ajax({
 		type : 'GET',
 		url : "/WifiSensor",
 		success: function(response) {
-//			console.log(response);
-			$("#thead-wifi-sensors").append("<tr class='ui-bar-c' style='font-size: 14px; font-weight: normal; color: black; text-align: center;'><th>binCode</th><th>decCode</th><th>name</th><th>description</th><th>batteryState</th><th></th> </tr>");
+			$("#listview-wifi-sensors").empty();
+			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );
 			
-			$("#tbody-wifi-sensors").empty();
-			$("#template-wifi-sensors").tmpl( response ).appendTo( "#tbody-wifi-sensors" );
-			
-//			 $("#security-page").trigger("create");
-			 
         }
 	});		
-	
 });	
 
 
 
-$(document).on("pagecreate","#security-page", function(){
-
-//	if(!isHomePageCreated){
+//$(document).on("pagecreate","#security-page", function(){
 //
 //
-//		
-//		isHomePageCreated = true;
-//	}
-	
-//	$("#thead-wifi-sensors").html("");
-//	$("#tbody-wifi-sensors").html("");
-//	
-//	$.ajax({
-//		type : 'GET',
-//		url : "/WifiSensor",
-//		success: function(response) {
-//			console.log(response);
-//			$("#thead-wifi-sensors").append("<tr class='ui-bar-c' style='font-size: 14px; font-weight: normal; color: black; text-align: center;'><th>binCode</th><th>decCode</th><th>name</th><th>description</th><th>batteryState</th><th></th> </tr>");
-//			
-//			$("#tbody-wifi-sensors").empty();
-//			$("#template-wifi-sensors").tmpl( response ).appendTo( "#tbody-wifi-sensors" );
-//			
-////			 $("#security-page").trigger("create");
-//			 
-//        }
-//	});	
-	
-//	socket.emit('getWifiSensors', '','', function (data) {
-//		console.log(data); 
-//	});
-});
+//});
 
 
 

@@ -25,24 +25,20 @@
 	<body>
 
 
-<!-- 		<div data-url="prescrizione-page-0" id="prescrizione-page-0" data-role="page" data-dom-cache="true" class="ui-page-active" data-theme="f">   -->
 <div id="home-page" data-role="page" data-theme="b" class="ui-page-active">
 	<div data-role="header" style="overflow:hidden;">
 		<h1>Home</h1>
-<!-- 	    <a href="#" data-icon="gear" class="ui-btn-right">Options</a> -->
 	</div>
 	
 	<div role="main" class="ui-content" style="text-align: center;">
-<!-- 		   width="35px" height="35px"  -->
-<!-- 		   <img src="images/System-Security-Warning-icon.png" /> -->
-		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-allarme">
-		    <input name="radio-choice-h-2" id="radio-choice-h-2a" value="OFF"  type="radio">
-		    <label for="radio-choice-h-2a">Off</label>
-		    <input name="radio-choice-h-2" id="radio-choice-h-2b" value="AWAY" type="radio">
-		    <label for="radio-choice-h-2b">Away</label>
-		    <input name="radio-choice-h-2" id="radio-choice-h-2c" value="HOME" type="radio">
-		    <label for="radio-choice-h-2c">Home</label>
-		</fieldset>
+<!-- 		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-allarme"> -->
+<!-- 		    <input name="radio-choice-h-2" id="radio-choice-h-2a" value="OFF"  type="radio"> -->
+<!-- 		    <label for="radio-choice-h-2a">Off</label> -->
+<!-- 		    <input name="radio-choice-h-2" id="radio-choice-h-2b" value="AWAY" type="radio"> -->
+<!-- 		    <label for="radio-choice-h-2b">Away</label> -->
+<!-- 		    <input name="radio-choice-h-2" id="radio-choice-h-2c" value="HOME" type="radio"> -->
+<!-- 		    <label for="radio-choice-h-2c">Home</label> -->
+<!-- 		</fieldset> -->
 		
 
 	</div>
@@ -71,22 +67,16 @@
 	
 	<div role="main" class="ui-content" style="text-align: center;" data-theme="a">
 
-			<table id="table-wifi-sensors" class="tablesorter alternate_color" cellpadding="10" border="1" style="border-collapse: collapse; width:100%; height:100%"> 
-				<thead id="thead-wifi-sensors"></thead>
-				<tbody id="tbody-wifi-sensors"></tbody>
-			</table>
-			
-			<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
-      				<tr style='font-size: 12px; font-weight: normal; color: black;'>
-       					<td>${binCode}</td>
-      					<td>${decCode}</td> 
-       					<td>${name}</td>
-						<td>${description}</td>
-						<td>${batteryState}</td>
-       					<td style='width:20px;padding-top:0px; padding-bottom:0px;'><a  style='padding-top:1px' data-rel='popup' data-role='button' data-theme='c' data-icon='arrow-r' data-iconpos='notext'></a></td>   
-      				</tr>
-    		</script>
-	
+
+		<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
+		<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
+					<li data-icon='grid' data='${target}'><a>
+						<h2><font style='white-space:normal;'>${name} - ${description}</font></h2>						
+						<p>${binCode} - ${decCode}</p>
+						<p>Stato batteria - {{if (batteryState == 1)}}OK{{/if}}</p>
+					</a></li>
+		</script>
+
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 			<div class="ui-btn-left">
@@ -95,100 +85,80 @@
 			<h1></h1>
 			<div class="ui-btn-right">
 				<a id="btSearchWifiSensors" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Cerca Dispositivi</a>
-<!-- 			<a id="btStopScanning" data-role="button" data-mini="true" data-icon="delete" data-inline="true" data-theme="c">Stop Scanning</a> -->
 			</div>
 		</div>	
 	</div>
-	
-	<div data-role="popup" id="popupWifiSensor" style="width: 400px" class="ui-corner-all" data-dismissible="false"  data-shadow="true" data-overlay-theme="a">
-
-	        <div style="padding:10px 20px;">
-	            <label data-inline="true" for="binCode">Bin Code:</label>
-				<input disabled name="binCode" id="binCode" value="">
-				<label for="decCode">Dec Code:</label>
-				<input  disabled type="text" name="decCode" id="decCode" value="">
-				<label for="name">Nome:</label>
-				<input type="text" name="name" id="name" value="">
-				<label for="description">Descrizione:</label>
-				<input type="text" name="description" id="description" value="">
-			
-			    <input id="btWiFiSensorAdd" data-icon="check" value="Conferma" type="button">
-			    <input id="btWiFiSensorClose" data-icon="delete" value="Chiudi" type="button">
-	        </div>
-	</div>	
 
 </div> 				
 
 
 
-
-
-
-
-
-<div id="dispositivi-page" data-role="page" data-theme="b">
-	<div data-role="header" style="overflow:hidden;">
-		<h1>Dispositivi</h1>
+<div id="new-sensor-page" data-role="page">
+	<div data-role="header" style="overflow:hidden;" data-theme="b">
+		<h1>Nuovo Sensore</h1>
 	</div>
 	
-	<div role="main" class="ui-content" style="text-align: center;">
+	<div class="ui-content" data-theme="a">
 
+        <div style="padding:10px 20px;">
+            <label data-inline="true" for="binCode">Bin Code:</label>
+			<input disabled name="binCode" id="binCode" value="">
+			<label for="decCode">Dec Code:</label>
+			<input  disabled type="text" name="decCode" id="decCode" value="">
+			<label for="name">Nome:</label>
+			<input type="text" name="name" id="name" value="">
+			<label for="description">Descrizione:</label>
+			<input type="text" name="description" id="description" value="">
+        </div>
 
 
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
-		<div class="ui-btn-left">
-					<a data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
-				</div>
-				<h1></h1>
-				<div class="ui-btn-right">
-<!-- 					<a id="btCercaDispositivi" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Cerca Dispositivi</a> -->
-					<a id="btAggiungiDispositivo" data-role="button" data-mini="true" data-icon="add" data-inline="true" data-theme="c">Aggiungi</a>
-				</div>
+			<div class="ui-btn-left">
+				<a  data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+			</div>
+			<h1></h1>
+			<div class="ui-btn-right">
+				<a id="btWiFiSensorConferma" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Conferma</a>
+			</div>
 		</div>	
-		
-		
-		
-			
 	</div>
+</div> 	
 
 
+
+<div id="edit-sensor-page" data-role="page">
+	<div data-role="header" style="overflow:hidden;" data-theme="b">
+		<h1>Modifica Sensore</h1>
+	</div>
+	
+	<div class="ui-content" data-theme="a">
+
+        <div style="padding:10px 20px;">
+            <label data-inline="true" for="binCode">Bin Code:</label>
+			<input disabled name="binCode" id="binCode">
+			<label for="decCode">Dec Code:</label>
+			<input disabled type="text" name="decCode" id="decCode">
+			<label for="name">Nome:</label>
+			<input type="text" name="name" id="name">
+			<label for="description">Descrizione:</label>
+			<input type="text" name="description" id="description">
+        </div>
+
+
+		
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
+			<div class="ui-btn-left">
+				<a  data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+			</div>
+			<h1></h1>
+			<div class="ui-btn-right">
+				<a id="btWiFiSensorDelete" data-role="button" data-mini="true" data-icon="delete" data-inline="true" data-theme="c">Elimina</a>
+				<a id="btWiFiSensorConferma" data-role="button" data-mini="true" data-icon="edit" data-inline="true" data-theme="c">Conferma</a>
+			</div>
+		</div>	
+	</div>
 </div> 
-
-
-
-		
-<!--	 *********************************************************************************************************
-	 			ERROR-PAGE
-		 ********************************************************************************************************* -->
-		<div data-url="error-page" id="error-page" data-role="page" data-theme="d">
-
-
-			<div data-role="header"  data-position="inline" data-fullscreen="false" data-theme="f">						
-<!-- 			    <img src="images/logo.png"  width="35px" height="35px" class="ui-btn-left" />					 -->
-				<a data-icon="home" data-iconpos="notext" class="ui-btn-left btHome moving" style="margin-left: 40px">Home</a>
-				<h1><span class="get-position-of-h1"></span></h1>
-				<div class="ui-btn-right">
-					<label data-inline="true" style="font-size: small;" class="headerCittadinoIdentificato"></label>
-				</div>	
-			</div>
-
-			<div data-role="content">		
-
-				<div class="ui-body ui-body-e">
-					<h4 style="margin:.5em 0" id="exception-code"></h4>
-					<h4 style="margin:.5em 0" id="exception-message"></h4>
-					<p id="exception-roi"></p>
-				</div>				
-
-				<div data-role="header" data-theme="z">
-					<a data-rel="back" class="ui-btn-left" data-mini="true" data-icon="arrow-l" data-role="button" data-theme="c" data-iconpos="left">Indietro</a>
-					<h3></h3>					
-				</div>					
-					
-			</div>
-		
-		</div>		
 
 
 	
