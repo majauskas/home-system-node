@@ -93,7 +93,8 @@ var AlarmStateSchema = new Schema({
 	state: String,
 	user: String,
 	provider: String,
-	date: Date	
+	date: Date
+//	area: {type: Schema.ObjectId, ref: 'Area' }
 });
 mongoose.model('AlarmState', AlarmStateSchema); 
 var AlarmState = mongoose.model('AlarmState');
@@ -157,20 +158,98 @@ app.del('/WifiSensor', function(req, res) {
 });
 
 
+//-----------Area---------------------------------------------
+var AreaSchema = new Schema({
+	code : {type : Number, required : true},
+	name : {type : String, required : true},
+	sensors: [{type: Schema.ObjectId, ref: 'WifiSensor' }],
+//	sensors: [WifiSensorSchema],
+	date: Date	
+});
+mongoose.model('Area', AreaSchema); 
+var Area = mongoose.model('Area');
 
+
+
+
+
+//--------------------------------------------------------
 
 app.post('/433mhz/:bits/:binCode/:decCode', function(req, res) {
 	
-//	console.log(req.params);
-	io.sockets.emit("433mhz", req.params);
+	
+
+	
+	
+	//controlling if alarm is activated
+	AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
+
+		if(alarmState.state !== "OFF"){
+//			console.log(err, alarmState);
+			Area.findOne({name : alarmState.state}).populate('sensors').exec(function(err, area) {
+
+//				console.log(err, area);
+				for ( var i = 0; i < area.sensors.length; i++) {
+					var sensor = area.sensors[i];
+					
+					if(sensor.binCode ===  req.params.binCode){
+						io.sockets.emit("ALARM_DETECTION", sensor);
+						break;
+					}
+				}
+				
+				
+
+				
+				
+				
+			});		
+		}else{
+			io.sockets.emit("433mhz", req.params);
+		}
+		
+	});
+
+	
+
+//	AlarmState.findOne({}).sort('-date').populate("Area").exec(function(err, data) {
+//		console.log(err, data);
+//		if(data.state !== "OFF"){
+//			io.sockets.emit("ALARM_DETECTION", {name:"camera 1"});
+//		}
+//		
+//	});	
+	
+		
+		
+
+//	WifiSensor.find({}).sort('-date').exec(function(err, data) {
+//	
+//		
+//		Area.update({code:1}, {code:1,name:"HOME", sensors: data, date: Date.now()}, {upsert : true}, function (err, data) {
+//		});		
+//	
+//	});
+	
+//	Area.findOne({}).populate('sensors').exec(function(err, data) {
+//		console.log(err, data);
+//	});	
+	
+
 	res.send();
+	
 });
 
 
 
+function switchOnAlarm() {
+	
+}
 
 
-
+function switchOffAlarm() {
+	
+}
 
 
 

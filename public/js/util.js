@@ -72,33 +72,37 @@ var UTILITY = new initutil();function initutil() {
 
     };  
     
-    this.areYouSure = function(text, callbackSI, callbackNO) {	
+    this.areYouSure = function(text, callbackSI, callbackNO, headerMsg) {	
 
-    	$('#conferma-popup').remove();
-    	var page = $.mobile.activePage;
-    	var 
-    	    popup = $('<div id="conferma-popup" data-dismissible="false" data-role="popup" data-theme="f" data-shadow="true" data-overlay-theme="a" style="max-width: 400px"></div>').appendTo( page )
-    	  , header = $('<div data-role="header" data-theme="e"><a  data-icon="alert" data-iconpos="notext" class="ui-btn-left"></a> <h1>Conferma</h1> </div>').appendTo( popup )
-    	  , content = $('<div data-role="content" class="ui-corner-bottom ui-content" data-theme="b"> 	<h4 style="font-size: small; text-align: center;">'+text+'</h4> 	<div class="ui-content" style="text-align: center;"> 	<div style="margin:0 auto;"> 	<a ref="#"  class="conferma-popup-si" data-role="button" data-rel="back" data-inline="true" data-theme="c" data-icon="check" data-mini="true">&nbsp; Si &nbsp;&nbsp;</a> 	<a  class="conferma-popup-no" data-role="button" data-inline="true" data-rel="back" data-theme="c" data-icon="delete" data-mini="true">&nbsp; No &nbsp;&nbsp;</a> 	</div> 	</div> </div>').appendTo( popup );
-    	popup.popup();
-    	page.page('destroy').page();		
-    	$('#conferma-popup').popup("open");
+//    	$('#conferma-popup').remove();
     	
-    	$("#conferma-popup .conferma-popup-si").unbind("click").on("click", function() {
-    		setTimeout(function() {
-    			callbackSI(true);
-    		}, 300);
-    		$(this).off("click");
-    	});	
-
+//    	setTimeout(function() {
     	
-    	$("#conferma-popup .conferma-popup-no").unbind("click").on("click", function() {
-    		setTimeout(function() {
-    			if(callbackNO) callbackNO(true);
-    		}, 300);
-    		$(this).off("click");
-    	});
-
+	    	var page = $.mobile.activePage;
+	    	var popup = $('<div id="conferma-popup" data-dismissible="false" data-role="popup" data-theme="f" data-shadow="true" data-overlay-theme="a" style="max-width: 400px"></div>').appendTo( page );
+			if(headerMsg){
+				$('<div data-role="header" data-theme="e"><a data-rel="back" data-role="button" data-icon="alert" data-iconpos="notext" class="ui-btn-left"></a> <h1 class="alert-popup-header">'+headerMsg+'</h1> </div>').appendTo( popup );	
+			}    	
+	    	var content = $('<div data-role="content" class="ui-corner-bottom ui-content" data-theme="b"> 	<h4 style="font-size: small; text-align: center;">'+text+'</h4> 	<div class="ui-content" style="text-align: center;"> 	<div style="margin:0 auto;"> 	<a ref="#"  class="conferma-popup-si" data-role="button" data-rel="back" data-inline="true" data-theme="c" data-icon="check" data-mini="true">&nbsp; Si &nbsp;&nbsp;</a> 	<a  class="conferma-popup-no" data-role="button" data-inline="true" data-rel="back" data-theme="c" data-icon="delete" data-mini="true">&nbsp; No &nbsp;&nbsp;</a> 	</div> 	</div> </div>').appendTo( popup );
+	    	popup.popup();
+	    	page.page('destroy').page();		
+	    	$('#conferma-popup').popup("open");
+	    	
+	    	$("#conferma-popup .conferma-popup-si").unbind("click").on("click", function() {
+	    		setTimeout(function() {
+	    			callbackSI(true);
+	    		}, 300);
+	    		$(this).off("click");
+	    	});	
+	
+	    	
+	    	$("#conferma-popup .conferma-popup-no").unbind("click").on("click", function() {
+	    		setTimeout(function() {
+	    			if(callbackNO) callbackNO(true);
+	    		}, 300);
+	    		$(this).off("click");
+	    	});
+//    	}, 0);
     };    
     
     

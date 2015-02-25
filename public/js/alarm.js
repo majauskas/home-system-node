@@ -160,13 +160,17 @@ socket.on('433mhz', function (device) {
 				 
 	        }
 		});			
-		
-		
 	}
 	
 });
 
+socket.on('ALARM_DETECTION', function (device) {
 
+	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
+		
+	}, null,"Atenzione");
+	
+});
 
 
 $(document).on("pagecreate","#home-page", function(){
@@ -175,6 +179,7 @@ $(document).on("pagecreate","#home-page", function(){
 		type : 'GET',
 		url : "/AlarmState",
 		success: function(response) {
+			if(!response){response = {state :"OFF"};}
         	$( "#controlgroup-allarme input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
         	$( "#controlgroup-allarme input[value='"+response.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
         }
@@ -191,13 +196,6 @@ $(document).on("pagecreate","#home-page", function(){
         }
 	});		
 });	
-
-
-
-//$(document).on("pagecreate","#security-page", function(){
-//
-//
-//});
 
 
 
