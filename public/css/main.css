@@ -109,19 +109,10 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 #bt-page-erogazione-ricette .ui-icon { background:  url(../images/Inventory-32.png) 50% 50% no-repeat;  background-size: 32px 32px; }
 
 
-.ui-icon-cittadino {
-	background-image: url(../images/icone/18/ico_utente_18.gif);
-	background-size: 18px 18px;
-}
-.ui-icon-cerca-cittadino {
-	background-image: url(../images/icone/18/ico_riscontra_18.gif);
-	background-size: 18px 18px;
-}
+.ui-icon-wifi:after {background-image: url("../images/Wifi-02-24-1C95FF.png");background-size: 18px 18px;}
+.ui-icon-usb:after {background-image: url("../images/USB-Plug-24-1C95FF.png"); background-size: 18px 18px;}
+.ui-icon-node:after {background-image: url("../images/Node-24-1C95FF.png"); background-size: 18px 18px;}
 
-.ui-icon-calendario {
-	background-image: url(../images/icone/18/ico_calendario_18.gif);
-	background-size: 18px 18px;
-}
 
 .ui-icon-stampa {
 	background-image: url(../images/icone/16/printer.png);

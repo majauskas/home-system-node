@@ -70,7 +70,7 @@
 
 		<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
 		<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
-					<li data-icon='grid' data='${target}'><a>
+					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>${name} - ${description}</font></h2>						
 						<p>${binCode} - ${decCode}</p>
 						<p>Stato batteria - {{if (batteryState == 1)}}OK{{/if}}</p>
@@ -80,7 +80,7 @@
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 			<div class="ui-btn-left">
-				<a  data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+				<a href="#home-page" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
 			</div>
 			<h1></h1>
 			<div class="ui-btn-right">
@@ -90,7 +90,7 @@
 	</div>
 
 </div> 				
-
+ 
 
 
 <div id="new-sensor-page" data-role="page">
@@ -115,7 +115,7 @@
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 			<div class="ui-btn-left">
-				<a  data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+				<a href="#security-page" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
 			</div>
 			<h1></h1>
 			<div class="ui-btn-right">
@@ -149,7 +149,7 @@
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 			<div class="ui-btn-left">
-				<a  data-rel="back" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+				<a href="#security-page" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
 			</div>
 			<h1></h1>
 			<div class="ui-btn-right">
