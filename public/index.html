@@ -199,6 +199,7 @@
 
 <div id="PAGE-NEW-AREA" data-role="page">
 	<div data-role="header" style="overflow:hidden;" data-theme="b">
+		<a href="#home-page" class="ui-btn ui-btn-left ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
 		<h1>Nuova Zona</h1>
 	</div>
 	
@@ -227,6 +228,7 @@
 
 <div id="PAGE-EDIT-AREA" data-role="page">
 	<div data-role="header" style="overflow:hidden;" data-theme="b">
+		<a href="#home-page" class="ui-btn ui-btn-left ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
 		<h1>Modifica Zona</h1>
 	</div>
 	
@@ -238,8 +240,28 @@
 			<label for="description">Descrizione:</label>
 			<input type="text" name="description" id="description">
         </div>
+<!-- data='${target}'  -->
+		<ul data-role="listview" data-inset="false" id="listview-area-sensors"></ul>	
+		<script id="template-area-sensors" type="text/x-jquery-tmpl">
+					<li data-icon='wifi' class="ui-nodisc-icon"><a>												
+						<p>${name} - ${description}</p>
+					</a></li>
+		</script>
+<!-- 			<div  data-role="header" class="ui-btn-right"> -->
+<!-- 				<a id="btAddSensorToArea" data-role="button" data-mini="true" data-icon="plus" data-inline="true" data-theme="c">Aggiungi</a> -->
+<!-- 			</div> -->
+<!-- <a data-role="button" data-mini="true" data-icon="plus" data-inline="true" data-theme="c">Indietro</a> -->
 
-
+<!-- 				<div  data-theme="c"> -->
+<!-- 					<div class="ui-btn-left"> -->
+<!-- 					</div>				 -->
+<!-- 					<h1></h1> -->
+<!-- 					<div class="ui-right"> -->
+<!-- <div> -->
+						<input type="button" name="description" id="description"  data-mini="true" data-icon="pluss" data-role="button" data-inline="true"  data-iconpos="right">	
+<!-- 						<a id="btChiudiRicetta" data-mini="true" data-icon="arrow-r" data-role="button" data-inline="true"  data-iconpos="right">Chiudi Ricetta</a>						 -->
+<!-- 					</div> -->
+<!-- 				</div>	 -->
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 			<div class="ui-btn-left">

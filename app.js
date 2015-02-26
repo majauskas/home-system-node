@@ -206,10 +206,20 @@ app.put('/Area/:id', function(req, res) {
 });
 
 app.get('/Area', function(req, res) {
-	Area.find({}).sort('date').exec(function(err, data) {
+//	Area.find({}).sort('date').exec(function(err, data) {
+//		if(err){console.log(err); res.status(500).send(err); }
+//		else { res.send(data); }
+//	});
+	
+	
+	Area.find({}).sort('date').populate('wifisensors').exec(function(err, data) {
+		console.log(data);
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
-	});
+	});		
+	
+	
+	
 });
 
 app.del('/Area/:id', function(req, res) {

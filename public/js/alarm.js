@@ -159,7 +159,17 @@ $(function() {
 		$('#PAGE-EDIT-AREA #description').val(data.description);
 		$("#PAGE-EDIT-AREA").attr("data", $(this).attr("data"));
 		
+		$("#listview-area-sensors").empty();
+//		$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+//		$.each(response, function (i, obj) { 
+//			$("#template-area-sensors").tmpl( obj.wifisensors ).appendTo( "#listview-area-sensors" );	
+//		});
+		$("#template-area-sensors").tmpl( data.wifisensors ).appendTo( "#listview-area-sensors" );		
+				
+		
+		
 		$.mobile.changePage("#PAGE-EDIT-AREA");
+		$("#listview-area-sensors").listview("refresh");
 	});	
 	
 	
@@ -244,8 +254,6 @@ $(document).on("pagecreate","#home-page", function(){
 
 $(document).on("pagecreate","#security-page", function(){
 
-
-	
 	$.ajax({
 		type : 'GET',
 		url : "/WifiSensor",
