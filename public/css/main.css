@@ -109,10 +109,23 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 #bt-page-erogazione-ricette .ui-icon { background:  url(../images/Inventory-32.png) 50% 50% no-repeat;  background-size: 32px 32px; }
 
 
-.ui-icon-wifi:after {background-image: url("../images/Wifi-02-24-1C95FF.png");background-size: 18px 18px;}
+.ui-icon-wifi:after {background-image: url("../images/Wifi-02-24-1C95FF.png");background-position: 3px 3px; background-size: 70%;}
 .ui-icon-usb:after {background-image: url("../images/USB-Plug-24-1C95FF.png"); background-size: 18px 18px;}
 .ui-icon-node:after {background-image: url("../images/Node-24-1C95FF.png"); background-size: 18px 18px;}
 
+.ui-icon-areas:after {background-image: url("../images/Graph-Diagram-24.png"); background-size: 18px 18px;}
+.ui-icon-error:after {background-image: url("../images/Warning-Message-24-F50000.png"); background-size: 18px 18px;}
+/* .ui-icon-error:after {background-image: url("../images/Warning-Message-24-F50000.png");background-position: 3px 3px; background-size: 70%;} */
+
+/* .ui-icon-zone:after { */
+/*     background-image: url("../images/Graph-Diagram-24.png"); */
+/*     background-position: 3px 3px; */
+/*     background-size: 70%; */
+/* } */
+
+ul.ui-nodisc-icon .ui-btn:after {
+  background-color: #4da6ff;
+}
 
 .ui-icon-stampa {
 	background-image: url(../images/icone/16/printer.png);

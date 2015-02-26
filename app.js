@@ -65,6 +65,26 @@ io.sockets.on('connection', function (socket) {
 
 
 
+
+
+function switchOnAlarm(sensor) {
+	//sending to client the notification
+	io.sockets.emit("ALARM_DETECTION", sensor);
+	
+	//TODO: activate the siren and email/sms notifications
+}
+
+
+function switchOffAlarm() {
+	
+}
+
+
+
+
+
+
+
 mongoose.connect('mongodb://10.221.160.78/home-system');
 var Schema = mongoose.Schema;
 
@@ -118,14 +138,12 @@ app.post('/AlarmState', function(req, res) {
 
 //-----------WifiSensor---------------------------------------------
 var WifiSensorSchema = new Schema({
-	id: String,
-	bits: String,
-	binCode: String,
-	decCode: String,
+	code: Number,
+	binCode: String,	
 	name: String,
 	description: String,
-	sensorState: String,
-	batteryState: String,
+	state: String,
+	battery: String,
 	date: Date	
 });
 mongoose.model('WifiSensor', WifiSensorSchema); 
@@ -138,7 +156,7 @@ app.get('/WifiSensor', function(req, res) {
 		res.send(data);
 	});
 });
-app.get('/WifiSensor/:binCode', function(req, res) {
+app.get('/WifiSensor/:code', function(req, res) {
 	console.log("get WifiSensor body: ", req.body);
 	console.log("get WifiSensor params: ", req.params);	
 	WifiSensor.find(req.params).sort('-date').exec(function(err, data) {
@@ -147,7 +165,7 @@ app.get('/WifiSensor/:binCode', function(req, res) {
 });
 app.put('/WifiSensor', function(req, res) {
 //	console.log("put WifiSensor: ", req.body);
-	WifiSensor.update({binCode : req.body.binCode}, req.body, {upsert : true}, function (err, data) {
+	WifiSensor.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
         res.send({});
 	});	
 });
@@ -158,59 +176,88 @@ app.del('/WifiSensor', function(req, res) {
 });
 
 
+//wire
+
 //-----------Area---------------------------------------------
 var AreaSchema = new Schema({
-	code : {type : Number, required : true},
-	name : {type : String, required : true},
-	sensors: [{type: Schema.ObjectId, ref: 'WifiSensor' }],
+//	code : {type : Number, required : true, 'default': 1},
+	name : {type : String, required : true, unique: true, trim: true},
+	description : String,
+	wifisensors: [{type: Schema.ObjectId, ref: 'WifiSensor' }],
 //	sensors: [WifiSensorSchema],
-	date: Date	
+	date: {type : Date, 'default': Date.now()}	
+	
 });
 mongoose.model('Area', AreaSchema); 
 var Area = mongoose.model('Area');
 
+app.post('/Area', function(req, res) {
+	Area.create(req.body, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});		
+	
+});
+app.put('/Area/:id', function(req, res) {
+	Area.update({_id : req.params.id}, req.body, {upsert : true}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
 
+app.get('/Area', function(req, res) {
+	Area.find({}).sort('date').exec(function(err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send(data); }
+	});
+});
 
+app.del('/Area/:id', function(req, res) {
+	Area.remove({_id : req.params.id}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	 });
+});
 
 
 //--------------------------------------------------------
 
-app.post('/433mhz/:bits/:binCode/:decCode', function(req, res) {
+app.post('/433mhz/:binCode', function(req, res) {
 	
 	
-
-	
-	
-	//controlling if alarm is activated
-	AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
-
-		if(alarmState.state !== "OFF"){
-//			console.log(err, alarmState);
-			Area.findOne({name : alarmState.state}).populate('sensors').exec(function(err, area) {
-
-//				console.log(err, area);
-				for ( var i = 0; i < area.sensors.length; i++) {
-					var sensor = area.sensors[i];
-					
-					if(sensor.binCode ===  req.params.binCode){
-						io.sockets.emit("ALARM_DETECTION", sensor);
-						break;
-					}
-				}
-				
-				
-
-				
-				
-				
-			});		
-		}else{
-			io.sockets.emit("433mhz", req.params);
-		}
+	var binCode = req.params.binCode;
+	var code;
+	if(binCode.length === 24 || binCode.length === 40 ){
 		
-	});
+		if(binCode.length === 24){ code = binCode.substr(0,16);	}
+		if(binCode.length === 40){ code = binCode.substr(0,24);	}
+		
+		code = parseInt(code, 2);
+		
+		//controlling if alarm is activated
+		AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
+			console.log(err, alarmState);
+			if(alarmState.state !== "OFF"){
+				Area.findOne({name : alarmState.state}).populate('wifisensors').exec(function(err, area) {
+					if(area){
+						for ( var i = 0; i < area.sensors.length; i++) {
+							var sensor = area.sensors[i];
+							
+							if(sensor.code ===  code){
+								switchOnAlarm(sensor);
+								break;
+							}
+						}
+					}
+				});		
+			}else{
+				//send codes for sensors registrations
+				io.sockets.emit("433mhz", {code:code,binCode:binCode});
+			}
+			
+		});
 
-	
+	}
 
 //	AlarmState.findOne({}).sort('-date').populate("Area").exec(function(err, data) {
 //		console.log(err, data);
@@ -242,14 +289,7 @@ app.post('/433mhz/:bits/:binCode/:decCode', function(req, res) {
 
 
 
-function switchOnAlarm() {
-	
-}
 
-
-function switchOffAlarm() {
-	
-}
 
 
 
@@ -334,7 +374,7 @@ app.put('/message', function(req, res) {
 //		 res.send(data);
 //	 });
 	 
-//		WifiSensor.update({binCode:req.body.binCode}, req.body {$set : {date: Date.now()}}, {upsert : true, multi:true}, function (err, data) {
+//		WifiSensor.update({code:req.body.code}, req.body {$set : {date: Date.now()}}, {upsert : true, multi:true}, function (err, data) {
 // 	console.log(err, data); 
 //     res.send(data);
 //	});		 

@@ -3,7 +3,7 @@ var isActiveSearchWifiSensors = false;
 $(function() {
 	
 
-	$("#home-page").on("change", "[name='radio-choice-h-2']", function (event) {
+	$("#home-page").on("change", "[name='radio-choice-alarm-state']", function (event) {
 		$.ajax({
 			type : 'POST',
 			url : "/AlarmState",
@@ -39,35 +39,20 @@ $(function() {
 			type:'PUT', url:"/WifiSensor",
 			dataType : "json",
 			data : {
-				bits : data.bits,
 				binCode :  data.binCode,
-				decCode :  data.decCode,
+				code :  data.code,
 				name :  $.mobile.activePage.find('#name').val(),
 				description :  $.mobile.activePage.find('#description').val(),
-				sensorState : "1",
-				batteryState : "1",
+				state : "1",
+				battery : "1",
 				date : new Date()
 			},			
 			success: function(response) {
 
-				$.ajax({
-					type : 'GET',
-					url : "/WifiSensor",
-					success: function(response) {
-						
-						$("#listview-wifi-sensors").empty();
-						$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-						$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );
-						
-						$.mobile.changePage("#security-page");
-						$("#listview-wifi-sensors").listview("refresh");	
-						
-//						UTILITY.alertPopup(null, "Il sensore è stato aggiunto");
-						 
-			        }
-				});						
-				
-				
+			
+				$("#security-page").page('destroy').page();	
+				$.mobile.changePage("#security-page");
+	
 	        }
 		});		
 
@@ -84,24 +69,14 @@ $(function() {
 				type:'DELETE', url:"/WifiSensor",
 				dataType : "json",
 				data : {
-					binCode :  data.binCode
+					code :  data.code
 				},			
 				success: function(response) {
 
-					$.ajax({
-						type : 'GET',
-						url : "/WifiSensor",
-						success: function(response) {
-							
-							$("#listview-wifi-sensors").empty();
-							$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-							$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );
-							
-							$.mobile.changePage("#security-page");
-							$("#listview-wifi-sensors").listview("refresh");	
-							 
-				        }
-					});						
+					$("#security-page").page('destroy').page();	
+					$("#home-page").page('destroy').page();
+					$.mobile.changePage("#security-page");
+										
 					
 					
 		        }
@@ -114,11 +89,60 @@ $(function() {
 	});		
 	
 	
+	$("#PAGE-AREAS").on("click", "#btAddNewArea", function (event) {
+		$("#PAGE-NEW-AREA").find('#name, #description').val("");
+		$("#PAGE-NEW-AREA").removeAttr("data");
+		$.mobile.changePage("#PAGE-NEW-AREA");
+	});	
+	
+	
+	$("#PAGE-NEW-AREA, #PAGE-EDIT-AREA").on("click", "#btConferma, #btDelete", function (event) {
+
+		var url = "/Area";
+		var type = "POST";
+		var data = $.mobile.activePage.attr("data");
+		if(data) {
+			type = "PUT";
+			data = jQuery.parseJSON(data);
+			url += "/"+data._id;
+		}
+		
+		if($(this).attr("id") === "btDelete"){
+			UTILITY.areYouSure("Elimina la zona?", function() {
+				goTo("DELETE",url);
+			});
+		}else{
+			goTo(type,url);
+		}
+		
+		function goTo(type,url) {
+
+			$.ajax({
+				type: type, url: url,
+				dataType : "json",
+				data : {
+					name :  $.mobile.activePage.find('#name').val(),
+					description :  $.mobile.activePage.find('#description').val()
+				},
+				error: UTILITY.httpError,
+				success: function(response) {
+
+					$("#PAGE-AREAS").page('destroy').page();
+					$("#home-page").page('destroy').page();
+					$.mobile.changePage("#PAGE-AREAS");
+		        }
+			});				
+		}
+	});
+	
+	
+
+	
 	$("#listview-wifi-sensors").on("click", "li", function (event) {
 		
 		var data = jQuery.parseJSON($(this).attr("data"));
 		$('#edit-sensor-page #binCode').val(data.binCode);
-		$('#edit-sensor-page #decCode').val(data.decCode);	
+		$('#edit-sensor-page #code').val(data.code);	
 		$('#edit-sensor-page #name').val(data.name);
 		$('#edit-sensor-page #description').val(data.description);
 		$("#edit-sensor-page").attr("data", $(this).attr("data"));
@@ -127,6 +151,18 @@ $(function() {
 	});
 	
 
+	
+	$("#listview-areas").on("click", "li", function (event) {
+		
+		var data = jQuery.parseJSON($(this).attr("data"));
+		$('#PAGE-EDIT-AREA #name').val(data.name);
+		$('#PAGE-EDIT-AREA #description').val(data.description);
+		$("#PAGE-EDIT-AREA").attr("data", $(this).attr("data"));
+		
+		$.mobile.changePage("#PAGE-EDIT-AREA");
+	});	
+	
+	
 });
 
 
@@ -134,8 +170,8 @@ var socket = io.connect();
 
 socket.on('change-alarm-state', function (data) {
 	
-	$( "#controlgroup-allarme input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
-	$( "#controlgroup-allarme input[value='"+data.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
+	$( "#controlgroup-alarm input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
+	$( "#controlgroup-alarm input[value='"+data.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
 	
 });
 
@@ -146,16 +182,18 @@ socket.on('433mhz', function (device) {
 		isActiveSearchWifiSensors = false;
 		
 		$.ajax({
-			type:'GET', url:"/WifiSensor/"+device.binCode,		
+			type:'GET', url:"/WifiSensor/"+device.code,		
 			success: function(response) {
-				if(response.length == 0){
+				if(response.length === 0){
 					$('#new-sensor-page #binCode').val(device.binCode);
-					$('#new-sensor-page #decCode').val(device.decCode);
+					$('#new-sensor-page #code').val(device.code);
+					$('#new-sensor-page #name').val("");
+					$('#new-sensor-page #description').val("");
 					$("#new-sensor-page").attr("data",JSON.stringify(device));
 					$.mobile.changePage("#new-sensor-page");
 					
 				}else{
-					UTILITY.alertPopup("", "Sensore: "+device.binCode+" è gia registrato..");	
+					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") è gia registrato..");	
 				}
 				 
 	        }
@@ -177,25 +215,60 @@ $(document).on("pagecreate","#home-page", function(){
 
 	$.ajax({
 		type : 'GET',
-		url : "/AlarmState",
+		url : "/Area",
 		success: function(response) {
-			if(!response){response = {state :"OFF"};}
-        	$( "#controlgroup-allarme input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
-        	$( "#controlgroup-allarme input[value='"+response.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
+			var areas = [{_id:0000000001,name:"OFF"}];
+			
+			response.forEach(function(elt, i) {
+				areas.push(elt);
+			});
+			
+			$("#controlgroup-alarm").html("");
+			$("#template-controlgroup-alarm").tmpl( areas ).appendTo( "#controlgroup-alarm" );	
+			$("#home-page").trigger("create");
+			
+			$.ajax({
+				type : 'GET',
+				url : "/AlarmState",
+				success: function(response) {
+					if(!response){response = {state :"OFF"};}
+		        	$( "#controlgroup-alarm input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
+		        	$( "#controlgroup-alarm input[value='"+response.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
+		        }
+			});				
         }
 	});	
 
+	
+});	
+
+$(document).on("pagecreate","#security-page", function(){
+
+
+	
 	$.ajax({
 		type : 'GET',
 		url : "/WifiSensor",
 		success: function(response) {
 			$("#listview-wifi-sensors").empty();
 			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );
-			
+			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );		
+			$("#listview-wifi-sensors").listview("refresh");
         }
 	});		
 });	
 
 
+$(document).on("pagecreate","#PAGE-AREAS", function(){
 
+	$.ajax({
+		type : 'GET',
+		url : "/Area",
+		success: function(response) {
+			$("#listview-areas").empty();
+			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+			$("#template-areas").tmpl( response ).appendTo( "#listview-areas" );		
+			$("#listview-areas").listview("refresh");
+        }
+	});		
+});	

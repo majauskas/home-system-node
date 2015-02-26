@@ -22,17 +22,22 @@ var UTILITY = new initutil();function initutil() {
     	
     	$('#alert-popup').remove();
     	setTimeout(function() {
-
+    		
     		$('#alert-popup').remove();
     		var page = $.mobile.activePage;
-    		var popup = $('<div id="alert-popup" data-role="popup" data-dismissible="false" style="max-width: 400px" data-theme="c" data-shadow="true" data-overlay-theme="a"></div>').appendTo( page );
+    		var popup = $('<div id="alert-popup" data-role="popup" data-dismissible="false" style="max-width: 400px" data-theme="b" data-shadow="true" data-overlay-theme="a"></div>').appendTo( page );
+    		
     		if(headerMsg){
     			$('<div data-role="header" data-theme="e"><a data-rel="back" data-role="button" data-icon="alert" data-iconpos="notext" class="ui-btn-left"></a> <h1 class="alert-popup-header">'+headerMsg+'</h1> </div>').appendTo( popup );	
     		}
     		
-    		var content = $('<div data-role="content" class="ui-content" style="text-align: center;"><p>'+text+'</p><a href="#" id="alert-popup-button" data-role="button" data-inline="true" data-theme="c">Chiudi</a></div>').appendTo( popup );
+    		var content = $('<div data-role="content" class="ui-content"  data-theme="b" style="text-align: center;"><p>'+text+'</p><a href="#" id="alert-popup-button" data-role="button" data-inline="true" data-theme="c">Chiudi</a></div>').appendTo( popup );
     		popup.popup();
-    		page.page('destroy').page();	
+//    		page.page('destroy').page();	
+    		
+    		page.trigger("create");
+//    		$.mobile.changePage("#security-page");
+    		
     		$('#alert-popup').popup("open");
     		$('#alert-popup-button').focus();
 
@@ -54,18 +59,20 @@ var UTILITY = new initutil();function initutil() {
     };     
 
     
-    this.blockErrorPopup = function(error) {	
+    this.errorPopup = function(error) {	
     	setTimeout(function() {
     		
-    		$('#block-error-popup').remove();
+    		if(error.message == undefined) error.message= error.err;
+    		
+    		$('#error-popup').remove();
     		var page = $.mobile.activePage;
     		var 
-    		    popup = $('<div id="block-error-popup" data-role="popup" data-dismissible="false" data-theme="c" data-shadow="true" data-overlay-theme="a"></div>').appendTo( page )
-    		  , header = $('<div data-role="header" data-theme="e"><a data-role="button" data-icon="info2" data-iconpos="notext" class="ui-btn-left"></a> <h1 class="alert-popup-header">'+error.exception.code+'</h1> </div>').appendTo( popup )
-    		  , content = $('<div data-role="content" class="ui-content" style="text-align: center;"><h4 style="margin:.5em 0">'+error.exception.message+'</h4><p>'+error.exception.detailedMessage+'</p></div>').appendTo( popup );
+    		    popup = $('<div id="error-popup" data-role="popup" data-dismissible="false" data-theme="b" data-shadow="true" data-overlay-theme="a"></div>').appendTo( page )
+    		  , header = $('<div data-role="header" data-theme="e"><img style="top:7px;" src="../images/Warning-Message-24-F50000.png" width="24px" height="24px" class="ui-btn-left" /> <h1 class="alert-popup-header">'+error.name+'</h1> </div>').appendTo( popup )
+    		  , content = $('<div data-role="content" class="ui-content"  data-theme="b" style="text-align: center;"><h4 style="margin:.5em 0">'+error.message+'</h4><a href="#" data-rel="back" data-role="button" data-inline="true" data-theme="c">Chiudi</a></div>').appendTo( popup );
     		popup.popup();
     		page.page('destroy').page();		
-    		$('#block-error-popup').popup("open");
+    		$('#error-popup').popup("open");
     		
     	}, 100);	
     	
@@ -105,6 +112,12 @@ var UTILITY = new initutil();function initutil() {
 //    	}, 0);
     };    
     
+ 
+    this.httpError = function(error) {	
+//    	console.log(JSON.stringify(error));
+    	UTILITY.errorPopup(error.responseJSON);
+
+    };        
     
 }
 

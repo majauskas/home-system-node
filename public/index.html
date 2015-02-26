@@ -31,14 +31,11 @@
 	</div>
 	
 	<div class="ui-content" style="text-align: center;">
-		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-allarme">
-		    <input name="radio-choice-h-2" id="radio-choice-h-2a" value="OFF"  type="radio">
-		    <label for="radio-choice-h-2a">Off</label>
-		    <input name="radio-choice-h-2" id="radio-choice-h-2b" value="AWAY" type="radio">
-		    <label for="radio-choice-h-2b">Away</label>
-		    <input name="radio-choice-h-2" id="radio-choice-h-2c" value="HOME" type="radio">
-		    <label for="radio-choice-h-2c">Home</label>
-		</fieldset>
+		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-alarm"></fieldset>
+		<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
+				<input name="radio-choice-alarm-state" id="${_id}" value="${name}" type="radio">
+		    	<label for="${_id}">${name}</label>
+		</script>	
 	</div>
 			
 	<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false"  data-theme="b">
@@ -60,18 +57,20 @@
 
 <div id="security-page" data-role="page">
 	<div data-role="header" style="overflow:hidden;" data-theme="b">
+		<a href="#home-page" class="ui-btn ui-btn-left ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
 		<h1>Security</h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
 	
-	<div role="main" class="ui-content" style="text-align: center;" data-theme="a">
+	<div data-role="main" class="ui-content" style="text-align: center;" data-theme="a">
 
 
 		<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
 		<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
 					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>${name} - ${description}</font></h2>						
-						<p>${binCode} - ${decCode}</p>
-						<p>Stato batteria - {{if (batteryState == 1)}}OK{{/if}}</p>
+						<p>${code} - ${binCode}</p>
+						<p>Stato batteria - {{if (battery == 1)}}OK{{/if}}</p>
 					</a></li>
 		</script>
 
@@ -86,6 +85,12 @@
 			</div>
 		</div>	
 	</div>
+	
+	<div id="menu-panel" data-role="panel" data-display="overlay" data-position="right" data-position-fixed="true" data-theme="b">
+		<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
+		    <li data-icon="areas" id="liAreas"><a href="#PAGE-AREAS">Zone</a></li>
+		</ul>
+ 	</div> 	
 
 </div> 				
  
@@ -99,14 +104,14 @@
 	<div class="ui-content" data-theme="a">
 
         <div style="padding:10px 20px;">
-            <label data-inline="true" for="binCode">Bin Code:</label>
-			<input disabled name="binCode" id="binCode" value="">
-			<label for="decCode">Dec Code:</label>
-			<input  disabled type="text" name="decCode" id="decCode" value="">
+            <label data-inline="true" for="code">Code:</label>
+			<input disabled name="code" id="code">
+			<label for="binCode">Bin Code:</label>
+			<input  disabled type="text" name="binCode" id="binCode">
 			<label for="name">Nome:</label>
-			<input type="text" name="name" id="name" value="">
+			<input type="text" name="name" id="name">
 			<label for="description">Descrizione:</label>
-			<input type="text" name="description" id="description" value="">
+			<input type="text" name="description" id="description">
         </div>
 
 
@@ -133,10 +138,10 @@
 	<div class="ui-content" data-theme="a">
 
         <div style="padding:10px 20px;">
-            <label data-inline="true" for="binCode">Bin Code:</label>
-			<input disabled name="binCode" id="binCode">
-			<label for="decCode">Dec Code:</label>
-			<input disabled type="text" name="decCode" id="decCode">
+            <label data-inline="true" for="code">Code:</label>
+			<input disabled name="code" id="code">
+			<label for="binCode">Bin Code:</label>
+			<input  disabled type="text" name="binCode" id="binCode>
 			<label for="name">Nome:</label>
 			<input type="text" name="name" id="name">
 			<label for="description">Descrizione:</label>
@@ -159,6 +164,95 @@
 </div> 
 
 
+
+
+
+
+<div id="PAGE-AREAS" data-role="page">
+	<div data-role="header" style="overflow:hidden;" data-theme="b">
+		<a href="#home-page" class="ui-btn ui-btn-left ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Zone</h1>
+	</div>
+	
+	<div data-role="main" class="ui-content" style="text-align: center;" data-theme="a">
+		<ul data-role="listview" data-inset="false" id="listview-areas" class="ui-nodisc-icon"></ul>	
+		<script id="template-areas" type="text/x-jquery-tmpl">
+					<li data-icon='areas' data='${target}'><a>
+						<h2>${name}<font style='white-space:normal;font-weight:normal;'> - ${description}</font></h2>												
+					</a></li>
+		</script>
+
+		
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
+			<div class="ui-btn-left">
+				<a href="#security-page" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+			</div>
+			<h1></h1>
+			<div class="ui-btn-right">
+				<a id="btAddNewArea" data-role="button" data-icon="plus" data-inline="true" data-theme="c">Nuova Zona</a>
+			</div>
+		</div>	
+	</div>
+</div>
+
+
+
+<div id="PAGE-NEW-AREA" data-role="page">
+	<div data-role="header" style="overflow:hidden;" data-theme="b">
+		<h1>Nuova Zona</h1>
+	</div>
+	
+	<div class="ui-content" data-theme="a">
+
+        <div style="padding:10px 20px;">
+            <label data-inline="true" for="name">Nome:</label>
+			<input name="name" id="name">
+			<label for="description">Descrizione:</label>
+			<input type="text" name="description" id="description">
+        </div>
+
+
+		
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
+			<div class="ui-btn-left">
+				<a href="#PAGE-AREAS" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+			</div>
+			<h1></h1>
+			<div class="ui-btn-right">
+				<a id="btConferma" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Conferma</a>
+			</div>
+		</div>	
+	</div>
+</div> 
+
+<div id="PAGE-EDIT-AREA" data-role="page">
+	<div data-role="header" style="overflow:hidden;" data-theme="b">
+		<h1>Modifica Zona</h1>
+	</div>
+	
+	<div class="ui-content" data-theme="a">
+
+        <div style="padding:10px 20px;">
+            <label data-inline="true" for="name">Nome:</label>
+			<input name="name" id="name">
+			<label for="description">Descrizione:</label>
+			<input type="text" name="description" id="description">
+        </div>
+
+
+		
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
+			<div class="ui-btn-left">
+				<a href="#PAGE-AREAS" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+			</div>
+			<h1></h1>
+			<div class="ui-btn-right">
+				<a id="btDelete" data-role="button" data-mini="true" data-icon="delete" data-inline="true" data-theme="c">Elimina</a>
+				<a id="btConferma" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Conferma</a>
+			</div>
+		</div>	
+	</div>
+</div>
 	
 	</body>
 
