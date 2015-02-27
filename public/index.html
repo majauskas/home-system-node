@@ -30,7 +30,7 @@
 		<h1>Home</h1>
 	</div>
 	
-	<div class="ui-content" style="text-align: center;">
+	<div data-role="main" class="ui-content" style="text-align: center;">
 		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-alarm"></fieldset>
 		<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
 				<input name="radio-choice-alarm-state" id="${_id}" value="${name}" type="radio">
@@ -240,29 +240,17 @@
 			<label for="description">Descrizione:</label>
 			<input type="text" name="description" id="description">
         </div>
-<!-- data='${target}'  -->
-		<ul data-role="listview" data-inset="false" id="listview-area-sensors"></ul>	
+
+		<ul data-role="listview" data-inset="true" id="listview-area-sensors"></ul>	
 		<script id="template-area-sensors" type="text/x-jquery-tmpl">
-					<li data-icon='wifi' class="ui-nodisc-icon"><a>												
+					<li data-icon='delete' data='${target}'><a>												
 						<p>${name} - ${description}</p>
 					</a></li>
 		</script>
-<!-- 			<div  data-role="header" class="ui-btn-right"> -->
-<!-- 				<a id="btAddSensorToArea" data-role="button" data-mini="true" data-icon="plus" data-inline="true" data-theme="c">Aggiungi</a> -->
-<!-- 			</div> -->
-<!-- <a data-role="button" data-mini="true" data-icon="plus" data-inline="true" data-theme="c">Indietro</a> -->
-
-<!-- 				<div  data-theme="c"> -->
-<!-- 					<div class="ui-btn-left"> -->
-<!-- 					</div>				 -->
-<!-- 					<h1></h1> -->
-<!-- 					<div class="ui-right"> -->
-<!-- <div> -->
-						<input type="button" name="description" id="description"  data-mini="true" data-icon="pluss" data-role="button" data-inline="true"  data-iconpos="right">	
-<!-- 						<a id="btChiudiRicetta" data-mini="true" data-icon="arrow-r" data-role="button" data-inline="true"  data-iconpos="right">Chiudi Ricetta</a>						 -->
-<!-- 					</div> -->
-<!-- 				</div>	 -->
-		
+		<p></p>
+		<div style="text-align: center;">
+			<a id="btAddSensorToArea" class="ui-btn ui-btn-inline ui-icon-plus ui-btn-icon-left ui-mini">Aggiungi sensore</a>
+		</div>		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 			<div class="ui-btn-left">
 				<a href="#PAGE-AREAS" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
@@ -274,6 +262,16 @@
 			</div>
 		</div>	
 	</div>
+	
+	<div id="add-remove-sensors-panel" data-role="panel" data-display="overlay" data-position="right" data-position-fixed="true" data-theme="a">
+		<ul data-role="listview" data-inset="false"  id="listview-sensors-for-area"></ul>	
+		<script id="template-sensors-for-area" type="text/x-jquery-tmpl">
+					<li data-icon='plus' data='${target}' ><a>
+						<p>${name} - ${description}</p>
+					</a></li>
+		</script>		
+ 	</div> 	
+ 		
 </div>
 	
 	</body>

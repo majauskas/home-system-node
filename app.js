@@ -157,8 +157,6 @@ app.get('/WifiSensor', function(req, res) {
 	});
 });
 app.get('/WifiSensor/:code', function(req, res) {
-	console.log("get WifiSensor body: ", req.body);
-	console.log("get WifiSensor params: ", req.params);	
 	WifiSensor.find(req.params).sort('-date').exec(function(err, data) {
 		res.send(data);
 	});
@@ -183,8 +181,8 @@ var AreaSchema = new Schema({
 //	code : {type : Number, required : true, 'default': 1},
 	name : {type : String, required : true, unique: true, trim: true},
 	description : String,
-	wifisensors: [{type: Schema.ObjectId, ref: 'WifiSensor' }],
-//	sensors: [WifiSensorSchema],
+//	wifisensors: [{type: Schema.ObjectId, ref: 'WifiSensor' }],
+	wifisensors: [WifiSensorSchema],
 	date: {type : Date, 'default': Date.now()}	
 	
 });
@@ -199,10 +197,32 @@ app.post('/Area', function(req, res) {
 	
 });
 app.put('/Area/:id', function(req, res) {
-	Area.update({_id : req.params.id}, req.body, {upsert : true}, function (err, data) {
+	
+//	Area.update({_id : req.params.id}, req.body, function (err, data) {
+//		if(err){console.log(err); res.status(500).send(err); }
+//		else { res.send({}); }
+//	});	
+	
+	
+	Area.findById(req.params.id, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
-		else { res.send({}); }
+		else { 
+			data.wifisensors = req.body.wifisensors;
+			data.save(function(err, data) {
+				console.log(err, data);
+				res.send({});
+			});
+			
+		}
+		
 	});	
+	
+//	A.findByIdAndUpdate(id, update, options, callback) // executes
+//	A.findByIdAndUpdate(id, update, options)  // returns Query
+//	A.findByIdAndUpdate(id, update, callback) // executes
+//	A.findByIdAndUpdate(id, update)           // returns Query
+//	A.findByIdAndUpdate()                     // returns Query	
+	
 });
 
 app.get('/Area', function(req, res) {
@@ -213,7 +233,6 @@ app.get('/Area', function(req, res) {
 	
 	
 	Area.find({}).sort('date').populate('wifisensors').exec(function(err, data) {
-		console.log(data);
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
 	});		

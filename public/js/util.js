@@ -134,6 +134,15 @@ window.onload = function() {
 
 
 
+Array.prototype.pushUnique = function (item){
+	if(! new RegExp(JSON.stringify( item )).test(JSON.stringify( this )) ){
+		 this.push(item);
+	}
+};
 
-
-
+Array.prototype.contains = function (item){
+	if(new RegExp(JSON.stringify( item )).test(JSON.stringify( this )) ){
+		 return true;
+	}
+	return false;
+};

@@ -1,3 +1,4 @@
+var APPLICATION = {};
 var isActiveSearchWifiSensors = false;
 
 $(function() {
@@ -160,10 +161,7 @@ $(function() {
 		$("#PAGE-EDIT-AREA").attr("data", $(this).attr("data"));
 		
 		$("#listview-area-sensors").empty();
-//		$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-//		$.each(response, function (i, obj) { 
-//			$("#template-area-sensors").tmpl( obj.wifisensors ).appendTo( "#listview-area-sensors" );	
-//		});
+		$.each(data.wifisensors, function (i, obj) { obj.target = JSON.stringify(obj); });
 		$("#template-area-sensors").tmpl( data.wifisensors ).appendTo( "#listview-area-sensors" );		
 				
 		
@@ -172,6 +170,88 @@ $(function() {
 		$("#listview-area-sensors").listview("refresh");
 	});	
 	
+//---------------------------------------------------------------------	
+	$("#PAGE-EDIT-AREA").on("click", "#btAddSensorToArea", function (event) {
+		var area = jQuery.parseJSON($("#PAGE-EDIT-AREA").attr("data"));
+		
+		var wifisensors = $.grep(APPLICATION.wifiSensors, function(target, i) {	
+			 return (!area.wifisensors.contains(target._id));
+		});
+		$("#add-remove-sensors-panel").panel("open");
+		$("#listview-sensors-for-area").empty();
+		$.each(wifisensors, function (i, obj) { obj.target = JSON.stringify(obj); });
+		$("#template-sensors-for-area").tmpl( wifisensors  ).appendTo( "#listview-sensors-for-area" );		
+		$("#listview-sensors-for-area").listview("refresh");		
+		
+	});
+	
+	$("#listview-sensors-for-area").on("click", "li", function (event) {
+		
+		var area = jQuery.parseJSON($("#PAGE-EDIT-AREA").attr("data"));
+		var sensor = jQuery.parseJSON($(this).attr("data"));		
+			
+		area.wifisensors.pushUnique(sensor);
+	
+		$("#PAGE-EDIT-AREA").attr("data",JSON.stringify( area ));
+		
+		$("#listview-area-sensors").empty();
+		$.each(area.wifisensors, function (i, obj) { obj.target = JSON.stringify(obj); });
+		$("#template-area-sensors").tmpl( area.wifisensors  ).appendTo( "#listview-area-sensors" );		
+		$("#listview-area-sensors").listview("refresh");			
+		
+		
+		
+		
+		$.ajax({
+			type: "PUT", url: "Area/"+area._id,
+			dataType : "json",
+			data : {
+				wifisensors :  area.wifisensors
+			},
+			error: UTILITY.httpError,
+			success: function(response) {
+				$("#PAGE-AREAS").page('destroy').page();
+	        }
+		});			
+		
+		$("#add-remove-sensors-panel").panel("close");
+	});	
+	
+	$("#listview-area-sensors").on("click", "li", function (event) {
+		
+		var area = jQuery.parseJSON($("#PAGE-EDIT-AREA").attr("data"));
+		var sensor = jQuery.parseJSON($(this).attr("data"));		
+			
+		area.wifisensors = $.grep(area.wifisensors, function(target) {
+			  return target._id != sensor._id;
+		});
+		
+	
+		$("#PAGE-EDIT-AREA").attr("data",JSON.stringify( area ));
+		
+		$("#listview-area-sensors").empty();
+		$.each(area.wifisensors, function (i, obj) { obj.target = JSON.stringify(obj); });
+		$("#template-area-sensors").tmpl( area.wifisensors  ).appendTo( "#listview-area-sensors" );		
+		$("#listview-area-sensors").listview("refresh");			
+		
+//		area.wifisensors = [];
+		console.log(area.wifisensors);
+		
+		$.ajax({
+			type: "PUT", url: "Area/"+area._id,
+			dataType : "json",
+			data : area,
+			error: UTILITY.httpError,
+			success: function(response) {
+				$("#PAGE-AREAS").page('destroy').page();
+	        }
+		});			
+		
+	});	
+	
+	
+	
+//-------------------------------------------------------------------------	
 	
 });
 
@@ -258,10 +338,13 @@ $(document).on("pagecreate","#security-page", function(){
 		type : 'GET',
 		url : "/WifiSensor",
 		success: function(response) {
+			
 			$("#listview-wifi-sensors").empty();
 			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
 			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );		
 			$("#listview-wifi-sensors").listview("refresh");
+			
+			APPLICATION.wifiSensors = response;
         }
 	});		
 });	
