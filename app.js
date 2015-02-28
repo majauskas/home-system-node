@@ -85,7 +85,8 @@ function switchOffAlarm() {
 
 
 
-mongoose.connect('mongodb://10.221.160.78/home-system');
+//mongoose.connect('mongodb://10.221.160.78/home-system');
+mongoose.connect('mongodb://192.168.0.21/home-system');
 var Schema = mongoose.Schema;
 
 
@@ -265,12 +266,16 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		//controlling if alarm is activated
 		AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
-			console.log(err, alarmState);
-			if(alarmState.state !== "OFF"){
+		
+			      
+			if(alarmState !== null && alarmState.state !== "OFF"){
 				Area.findOne({name : alarmState.state}).populate('wifisensors').exec(function(err, area) {
-					if(area){
-						for ( var i = 0; i < area.sensors.length; i++) {
-							var sensor = area.sensors[i];
+				console.log(err, alarmState); 
+				console.log(err, area);
+        	 
+					if(area && area.wifisensors !== undefined){
+						for ( var i = 0; i < area.wifisensors.length; i++) {
+							var sensor = area.wifisensors[i];
 							
 							if(sensor.code ===  code){
 								switchOnAlarm(sensor);
