@@ -5,6 +5,8 @@ $(function() {
 	
 
 	$("#home-page").on("change", "[name='radio-choice-alarm-state']", function (event) {
+		
+		
 		$.ajax({
 			type : 'POST',
 			url : "/AlarmState",
@@ -17,7 +19,12 @@ $(function() {
 			success: function(data) {
 				//socket.emit('change-alarm-state', data);
 	        }
-		});		
+		});
+		
+		if($(this).val() === "OFF"){
+			socket.emit('switchOffAlarm', {});
+		}
+		
 	});
 	
 	
@@ -283,7 +290,7 @@ socket.on('433mhz', function (device) {
 					$.mobile.changePage("#new-sensor-page");
 					
 				}else{
-					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") è gia registrato..");	
+					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") Ã¨ gia registrato..");	
 				}
 				 
 	        }
@@ -295,7 +302,7 @@ socket.on('433mhz', function (device) {
 socket.on('ALARM_DETECTION', function (device) {
 
 	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
-		
+		socket.emit('switchOffAlarm', {});
 	}, null,"Atenzione");
 	
 });
@@ -307,7 +314,7 @@ $(document).on("pagecreate","#home-page", function(){
 		type : 'GET',
 		url : "/Area",
 		success: function(response) {
-			var areas = [{_id:0000000001,name:"OFF"}];
+			var areas = [{_id:1000000001,name:"OFF"}];
 			
 			response.forEach(function(elt, i) {
 				areas.push(elt);

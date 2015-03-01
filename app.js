@@ -9,7 +9,8 @@ var request = require("request");
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var config = require('./config.json');
-
+//var Gpio = require('onoff').Gpio;
+var gpio = require("pi-gpio");
 
 
 
@@ -48,8 +49,16 @@ io.sockets.on('connection', function (socket) {
 		
 		
 	});	
+	
 
-//	socket.on('change-alarm-state', function(data) {
+	socket.on('switchOffAlarm', function(arg1) {
+		console.log("switchOffAlarm");
+		switchOffAlarm();
+	});	
+	
+	
+
+// socket.on('change-alarm-state', function(data) {
 //	    socket.broadcast.emit("change-alarm-state", data);
 //	});	
 //	
@@ -72,20 +81,30 @@ function switchOnAlarm(sensor) {
 	io.sockets.emit("ALARM_DETECTION", sensor);
 	
 	//TODO: activate the siren and email/sms notifications
-}
-
-
-function switchOffAlarm() {
+	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
+	    gpio.write(16, 1, function() {          // Set pin 16 high (1) 
+	        gpio.close(16);                     // Close pin 16 
+	    });
+	});
 	
 }
 
 
+function switchOffAlarm() {
+	gpio.open(16, "output", function(err) { // Open pin 16 for output
+		gpio.write(16, 0, function() { // Set pin 16 high (1)
+			gpio.close(16); // Close pin 16
+		});
+	});
+}
 
 
 
 
 
-//mongoose.connect('mongodb://10.221.160.78/home-system');
+
+
+// mongoose.connect('mongodb://10.221.160.78/home-system');
 mongoose.connect('mongodb://192.168.0.21/home-system');
 var Schema = mongoose.Schema;
 
