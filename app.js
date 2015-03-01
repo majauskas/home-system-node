@@ -278,10 +278,11 @@ app.post('/433mhz/:binCode', function(req, res) {
 	var code;
 	if(binCode.length === 24 || binCode.length === 40 ){
 		
-		if(binCode.length === 24){ code = binCode.substr(0,16);	}
-		if(binCode.length === 40){ code = binCode.substr(0,24);	}
+//		if(binCode.length === 24){ code = binCode.substr(0,16);	}
+//		if(binCode.length === 40){ code = binCode.substr(0,24);	}
+//		code = parseInt(code, 2);
 		
-		code = parseInt(code, 2);
+		code = parseInt(binCode.substr(0,16), 2);
 		
 		//controlling if alarm is activated
 		AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
