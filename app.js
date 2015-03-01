@@ -9,8 +9,7 @@ var request = require("request");
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var config = require('./config.json');
-//var Gpio = require('onoff').Gpio;
-var gpio = require("pi-gpio");
+//var gpio = require("pi-gpio");
 
 
 
@@ -19,7 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var server = app.listen(process.env.PORT || 8080, function () {
+var server = app.listen(process.env.PORT || 8081, function () {
   var host = server.address().address;
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
@@ -81,21 +80,21 @@ function switchOnAlarm(sensor) {
 	io.sockets.emit("ALARM_DETECTION", sensor);
 	
 	//TODO: activate the siren and email/sms notifications
-	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
-	    gpio.write(16, 1, function() {          // Set pin 16 high (1) 
-	        gpio.close(16);                     // Close pin 16 
-	    });
-	});
+//	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
+//	    gpio.write(16, 1, function() {          // Set pin 16 high (1) 
+//	        gpio.close(16);                     // Close pin 16 
+//	    });
+//	});
 	
 }
 
 
 function switchOffAlarm() {
-	gpio.open(16, "output", function(err) { // Open pin 16 for output
-		gpio.write(16, 0, function() { // Set pin 16 high (1)
-			gpio.close(16); // Close pin 16
-		});
-	});
+//	gpio.open(16, "output", function(err) { // Open pin 16 for output
+//		gpio.write(16, 0, function() { // Set pin 16 high (1)
+//			gpio.close(16); // Close pin 16
+//		});
+//	});
 }
 
 
@@ -269,6 +268,20 @@ app.del('/Area/:id', function(req, res) {
 });
 
 
+//----------- Events ---------------------------------------------
+var EventSchema = new Schema({
+	code : {type : Number},
+	binCode : {type : String},
+	description : String,
+	date: {type : Date, 'default': Date.now()}	
+	
+});
+mongoose.model('Event', EventSchema); 
+var Event = mongoose.model('Event');
+
+
+
+
 //--------------------------------------------------------
 
 app.post('/433mhz/:binCode', function(req, res) {
@@ -281,8 +294,13 @@ app.post('/433mhz/:binCode', function(req, res) {
 //		if(binCode.length === 24){ code = binCode.substr(0,16);	}
 //		if(binCode.length === 40){ code = binCode.substr(0,24);	}
 //		code = parseInt(code, 2);
+
+		
+				
 		
 		code = parseInt(binCode.substr(0,16), 2);
+		
+		Event.create({code:code,binCode:binCode}, function (err, data) {});	
 		
 		//controlling if alarm is activated
 		AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
