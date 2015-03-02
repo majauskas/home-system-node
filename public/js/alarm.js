@@ -4,7 +4,7 @@ var isActiveSearchWifiSensors = false;
 $(function() {
 	
 
-	$("#home-page").on("change", "[name='radio-choice-alarm-state']", function (event) {
+	$("#HOME-PAGE").on("change", "[name='radio-choice-alarm-state']", function (event) {
 		
 		
 		$.ajax({
@@ -28,7 +28,7 @@ $(function() {
 	});
 	
 	
-	$("#security-page").on("click", "#btSearchWifiSensors", function (event) {
+	$("#SENSORI-WIFI-PAGE").on("click", "#btSearchWifiSensors", function (event) {
 		
 		UTILITY.alertPopup(null, "Ricerca Dispositivi attivata.<br>Premi un tasto del telecomando o attiva un sensore", function (event) {
 			UTILITY.hideAlertPopup();
@@ -58,8 +58,8 @@ $(function() {
 			success: function(response) {
 
 			
-				$("#security-page").page('destroy').page();	
-				$.mobile.changePage("#security-page");
+				$("#SENSORI-WIFI-PAGE").page('destroy').page();	
+				$.mobile.changePage("#SENSORI-WIFI-PAGE");
 	
 	        }
 		});		
@@ -81,9 +81,9 @@ $(function() {
 				},			
 				success: function(response) {
 
-					$("#security-page").page('destroy').page();	
-					$("#home-page").page('destroy').page();
-					$.mobile.changePage("#security-page");
+					$("#SENSORI-WIFI-PAGE").page('destroy').page();	
+					$("#HOME-PAGE").page('destroy').page();
+					$.mobile.changePage("#SENSORI-WIFI-PAGE");
 										
 					
 					
@@ -136,7 +136,7 @@ $(function() {
 				success: function(response) {
 
 					$("#PAGE-AREAS").page('destroy').page();
-					$("#home-page").page('destroy').page();
+					$("#HOME-PAGE").page('destroy').page();
 					$.mobile.changePage("#PAGE-AREAS");
 		        }
 			});				
@@ -308,7 +308,7 @@ socket.on('ALARM_DETECTION', function (device) {
 });
 
 
-$(document).on("pagecreate","#home-page", function(){
+$(document).on("pagecreate","#HOME-PAGE", function(){
 
 	$.ajax({
 		type : 'GET',
@@ -322,7 +322,8 @@ $(document).on("pagecreate","#home-page", function(){
 			
 			$("#controlgroup-alarm").html("");
 			$("#template-controlgroup-alarm").tmpl( areas ).appendTo( "#controlgroup-alarm" );	
-			$("#home-page").trigger("create");
+			$("#HOME-PAGE").trigger("create");
+			
 			
 			$.ajax({
 				type : 'GET',
@@ -339,7 +340,7 @@ $(document).on("pagecreate","#home-page", function(){
 	
 });	
 
-$(document).on("pagecreate","#security-page", function(){
+$(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
 
 	$.ajax({
 		type : 'GET',

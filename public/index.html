@@ -18,35 +18,41 @@
 <script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
 <script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>		
 
-
+<script type="text/javascript">
+		$(function() {
+			$("body>[data-role='panel']").panel().trigger( "create" );
+		});
+</script>
 	
 </head>
 
 	<body>
 
 
-<div id="home-page" data-role="page" data-theme="b" class="ui-page-active">
+<div id="HOME-PAGE" data-role="page" class="ui-page-active">
 	<div data-role="header" style="overflow:hidden;">
 		<h1>Home</h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
 	
-	<div data-role="main" class="ui-content" style="text-align: center;">
+	<div role="main" class="ui-content" style="text-align: center;">
 		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-alarm"></fieldset>
 		<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
 				<input name="radio-choice-alarm-state" id="${_id}" value="${name}" type="radio">
 		    	<label for="${_id}">${name}</label>
 		</script>	
 	</div>
+
 			
-	<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false"  data-theme="b">
-	    <div data-role="navbar" class="nav-glyphish-example" data-grid="b">
-	    <ul>
-	        <li><a href="#security-page" id="menu-security" data-icon="custom">Security</a></li>
-	        <li><a href="#" id="menu-events" data-icon="custom">Events</a></li>
-	        <li><a href="#" id="menu-lights" data-icon="custom">Lights</a></li>
-	    </ul>
-	    </div>
-	</div>
+<!-- 	<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false"  data-theme="b"> -->
+<!-- 	    <div data-role="navbar" class="nav-glyphish-example" data-grid="b"> -->
+<!-- 	    <ul> -->
+<!-- 	        <li><a href="#SENSORI-WIFI-PAGE" id="menu-security" data-icon="custom">Security</a></li> -->
+<!-- 	        <li><a href="#" id="menu-events" data-icon="custom">Events</a></li> -->
+<!-- 	        <li><a href="#" id="menu-lights" data-icon="custom">Lights</a></li> -->
+<!-- 	    </ul> -->
+<!-- 	    </div> -->
+<!-- 	</div> -->
 
 </div> 
 
@@ -55,16 +61,14 @@
 		 
 		 
 
-<div id="security-page" data-role="page">
-	<div data-role="header" style="overflow:hidden;" data-theme="b">
-		<a href="#home-page" class="ui-btn ui-btn-left ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
-		<h1>Security</h1>
-		<a href="#menu-panel" class="ui-btn ui-btn-right ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+<div id="SENSORI-WIFI-PAGE" data-role="page">
+	<div data-role="header" style="overflow:hidden;">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Sensori Wifi</h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
 	
-	<div data-role="main" class="ui-content" style="text-align: center;" data-theme="a">
-
-
+	<div data-role="main" class="ui-content" style="text-align: center;">
 		<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
 		<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
 					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
@@ -73,35 +77,20 @@
 						<p>Stato batteria - {{if (battery == 1)}}OK{{/if}}</p>
 					</a></li>
 		</script>
-
-		
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
-			<div class="ui-btn-left">
-				<a href="#home-page" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
-			</div>
-			<h1></h1>
-			<div class="ui-btn-right">
-				<a id="btSearchWifiSensors" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Cerca Dispositivi</a>
-			</div>
-		</div>	
 	</div>
-	
-	<div id="menu-panel" data-role="panel" data-display="overlay" data-position="right" data-position-fixed="true" data-theme="b">
-		<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
-		    <li data-icon="areas" id="liAreas"><a href="#PAGE-AREAS">Zone</a></li>
-		</ul>
- 	</div> 	
-
+	<div data-role="main" class="ui-content" style="text-align: center;">
+		<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a>
+	</div>
 </div> 				
- 
 
 
 <div id="new-sensor-page" data-role="page">
-	<div data-role="header" style="overflow:hidden;" data-theme="b">
+	<div data-role="header" style="overflow:hidden;">
+		<a href="#SENSORI-WIFI-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Nuovo Sensore</h1>
 	</div>
 	
-	<div class="ui-content" data-theme="a">
+	<div class="ui-content">
 
         <div style="padding:10px 20px;">
             <label data-inline="true" for="code">Code:</label>
@@ -114,17 +103,19 @@
 			<input type="text" name="description" id="description">
         </div>
 
-
+	<div data-role="main" class="ui-content" style="text-align: center;">
+		<a id="btWiFiSensorConferma" class="ui-btn ui-icon-check ui-btn-icon-left ui-btn-inline  ui-corner-all">Conferma</a>
+	</div>
 		
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
-			<div class="ui-btn-left">
-				<a href="#security-page" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
-			</div>
-			<h1></h1>
-			<div class="ui-btn-right">
-				<a id="btWiFiSensorConferma" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Conferma</a>
-			</div>
-		</div>	
+<!-- 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b"> -->
+<!-- 			<div class="ui-btn-left"> -->
+<!-- 				<a href="#SENSORI-WIFI-PAGE" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a> -->
+<!-- 			</div> -->
+<!-- 			<h1></h1> -->
+<!-- 			<div class="ui-btn-right"> -->
+<!-- 				<a id="btWiFiSensorConferma" data-role="button" data-mini="true" data-icon="check" data-inline="true" data-theme="c">Conferma</a> -->
+<!-- 			</div> -->
+<!-- 		</div>	 -->
 	</div>
 </div> 	
 
@@ -152,7 +143,7 @@
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 			<div class="ui-btn-left">
-				<a href="#security-page" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+				<a href="#SENSORI-WIFI-PAGE" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
 			</div>
 			<h1></h1>
 			<div class="ui-btn-right">
@@ -169,12 +160,13 @@
 
 
 <div id="PAGE-AREAS" data-role="page">
-	<div data-role="header" style="overflow:hidden;" data-theme="b">
-		<a href="#home-page" class="ui-btn ui-btn-left ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+	<div data-role="header" style="overflow:hidden;">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
 		<h1>Zone</h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
 	
-	<div data-role="main" class="ui-content" style="text-align: center;" data-theme="a">
+	<div data-role="main" class="ui-content" style="text-align: center;">
 		<ul data-role="listview" data-inset="false" id="listview-areas" class="ui-nodisc-icon"></ul>	
 		<script id="template-areas" type="text/x-jquery-tmpl">
 					<li data-icon='areas' data='${target}'><a>
@@ -185,7 +177,7 @@
 		
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 			<div class="ui-btn-left">
-				<a href="#security-page" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
+				<a href="#SENSORI-WIFI-PAGE" data-role="button" data-mini="true" data-icon="arrow-l" data-inline="true" data-theme="c">Indietro</a>
 			</div>
 			<h1></h1>
 			<div class="ui-btn-right">
@@ -273,6 +265,13 @@
  	</div> 	
  		
 </div>
+	<div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
+		<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
+			<li data-icon="wifi"><a href="#SENSORI-WIFI-PAGE">Sensori Wifi</a></li>
+		    <li data-icon="node"><a href="#PAGE-AREAS">Zone</a></li>
+		    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Telecomandi</a></li>
+		</ul>
+ 	</div> 
 	
 	</body>
 
