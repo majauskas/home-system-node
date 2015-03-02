@@ -103,8 +103,8 @@ function switchOffAlarm() {
 
 
 
-// mongoose.connect('mongodb://10.221.160.78/home-system');
-mongoose.connect('mongodb://192.168.0.21/home-system');
+ mongoose.connect('mongodb://10.221.160.78/home-system');
+//mongoose.connect('mongodb://192.168.0.21/home-system');
 var Schema = mongoose.Schema;
 
 
