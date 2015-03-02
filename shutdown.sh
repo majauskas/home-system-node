@@ -2,4 +2,4 @@
 #
 
 
-kill -9 $(ps -W | grep 'node' | awk '{print $1}')
+kill -9 $(ps aux | grep 'node' | awk '{print $2}')
