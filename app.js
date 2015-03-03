@@ -13,7 +13,6 @@ var os = require('os');
 //var gpio = require("pi-gpio");
 
 
-
 //app.set('view engine', 'html');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -166,8 +165,8 @@ var WifiSensorSchema = new Schema({
 	binCode: String,	
 	name: String,
 	description: String,
-	state: String,
-	battery: String,
+	isOpen: Boolean,
+	isBatteryLow: Boolean,
 	date: Date	
 });
 mongoose.model('WifiSensor', WifiSensorSchema); 
@@ -267,6 +266,8 @@ var Event = mongoose.model('Event');
 
 //--------------------------------------------------------
 
+var STATE_OPENED = "0010";
+
 app.post('/433mhz/:binCode', function(req, res) {
 	
 	
@@ -283,26 +284,33 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		code = parseInt(binCode.substr(0,16), 2);
 		
+		 
 		
-		
-		var state, insertedBatteryState, battery; 
+		var isOpen = null, isBatteryLow = null; 
 		if(binCode.length === 40){ 
-			state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
-			insertedBatteryState = binCode.substr(28,4); 	//1010 - batt KO inserted  1011 - batt OK inserted
-			battery = binCode.substr(30,1); 	//31bit 1 - KO  0 - OK	
+			var state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
+			if(state === "0010"){
+				isOpen = true;
+			}
+			//			var insertedBatteryState = binCode.substr(28,4); 	//1010 - batt KO inserted  1011 - batt OK inserted
+			var battery = binCode.substr(30,1); 	//31bit 1 - KO  0 - OK	
+			if(battery === "1"){
+				isBatteryLow = true;
+			}
+			
 		}else if(binCode.length === 24){ 
-			state = binCode.substr(19,4);
-			console.log("state: "+state);
+//			state = binCode.substr(19,4);
+//			battery = "1";
 		}
 		
-		
+		console.log(code, isOpen, isBatteryLow, binCode);
 	
 		
 		//controlling if alarm is activated
 		AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
 		
 			      
-			if(alarmState !== null && alarmState.state !== "OFF"){
+			if(alarmState !== null && alarmState.state !== "OFF" && state === STATE_OPENED){
 				Area.findOne({name : alarmState.state}).populate('wifisensors').exec(function(err, area) {
 				console.log(err, alarmState); 
 				console.log(err, area);
@@ -326,9 +334,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 		});
 		
 		
-		
-		
-		WifiSensor.update({code : code}, {state:state, battery:battery}, function (err, data) {});
+		WifiSensor.update({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {});
 		Event.create({code:code,binCode:binCode}, function (err, data) {});
 
 	}

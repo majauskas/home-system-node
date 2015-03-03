@@ -56,14 +56,13 @@
 		<h1>Sensori Wifi</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-<!-- 	<p>${code} - ${binCode}</p> -->
+<!-- 	<p>{{if (isOpen == false)}}<font style='color:green;'>Chiuso</font>{{/if}}{{if (isOpen == true)}}<font style='color:red; font-weight: bold;'>Aperto</font>{{/if}}</p> -->
 	<div data-role="main" class="ui-content" style="text-align: center;">
 		<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
 		<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
 					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
-						<h2><font style='white-space:normal;'>${name} - ${description}</font></h2>						
-						<p>{{if (state == "1000")}}<font style='color:green;'>Chiuso</font>{{else}}<font style='color:red; font-weight: bold;'>Aperto</font>{{/if}}</p>
-						{{if (battery == 0)}}<p class='ui-li-aside'><img  src='images/Battery-Low-24-FF0000.png'></p>{{/if}}
+						<h2><font style='white-space:normal;'>${name} - ${description}</font></h2>												
+						<p class='ui-li-aside' style='text-align: center;'>{{if (isOpen == false)}}<font style='color:green;'>Chiuso</font></br>{{/if}}{{if (isOpen == true)}}<font style='color:red; font-weight: bold;'>Aperto</font></br>{{/if}}{{if (isBatteryLow == true)}}<img  src='images/Battery-Low-24-FF0000.png'>{{/if}}</p>
 					</a></li>
 		</script>
 	</div>
