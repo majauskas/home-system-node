@@ -273,18 +273,27 @@ app.post('/433mhz/:binCode', function(req, res) {
 	
 	var binCode = req.params.binCode;
 	var code;
+	var state;
 	if(binCode.length === 24 || binCode.length === 40 ){
 		
 //		if(binCode.length === 24){ code = binCode.substr(0,16);	}
-//		if(binCode.length === 40){ code = binCode.substr(0,24);	}
+		
 //		code = parseInt(code, 2);
 
-		
 				
 		
 		code = parseInt(binCode.substr(0,16), 2);
 		
 		Event.create({code:code,binCode:binCode}, function (err, data) {});	
+		
+		
+		if(binCode.length === 40){ 
+			state = binCode.substr(24,1);	// 1 - close  0 - open		
+
+			WifiSensor.update({code : code}, {state:state}, function (err, data) {});
+			
+			
+		}
 		
 		//controlling if alarm is activated
 		AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {

@@ -365,6 +365,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			$("#HOME-PAGE").trigger("create");
 			
 			
+			
 			$.ajax({
 				type : 'GET',
 				url : "/AlarmState",
@@ -372,6 +373,10 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 					if(!response){response = {state :"OFF"};}
 		        	$( "#controlgroup-alarm input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
 		        	$( "#controlgroup-alarm input[value='"+response.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
+		        	
+		        	
+//		        	$("#SENSORI-WIFI-PAGE").trigger("create");
+		        	$("#SENSORI-WIFI-PAGE").page();	
 		        }
 			});				
         }
@@ -379,26 +384,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 	
 	
 	
-	$.ajax({
-		type : 'GET',
-		url : "/WifiSensor",
-		success: function(response) {
-			
-			$("#listview-wifi-sensors").empty();
-			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );		
-//			$("#listview-wifi-sensors").listview("refresh");
-			
-			APPLICATION.wifisensors = response;
-        }
-	});		
 	
-
-	
-});	
-//
-//$(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
-//
 //	$.ajax({
 //		type : 'GET',
 //		url : "/WifiSensor",
@@ -407,12 +393,32 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 //			$("#listview-wifi-sensors").empty();
 //			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
 //			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );		
-//			$("#listview-wifi-sensors").listview("refresh");
+////			$("#listview-wifi-sensors").listview("refresh");
 //			
 //			APPLICATION.wifisensors = response;
 //        }
 //	});		
-//});	
+	
+
+	
+});	
+
+$(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
+
+	$.ajax({
+		type : 'GET',
+		url : "/WifiSensor",
+		success: function(response) {
+			
+			$("#listview-wifi-sensors").empty();
+			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );		
+			$("#listview-wifi-sensors").listview("refresh");
+			
+			APPLICATION.wifisensors = response;
+        }
+	});		
+});	
 
 
 $(document).on("pagecreate","#AREAS-PAGE", function(){
