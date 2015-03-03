@@ -9,6 +9,7 @@ var request = require("request");
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var config = require('./config.json');
+var os = require('os');
 //var gpio = require("pi-gpio");
 
 
@@ -103,8 +104,13 @@ function switchOffAlarm() {
 
 
 
- mongoose.connect('mongodb://10.221.160.78/home-system');
-//mongoose.connect('mongodb://192.168.0.21/home-system');
+ 
+if(os.type().toLowerCase().indexOf("windows") === -1){
+	mongoose.connect('mongodb://192.168.0.21/home-system');
+}else{
+	mongoose.connect('mongodb://10.221.160.78/home-system');
+} 
+ 
 var Schema = mongoose.Schema;
 
 
