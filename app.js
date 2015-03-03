@@ -273,7 +273,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 	
 	var binCode = req.params.binCode;
 	var code;
-	var state;
+	
 	if(binCode.length === 24 || binCode.length === 40 ){
 		
 //		if(binCode.length === 24){ code = binCode.substr(0,16);	}
@@ -288,9 +288,12 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		
 		if(binCode.length === 40){ 
-			state = binCode.substr(24,1);	// 1 - close  0 - open		
+			var state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
+			var insertedBatteryState = binCode.substr(28,4); 	//1010 - batt KO inserted  1011 - batt OK inserted
+			var battery = binCode.substr(30,1); 	//31bit 1 - KO  0 - OK	
+			
 
-			WifiSensor.update({code : code}, {state:state}, function (err, data) {});
+			WifiSensor.update({code : code}, {state:state, battery:battery}, function (err, data) {});
 			
 			
 		}
