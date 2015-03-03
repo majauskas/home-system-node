@@ -255,13 +255,19 @@ var EventSchema = new Schema({
 	code : {type : Number},
 	binCode : {type : String},
 	description : String,
-	date: {type : Date, 'default': Date.now()}	
+	date: {type : Date, 'default': Date.now()}
+//	date: Date	
 	
 });
 mongoose.model('Event', EventSchema); 
 var Event = mongoose.model('Event');
 
-
+app.get('/Event', function(req, res) {
+	Event.find({}).sort('-date').exec(function(err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send(data); }
+	});		
+});
 
 
 //--------------------------------------------------------
@@ -272,7 +278,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 	
 	
 	var binCode = req.params.binCode;
-	var code;
+	var code=null;
 	
 	if(binCode.length === 24 || binCode.length === 40 ){
 		
@@ -335,8 +341,8 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		
 		WifiSensor.update({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {});
+//		Event.create({code:code,binCode:binCode, date:Date.now()}, function (err, data) {});
 		Event.create({code:code,binCode:binCode}, function (err, data) {});
-
 	}
 
 //	AlarmState.findOne({}).sort('-date').populate("Area").exec(function(err, data) {

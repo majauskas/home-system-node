@@ -214,11 +214,37 @@
  		
 </div>
 
+
+<div id="EVENTS-PAGE" data-role="page">
+	<div data-role="header" style="overflow:hidden;">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Eventi</h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	
+	<div data-role="main" class="ui-content" style="text-align: center;">
+		<ul data-role="listview" data-inset="false" id="listview-events" class="ui-nodisc-icon"></ul>	
+		<script id="template-events" type="text/x-jquery-tmpl">
+					<li data-icon='none'><a>
+						<p>${code} - ${binCode}</p>
+						<p>${date}</p>												
+					</a></li>
+		</script>
+
+<!-- 		<div data-role="main" class="ui-content" style="text-align: center;"> -->
+<!-- 			<a id="btAddNewArea" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Nuova Zona</a> -->
+<!-- 		</div> -->
+	</div>
+</div>
+
+
 	<div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
 		<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
 			<li data-icon="wifi"><a href="#SENSORI-WIFI-PAGE">Sensori Wifi</a></li>
 		    <li data-icon="node"><a href="#AREAS-PAGE">Zone</a></li>
 		    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Telecomandi</a></li>
+		    <li data-icon="grid"><a href="#EVENTS-PAGE">Eventi</a></li>
+		    
 		</ul>
  	</div> 
 	

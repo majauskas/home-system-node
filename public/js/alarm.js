@@ -422,7 +422,6 @@ $(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
 
 
 $(document).on("pagecreate","#AREAS-PAGE", function(){
-
 	$.ajax({
 		type : 'GET',
 		url : "/Area",
@@ -434,3 +433,20 @@ $(document).on("pagecreate","#AREAS-PAGE", function(){
         }
 	});		
 });	
+
+$(document).on("pagecreate","#EVENTS-PAGE", function(){
+
+	$.ajax({
+		type : 'GET',
+		url : "/Event",
+		success: function(response) {
+			$("#listview-events").empty();
+//			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+			$("#template-events").tmpl( response ).appendTo( "#listview-events" );		
+			$("#listview-events").listview("refresh");
+        }
+	});		
+});
+
+
+
