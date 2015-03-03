@@ -222,48 +222,26 @@ app.post('/Area', function(req, res) {
 	
 });
 app.put('/Area/:id', function(req, res) {
-	
-//	Area.update({_id : req.params.id}, req.body, function (err, data) {
-//		if(err){console.log(err); res.status(500).send(err); }
-//		else { res.send({}); }
-//	});	
-	
-	
-	Area.findById(req.params.id, function (err, data) {
+	Area.update({_id : req.params.id}, req.body, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
-		else { 
-			data.wifisensors = req.body.wifisensors;
-			data.save(function(err, data) {
-				console.log(err, data);
-				res.send({});
-			});
-			
-		}
-		
+		else { res.send({}); }
 	});	
-	
-//	A.findByIdAndUpdate(id, update, options, callback) // executes
-//	A.findByIdAndUpdate(id, update, options)  // returns Query
-//	A.findByIdAndUpdate(id, update, callback) // executes
-//	A.findByIdAndUpdate(id, update)           // returns Query
-//	A.findByIdAndUpdate()                     // returns Query	
-	
 });
 
+
+app.put('/Area/wifisensors/:id', function(req, res) {
+	Area.findByIdAndUpdate(req.params.id, {'$set':  {'wifisensors': new Area(req.body).wifisensors}}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
+
+
 app.get('/Area', function(req, res) {
-//	Area.find({}).sort('date').exec(function(err, data) {
-//		if(err){console.log(err); res.status(500).send(err); }
-//		else { res.send(data); }
-//	});
-	
-	
 	Area.find({}).sort('date').populate('wifisensors').exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
 	});		
-	
-	
-	
 });
 
 app.del('/Area/:id', function(req, res) {
