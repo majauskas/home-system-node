@@ -104,8 +104,7 @@ function switchOffAlarm() {
 
 
 
- 
-if(os.type().toLowerCase().indexOf("windows") === -1){
+if(os.hostname().toLowerCase() === "minde-pc" || os.hostname().toLowerCase() === "raspberrypi"){
 	mongoose.connect('mongodb://192.168.0.21/home-system');
 }else{
 	mongoose.connect('mongodb://10.221.160.78/home-system');
@@ -284,19 +283,20 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		code = parseInt(binCode.substr(0,16), 2);
 		
-		Event.create({code:code,binCode:binCode}, function (err, data) {});	
 		
 		
+		var state, insertedBatteryState, battery; 
 		if(binCode.length === 40){ 
-			var state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
-			var insertedBatteryState = binCode.substr(28,4); 	//1010 - batt KO inserted  1011 - batt OK inserted
-			var battery = binCode.substr(30,1); 	//31bit 1 - KO  0 - OK	
-			
-
-			WifiSensor.update({code : code}, {state:state, battery:battery}, function (err, data) {});
-			
-			
+			state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
+			insertedBatteryState = binCode.substr(28,4); 	//1010 - batt KO inserted  1011 - batt OK inserted
+			battery = binCode.substr(30,1); 	//31bit 1 - KO  0 - OK	
+		}else if(binCode.length === 24){ 
+			state = binCode.substr(19,4);
+			console.log("state: "+state);
 		}
+		
+		
+	
 		
 		//controlling if alarm is activated
 		AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
@@ -324,6 +324,12 @@ app.post('/433mhz/:binCode', function(req, res) {
 			}
 			
 		});
+		
+		
+		
+		
+		WifiSensor.update({code : code}, {state:state, battery:battery}, function (err, data) {});
+		Event.create({code:code,binCode:binCode}, function (err, data) {});
 
 	}
 
