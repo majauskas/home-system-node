@@ -78,6 +78,7 @@ io.sockets.on('connection', function (socket) {
 function switchOnAlarm(sensor) {
 	//sending to client the notification
 	io.sockets.emit("ALARM_DETECTION", sensor);
+	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"web-app", name:"Mobile", description:"Allarme Attivato"}}, function (err, data) {});
 	
 	//TODO: activate the siren and email/sms notifications
 //	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
@@ -90,6 +91,12 @@ function switchOnAlarm(sensor) {
 
 
 function switchOffAlarm() {
+	
+	AlarmState.create({state: "OFF", provider:"web-app", date: new Date()}, function (err, data) {});
+	io.sockets.emit("change-alarm-state", {state:"OFF"});	
+	
+	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"web-app", name:"Mobile", description:"Allarme Disattivato"}}, function (err, data) {});
+	
 //	gpio.open(16, "output", function(err) { // Open pin 16 for output
 //		gpio.write(16, 0, function() { // Set pin 16 high (1)
 //			gpio.close(16); // Close pin 16
@@ -152,6 +159,9 @@ app.post('/AlarmState', function(req, res) {
 	AlarmState.create(req.body, function (err, data) {
 		io.sockets.emit("change-alarm-state", data);
 	    res.send(data);
+	    
+	    Event.create({code:"",binCode:"", date: new Date(), device:{provider:"web-app", name:"Mobile", description:"cambio stato allarme: "+data.state}}, function (err, data) {});
+	    
 	 });
 });
 

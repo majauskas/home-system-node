@@ -504,7 +504,7 @@ socket.on('433mhz', function (device) {
 
 socket.on('ALARM_DETECTION', function (device) {
 
-	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
+	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+" - "+device.description+"<br>Disattiva allarme?", function() {
 		socket.emit('switchOffAlarm', {});
 	}, null,"Atenzione");
 	
@@ -581,7 +581,7 @@ $(document).on("pagecreate","#AREAS-PAGE", function(){
 	});		
 });	
 
-$(document).on("pagecreate","#EVENTS-PAGE", function(){
+$(document).on("pageshow","#EVENTS-PAGE", function(){
 
 	$.ajax({
 		type : 'GET',
