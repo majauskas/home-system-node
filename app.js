@@ -165,8 +165,8 @@ var WifiSensorSchema = new Schema({
 	binCode: String,	
 	name: String,
 	description: String,
-	isOpen: Boolean,
-	isBatteryLow: Boolean,
+	isOpen: {type : Boolean, 'default': null},
+	isBatteryLow: {type : Boolean, 'default': null},
 	date: Date	
 });
 mongoose.model('WifiSensor', WifiSensorSchema); 
@@ -255,7 +255,18 @@ var EventSchema = new Schema({
 	code : {type : Number},
 	binCode : {type : String},
 	description : String,
-	date: {type : Date, 'default': Date.now()}
+	date: {type : Date},
+	device : { 
+		provider : String,
+		name : String,
+		description : String,
+		isLock : Boolean,
+		isOpen : Boolean,
+		isBatteryLow : Boolean
+//		isOpen: {type : Boolean, 'default': null},
+//		isBatteryLow: {type : Boolean, 'default': null}		
+	}
+//	wifisensor : { type: Schema.Types.ObjectId, 'default': null, ref: 'WifiSensor', index: true }
 //	date: Date	
 	
 });
@@ -263,11 +274,86 @@ mongoose.model('Event', EventSchema);
 var Event = mongoose.model('Event');
 
 app.get('/Event', function(req, res) {
-	Event.find({}).sort('-date').exec(function(err, data) {
+	Event.find({}).sort('-date').populate('wifisensor','name -_id description isOpen isBatteryLow').limit(30).exec(function(err, data) {
+		console.log(err, data);
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
-	});		
+	});	
 });
+
+
+
+
+
+
+
+
+
+
+//-----------WifiSensor---------------------------------------------
+var RemoteControlSchema = new Schema({
+	code: Number,
+	binCode: String,	
+	name: String,
+	description: String,
+	isLock: {type : Boolean, 'default': null},
+	isBatteryLow: {type : Boolean, 'default': null},
+	date: Date,
+	area : {
+		_id: Schema.Types.ObjectId,
+		name: String
+	}
+});
+mongoose.model('RemoteControl', RemoteControlSchema); 
+var RemoteControl = mongoose.model('RemoteControl');
+
+
+
+app.get('/RemoteControl', function(req, res) { RemoteControl.find({}).sort('-date').exec(function(err, data) { res.send(data); }); });
+
+app.get('/RemoteControl/:code', function(req, res) {
+	RemoteControl.find(req.params).sort('-date').exec(function(err, data) {
+		res.send(data);
+	});
+});
+//app.put('/RemoteControl', function(req, res) {
+//	RemoteControl.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
+//        res.send({});
+//	});	
+//});
+
+app.put('/RemoteControl/:id', function(req, res) {
+	console.log(req.body);
+	RemoteControl.update({_id : req.params.id}, req.body, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+	
+	
+//	console.log(new Area(req.body.area));
+	
+//	RemoteControl.findByIdAndUpdate(req.params.id, {'$set':  {'area': new Area(req.body.area)}}, function (err, data) {
+//		if(err){console.log(err); res.status(500).send(err); }
+//		else { res.send({}); }
+//	});	
+	
+	
+});
+
+app.del('/RemoteControl', function(req, res) {
+	RemoteControl.remove(req.body, function (err, data) {
+		 res.send({});
+	 });
+});
+
+
+
+
+
+
+
+
+
 
 
 //--------------------------------------------------------
@@ -290,36 +376,41 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		code = parseInt(binCode.substr(0,16), 2);
 		
-		 
+		console.log("433mhx: ",code, binCode); 
 		
 		var isOpen = null, isBatteryLow = null; 
 		if(binCode.length === 40){ 
 			var state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
+			console.log(state);
 			if(state === "0010"){
 				isOpen = true;
+			}else if(state === "1000"){
+				isOpen = false;
 			}
 			//			var insertedBatteryState = binCode.substr(28,4); 	//1010 - batt KO inserted  1011 - batt OK inserted
 			var battery = binCode.substr(30,1); 	//31bit 1 - KO  0 - OK	
 			if(battery === "1"){
 				isBatteryLow = true;
+			}else if(battery === "0"){
+				isBatteryLow = false;
 			}
 			
-		}else if(binCode.length === 24){ 
-//			state = binCode.substr(19,4);
-//			battery = "1";
 		}
+//		else if(binCode.length === 24){ 
+////			state = binCode.substr(19,4);
+////			battery = "1";
+//		}
 		
 		console.log(code, isOpen, isBatteryLow, binCode);
 	
 		
 		//controlling if alarm is activated
 		AlarmState.findOne({}).sort('-date').exec(function(err, alarmState) {
-		
-			      
-			if(alarmState !== null && alarmState.state !== "OFF" && state === STATE_OPENED){
+					      
+			if(alarmState !== null && alarmState.state !== "OFF" && isOpen === true){
 				Area.findOne({name : alarmState.state}).populate('wifisensors').exec(function(err, area) {
-				console.log(err, alarmState); 
-				console.log(err, area);
+					console.log(err, alarmState); 
+					console.log(err, area);
         	 
 					if(area && area.wifisensors !== undefined){
 						for ( var i = 0; i < area.wifisensors.length; i++) {
@@ -339,35 +430,51 @@ app.post('/433mhz/:binCode', function(req, res) {
 			
 		});
 		
+
 		
-		WifiSensor.update({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {});
-//		Event.create({code:code,binCode:binCode, date:Date.now()}, function (err, data) {});
-		Event.create({code:code,binCode:binCode}, function (err, data) {});
+		
+		WifiSensor.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {
+			console.log(err, data);
+			if(data !== null){
+				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, description:data.description, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
+			}
+		});		
+		
+//		.populate('wifisensor','name -_id description isOpen isBatteryLow')
+		RemoteControl.findOne({code : code}).exec(function(err, data) {
+//		RemoteControl.findOne({code : code}, function (err, data) {
+			if(data !== null){
+				
+				var isLock = null;
+				if(binCode.length === 24){ 
+					var state = binCode.substr(16,8);
+					console.log(state);
+					if(state === "00000011"){ //OFF
+						isLock = false;
+					}else if(state === "11000000"){ //ON
+						isLock = true;
+					}
+				}
+				console.log("------\n",data);
+				if(data.area !== null){
+					var alarmState = null;
+					if(isLock === false){
+						alarmState = "OFF";
+					}else if(isLock === true){
+						alarmState = data.area.name;
+					}
+					if(alarmState !== null){
+						AlarmState.create({state: alarmState, provider:"remote-control", date: new Date()}, function (err, data) {console.log("------\n",data);});
+						io.sockets.emit("change-alarm-state", {state:alarmState});						
+					}
+
+				}
+				
+				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"remote-control", name:data.name, description:data.description, isLock:isLock}}, function (err, data) {});
+			}
+		});	
+		
 	}
-
-//	AlarmState.findOne({}).sort('-date').populate("Area").exec(function(err, data) {
-//		console.log(err, data);
-//		if(data.state !== "OFF"){
-//			io.sockets.emit("ALARM_DETECTION", {name:"camera 1"});
-//		}
-//		
-//	});	
-	
-		
-		
-
-//	WifiSensor.find({}).sort('-date').exec(function(err, data) {
-//	
-//		
-//		Area.update({code:1}, {code:1,name:"HOME", sensors: data, date: Date.now()}, {upsert : true}, function (err, data) {
-//		});		
-//	
-//	});
-	
-//	Area.findOne({}).populate('sensors').exec(function(err, data) {
-//		console.log(err, data);
-//	});	
-	
 
 	res.send();
 	
@@ -375,113 +482,6 @@ app.post('/433mhz/:binCode', function(req, res) {
 
 
 
-
-
-
-
-
-
-
-app.post('/message', function(req, res) {
-
-     Message.create(req.body, function (err, data) {
-		console.log(data); 
-	    res.send(req.body);
-	 });
-
-});
-app.get('/message', function(req, res) {
-	
-//	Message.find({}).sort('-date').exec(function(err, data) {
-//		console.log(data); 
-//		res.send(data);
-//	});
-	
-//	Message.find({'_id': '54eb0a6efdaf05040bc5ce15'}).exec(function(err, data) {
-//		console.log(data); 
-//		res.send(data);
-//	});
-
-//	Message.findOne({}).sort('-date').exec(function(err, data) {
-//		console.log(data); 
-//		res.send(data);
-//	});
-	
-//	Message.update({message:"name2"}, 
-//		    {$set : {date: Date.now()}}, 
-//		    {upsert : true, multi:true}, function (err, data) {
-//		    	console.log(err, data); 
-//		        res.send(data);
-//	});	
-
-	request({
-		  uri: "http://10.221.6.69:8080/WifiSensor",
-		  method: "GET",
-		}, function(error, response, body) {
-		  console.log(body);
-		});
-	
-//	  request({
-//		  url: '/WifiSensor'
-//		}, function (err, res, data) {
-//		  console.log(data);
-//		});	
-	 
-});
-
-app.get('/message/:id', function (req, res, next) {
-	Message.findById(req.params.id).exec(function(err, data) {
-		console.log(data); 
-		res.send(data);
-	});	  
-});
-
-
-
-app.del('/message', function(req, res) {
-	 console.log(req.body);
-	 Message.remove({_id:'54eb0a6efdaf05040bc5ce15'}, function (err, data) {
-		 console.log(data); 
-		 res.send(data);
-	 });
-	 
-});
-
-app.put('/message', function(req, res) {
-	 console.log(req.body);
-
-	 Message.update({_id:'54eb0a6efdaf05040bc5ce15'}, req.body, function (err, data) {
-		 console.log(data); 
-		 res.send(data);
-	 });
-
-//	 Message.update({message : "123123sldfjdsdl hlfdss"}, req.body, {multi:true}, function (err, data) {
-//		 console.log(data); 
-//		 res.send(data);
-//	 });
-	 
-//		WifiSensor.update({code:req.body.code}, req.body {$set : {date: Date.now()}}, {upsert : true, multi:true}, function (err, data) {
-// 	console.log(err, data); 
-//     res.send(data);
-//	});		 
-	 
-});
-app.put('/message/:id', function (req, res, next) {
-	
-	 Message.findByIdAndUpdate(req.params.id, req.body, function (err, data) {
-		 console.log(data); 
-		 res.send(data);
-	 });	
-	
-});
-
-
-
-//app.route('/message')
-//.all(function(req, res, next) {next();})
-//.delete(function(req, res, next) {})
-//.get(function(req, res, next) {})
-//.post(function(req, res, next) {});
 
 
 

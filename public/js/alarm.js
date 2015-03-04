@@ -1,5 +1,6 @@
 var APPLICATION = {};
 var isActiveSearchWifiSensors = false;
+var isActiveSearchRemoteControls = false;
 
 $(function() {
 	
@@ -51,8 +52,6 @@ $(function() {
 				code :  data.code,
 				name :  $.mobile.activePage.find('#name').val(),
 				description :  $.mobile.activePage.find('#description').val(),
-				state : "1",
-				battery : "1",
 				date : new Date()
 			},			
 			success: function(response) {
@@ -297,7 +296,151 @@ $(function() {
 	});	
 	
 	
+
 	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	$("#REMOTE-CONTROL-PAGE").on("click", "#btSearchRemoteControls", function (event) {
+		UTILITY.alertPopup(null, "Ricerca Telecomandi attivata.<br>Premi un tasto qualsiasi", function (event) {
+			UTILITY.hideAlertPopup();
+			isActiveSearchRemoteControls = false;
+		});
+		isActiveSearchRemoteControls = true;
+	});	
+	
+	$("#NEW-REMOTE-CONTROL-PAGE").on("click", "#btConferma", function (event) {
+
+		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+		
+		
+		$.ajax({
+			type:'PUT', url:"/RemoteControl",
+			dataType : "json",
+			data : {
+				binCode :  data.binCode,
+				code :  data.code,
+				name :  $.mobile.activePage.find('#name').val(),
+				description :  $.mobile.activePage.find('#description').val(),
+				date : new Date()
+			},			
+			success: function(response) {
+				$("#REMOTE-CONTROL-PAGE").page('destroy').page();	
+				$.mobile.changePage("#REMOTE-CONTROL-PAGE");
+	        },
+	        error: UTILITY.httpError
+		});		
+
+	});	
+	
+	
+	
+	
+	
+	$("#listview-remote-controls").on("click", "li", function (event) {
+		
+		var data = jQuery.parseJSON($(this).attr("data"));
+		$('#EDIT-REMOTE-CONTROL-PAGE #binCode').val(data.binCode);
+		$('#EDIT-REMOTE-CONTROL-PAGE #code').val(data.code);	
+		$('#EDIT-REMOTE-CONTROL-PAGE #name').val(data.name);
+		$('#EDIT-REMOTE-CONTROL-PAGE #description').val(data.description);
+		
+		if(data.area){
+			$('#EDIT-REMOTE-CONTROL-PAGE #area').val(data.area.name);
+		}
+		
+		
+		$("#EDIT-REMOTE-CONTROL-PAGE").attr("data", $(this).attr("data"));
+		$.mobile.changePage("#EDIT-REMOTE-CONTROL-PAGE");
+	});	
+	
+
+	
+	
+	$("#EDIT-REMOTE-CONTROL-PAGE").on("click", "#btAddZoneToRemoteControl", function (event) {
+		var remotecontrol = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
+
+		console.log($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
+		console.log(JSON.stringify(APPLICATION.areas));
+		
+		var areas = $.grep(APPLICATION.areas, function(target, i) {	
+			return (remotecontrol.area === null || target._id !== remotecontrol.area._id);
+		});
+		
+		$("#add-remove-areas-panel").panel("open");
+		$("#listview-areas-for-remote-control").empty();
+		$.each(areas, function (i, obj) { obj.target = JSON.stringify(obj); });
+		$("#template-areas-for-remote-control").tmpl( areas  ).appendTo( "#listview-areas-for-remote-control" );		
+		$("#listview-areas-for-remote-control").listview("refresh");		
+		
+	});
+	
+	$("#listview-areas-for-remote-control").on("click", "li", function (event) {
+		
+		var remotecontrol = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
+		var area = jQuery.parseJSON($(this).attr("data"));		
+		
+		remotecontrol.area = area;
+		
+		$('#EDIT-REMOTE-CONTROL-PAGE #area').val(area.name);	
+		
+		$("#EDIT-REMOTE-CONTROL-PAGE").attr("data",JSON.stringify( remotecontrol ));
+		
+		$("#add-remove-areas-panel").panel("close");
+	});
+	
+	
+	
+	
+	
+	$("#EDIT-REMOTE-CONTROL-PAGE").on("click", "#btConfirm", function (event) {
+
+		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+		console.log($.mobile.activePage.attr("data"));
+		$.ajax({
+			type: "PUT", 
+			url: "/RemoteControl/"+data._id,
+			dataType : "json",
+			data : {
+				name :  $.mobile.activePage.find('#name').val(),
+				description :  $.mobile.activePage.find('#description').val(),
+				area : {_id:data.area._id, name:data.area.name}
+			},
+			error: UTILITY.httpError,
+			success: function(response) {
+				$("#REMOTE-CONTROL-PAGE").page('destroy').page();
+				$.mobile.changePage("#REMOTE-CONTROL-PAGE");
+	        }
+		});				
+	});	
+
+	$("#EDIT-REMOTE-CONTROL-PAGE").on("click", "#btDelete", function (event) {
+
+		UTILITY.areYouSure("Elimina il telecomando?", function() {
+			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+			
+			$.ajax({
+				type: "DELETE", 
+				url: "/RemoteControl/"+data._id,
+				error: UTILITY.httpError,
+				success: function(response) {
+					$("#REMOTE-CONTROL-PAGE").page('destroy').page();
+					$.mobile.changePage("#REMOTE-CONTROL-PAGE");
+		        }
+			});	
+		});
+	});	
+	
+	
+//	minde
 //-------------------------------------------------------------------------	
 	
 });
@@ -332,9 +475,29 @@ socket.on('433mhz', function (device) {
 				}else{
 					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") Ã¨ gia registrato..");	
 				}
-				 
-	        }
+	        },
+	        error: UTILITY.httpError
 		});			
+	} else if(isActiveSearchRemoteControls){
+		isActiveSearchRemoteControls = false;
+		
+		$.ajax({
+			type:'GET', url:"/RemoteControl/"+device.code,		
+			success: function(response) {
+				if(response.length === 0){
+					$('#NEW-REMOTE-CONTROL-PAGE #binCode').val(device.binCode);
+					$('#NEW-REMOTE-CONTROL-PAGE #code').val(device.code);
+					$('#NEW-REMOTE-CONTROL-PAGE #name').val("");
+					$('#NEW-REMOTE-CONTROL-PAGE #description').val("");
+					$("#NEW-REMOTE-CONTROL-PAGE").attr("data",JSON.stringify(device));
+					$.mobile.changePage("#NEW-REMOTE-CONTROL-PAGE");
+				}else{
+					UTILITY.alertPopup("", "Telecomando: "+device.name+" ("+device.code+") è gia registrato..");	
+				}
+	        },
+	        error: UTILITY.httpError
+		});	
+//		minde
 	}
 	
 });
@@ -375,31 +538,13 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 		        	$( "#controlgroup-alarm input[value='"+response.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
 		        	
 		        	
-//		        	$("#SENSORI-WIFI-PAGE").trigger("create");
 		        	$("#SENSORI-WIFI-PAGE").page();	
+		        	$("#AREAS-PAGE").page();	
+		        	
 		        }
 			});				
         }
 	});	
-	
-	
-	
-	
-//	$.ajax({
-//		type : 'GET',
-//		url : "/WifiSensor",
-//		success: function(response) {
-//			
-//			$("#listview-wifi-sensors").empty();
-//			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-//			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );		
-////			$("#listview-wifi-sensors").listview("refresh");
-//			
-//			APPLICATION.wifisensors = response;
-//        }
-//	});		
-	
-
 	
 });	
 
@@ -430,6 +575,8 @@ $(document).on("pagecreate","#AREAS-PAGE", function(){
 			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
 			$("#template-areas").tmpl( response ).appendTo( "#listview-areas" );		
 			$("#listview-areas").listview("refresh");
+			
+			APPLICATION.areas = response;
         }
 	});		
 });	
@@ -444,9 +591,23 @@ $(document).on("pagecreate","#EVENTS-PAGE", function(){
 //			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
 			$("#template-events").tmpl( response ).appendTo( "#listview-events" );		
 			$("#listview-events").listview("refresh");
-        }
+        },
+        error: UTILITY.httpError
 	});		
 });
 
 
+$(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
 
+	$.ajax({
+		type : 'GET',
+		url : "/RemoteControl",
+		success: function(response) {
+			$("#listview-remote-controls").empty();
+			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+			$("#template-remote-controls").tmpl( response ).appendTo( "#listview-remote-controls" );		
+			$("#listview-remote-controls").listview("refresh");
+        },
+        error: UTILITY.httpError
+	});		
+});

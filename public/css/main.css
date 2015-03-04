@@ -113,6 +113,10 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 .ui-icon-usb:after {background-image: url("../images/USB-Plug-24-1C95FF.png"); background-size: 18px 18px;}
 .ui-icon-node:after {background-image: url("../images/Node-24-1C95FF.png"); background-size: 18px 18px;}
 .ui-icon-remote:after {background-image: url("../images/Remote-Control-24-1C95FF.png"); background-size: 24px 24px;}
+.ui-icon-listbox:after {background-image: url("../images/ListBox-24-1C95FF.png"); background-size: 18px 18px;}
+
+.ui-icon-door:after {background-image: url("../images/Door-24.png"); background-size: 18px 18px;}
+.ui-icon-window:after {background-image: url("../images/Window-24.png"); background-size: 18px 18px;}
 
 
 
