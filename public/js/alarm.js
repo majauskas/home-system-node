@@ -404,7 +404,12 @@ $(function() {
 	$("#EDIT-REMOTE-CONTROL-PAGE").on("click", "#btConfirm", function (event) {
 
 		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
-		console.log($.mobile.activePage.attr("data"));
+		
+		
+		var area = null;
+		if(data.area !== undefined){
+			area = {_id:data.area._id, name:data.area.name};
+		}
 		$.ajax({
 			type: "PUT", 
 			url: "/RemoteControl/"+data._id,
@@ -412,7 +417,7 @@ $(function() {
 			data : {
 				name :  $.mobile.activePage.find('#name').val(),
 				description :  $.mobile.activePage.find('#description').val(),
-				area : {_id:data.area._id, name:data.area.name}
+				area : area
 			},
 			error: UTILITY.httpError,
 			success: function(response) {
@@ -588,7 +593,6 @@ $(document).on("pageshow","#EVENTS-PAGE", function(){
 		url : "/Event",
 		success: function(response) {
 			$("#listview-events").empty();
-//			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
 			$("#template-events").tmpl( response ).appendTo( "#listview-events" );		
 			$("#listview-events").listview("refresh");
         },

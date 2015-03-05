@@ -1,10 +1,14 @@
-
 <!DOCTYPE html>
 
-<html>
-
+<!-- <html> -->
+<html manifest="cache.manifest" type="text/cache-manifest">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<link rel="apple-touch-icon" href="images/security.png"/>
+	<link  rel="apple-touch-startup-image" href="images/security.png"/>		
 
 <link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
 <link rel="stylesheet" href="css/main.css" />
@@ -19,6 +23,7 @@
 <script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>		
 
 <script type="text/javascript">
+		$.mobile.page.prototype.options.domCache = true;
 		$(function() {
 			$("body>[data-role='panel']").panel().trigger( "create" );
 		});
