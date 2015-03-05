@@ -4,7 +4,23 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var fs = require('fs');
-var request = require("request");
+
+
+//var waApi = require('node-wa');
+//waApi.waApi("+393473834506", "35 207006 115092 3", { displayName: 'Minde', debug: true });
+//
+//return;
+//var request = require('request');
+//request({'url':'http://www.google.com',
+//        'proxy':'http://miajausk:li8d1toy@10.211.1.100:8080'}, function (error, response, body) {
+//    if (!error && response.statusCode == 200) {
+//        console.log(body);
+//    }
+//});
+//return;
+
+//md5(strrev('35 207006 115092 3'))
+
 
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
@@ -12,14 +28,27 @@ var config = require('./config.json');
 var os = require('os');
 //var gpio = require("pi-gpio");
 
-
 //app.set('view engine', 'html');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var server = app.listen(process.env.PORT || 8081, function () {
-  var host = server.address().address;
+	var interfaces = os.networkInterfaces();
+	var host = "";
+	for (var k in interfaces) {
+		if(interfaces.hasOwnProperty(k)) {
+		    for (var k2 in interfaces[k]) {
+		    	if(interfaces[k].hasOwnProperty(k2)) {
+			        var address = interfaces[k][k2];
+			        if (address.family === 'IPv4' && !address.internal) {
+			        	host = address.address;
+			        }
+		    	}
+		    }
+		}
+	}
+
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 });
@@ -32,44 +61,28 @@ app.get('/home-system', function(req, res) {
 });
 
 
-// Web Socket Connection
 
+
+
+
+
+
+// Web Socket Connection
 var io = require('socket.io')(server);
 io.sockets.on('connection', function (socket) {
-//	socket.on('message', function (data) {console.log("message: "+ data); });
-//	socket.on('disconnect', function () {console.log("socket disconnect");  });
 	
-	socket.on('getWifiSensors', function (arg1,arg2, back) {
-
-		back();
-		
-		
-//		setTimeout(function () {}, 2000);
-		
-		
-	});	
+//	socket.on('getWifiSensors', function (arg1,arg2, back) {
+//		back();
+//	});	
 	
-
 	socket.on('switchOffAlarm', function(arg1) {
 		console.log("switchOffAlarm");
 		switchOffAlarm();
 	});	
-	
-	
-
-// socket.on('change-alarm-state', function(data) {
-//	    socket.broadcast.emit("change-alarm-state", data);
-//	});	
-//	
+		
 
 });
 
-
-//setInterval(function () {
-//	
-//	//io.sockets.emit('test', {r:"OK"});
-//
-//	}, 2000);
 
 
 
@@ -121,30 +134,12 @@ var Schema = mongoose.Schema;
 
 
 
-
-
-
-var MessageSchema = new Schema({
-	message: String,
-	date: Date	
-});
-
-
-mongoose.model('Message', MessageSchema); 
-
-
-
-var Message = mongoose.model('Message');
-
-
-
 //-----------AlarmState---------------------------------------------
 var AlarmStateSchema = new Schema({
 	state: String,
 	user: String,
 	provider: String,
 	date: Date
-//	area: {type: Schema.ObjectId, ref: 'Area' }
 });
 mongoose.model('AlarmState', AlarmStateSchema); 
 var AlarmState = mongoose.model('AlarmState');
@@ -159,9 +154,6 @@ app.post('/AlarmState', function(req, res) {
 	AlarmState.create(req.body, function (err, data) {
 		io.sockets.emit("change-alarm-state", data);
 	    res.send(data);
-	    
-	    Event.create({code:"",binCode:"", date: new Date(), device:{provider:"web-app", name:"Mobile", description:"cambio stato allarme: "+data.state}}, function (err, data) {});
-	    
 	 });
 });
 
@@ -195,7 +187,6 @@ app.get('/WifiSensor/:code', function(req, res) {
 	});
 });
 app.put('/WifiSensor', function(req, res) {
-//	console.log("put WifiSensor: ", req.body);
 	WifiSensor.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
         res.send({});
 	});	
@@ -207,14 +198,11 @@ app.del('/WifiSensor', function(req, res) {
 });
 
 
-//wire
 
 //-----------Area---------------------------------------------
 var AreaSchema = new Schema({
-//	code : {type : Number, required : true, 'default': 1},
 	name : {type : String, required : true, unique: true, trim: true},
 	description : String,
-//	wifisensors: [{type: Schema.ObjectId, ref: 'WifiSensor' }],
 	wifisensors: [WifiSensorSchema],
 	date: {type : Date, 'default': Date.now()}	
 	
@@ -273,13 +261,9 @@ var EventSchema = new Schema({
 		isLock : Boolean,
 		isOpen : Boolean,
 		isBatteryLow : Boolean
-//		isOpen: {type : Boolean, 'default': null},
-//		isBatteryLow: {type : Boolean, 'default': null}		
 	}
-//	wifisensor : { type: Schema.Types.ObjectId, 'default': null, ref: 'WifiSensor', index: true }
-//	date: Date	
-	
 });
+
 mongoose.model('Event', EventSchema); 
 var Event = mongoose.model('Event');
 
@@ -339,16 +323,6 @@ app.put('/RemoteControl/:id', function(req, res) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
-	
-	
-//	console.log(new Area(req.body.area));
-	
-//	RemoteControl.findByIdAndUpdate(req.params.id, {'$set':  {'area': new Area(req.body.area)}}, function (err, data) {
-//		if(err){console.log(err); res.status(500).send(err); }
-//		else { res.send({}); }
-//	});	
-	
-	
 });
 
 app.del('/RemoteControl', function(req, res) {
@@ -369,21 +343,22 @@ app.del('/RemoteControl', function(req, res) {
 
 //--------------------------------------------------------
 
-var STATE_OPENED = "0010";
 
+var lastTime = new Date();
 app.post('/433mhz/:binCode', function(req, res) {
+	
+	var duration = Number(new Date() - lastTime);
+	if(duration < 1000){
+		res.send();
+		return;		
+	}
+	lastTime = new Date();
+
 	
 	
 	var binCode = req.params.binCode;
 	var code=null;
-	
 	if(binCode.length === 24 || binCode.length === 40 ){
-		
-//		if(binCode.length === 24){ code = binCode.substr(0,16);	}
-		
-//		code = parseInt(code, 2);
-
-				
 		
 		code = parseInt(binCode.substr(0,16), 2);
 		
@@ -398,7 +373,6 @@ app.post('/433mhz/:binCode', function(req, res) {
 			}else if(state === "1000"){
 				isOpen = false;
 			}
-			//			var insertedBatteryState = binCode.substr(28,4); 	//1010 - batt KO inserted  1011 - batt OK inserted
 			var battery = binCode.substr(30,1); 	//31bit 1 - KO  0 - OK	
 			if(battery === "1"){
 				isBatteryLow = true;
@@ -451,9 +425,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 			}
 		});		
 		
-//		.populate('wifisensor','name -_id description isOpen isBatteryLow')
 		RemoteControl.findOne({code : code}).exec(function(err, data) {
-//		RemoteControl.findOne({code : code}, function (err, data) {
 			if(data !== null){
 				
 				var isLock = null;
