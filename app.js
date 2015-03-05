@@ -8,9 +8,16 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./email.js');
-
-
 //var gpio = require("pi-gpio");
+
+
+//var play = require('play').Play();
+//play.sound('mail666.wav');
+//
+////var player = require('play-sound')(opts = {})
+////player.play('e://the-man-aloe-blacc.mp3') // $ mplayer foo.mp3  
+//
+//return;
 
 
 //var request = require('request');
@@ -350,7 +357,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 	
 	var duration = Number(new Date() - lastTime);
 	
-	if(duration < 1500){
+	if(duration < 2000){
 		res.send();
 		return;		
 	}
