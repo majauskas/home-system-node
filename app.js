@@ -400,8 +400,6 @@ app.post('/433mhz/:binCode', function(req, res) {
 					      
 			if(alarmState !== null && alarmState.state !== "OFF" && isOpen === true){
 				Area.findOne({name : alarmState.state}).populate('wifisensors').exec(function(err, area) {
-					console.log(err, alarmState); 
-					console.log(err, area);
         	 
 					if(area && area.wifisensors !== undefined){
 						for ( var i = 0; i < area.wifisensors.length; i++) {
@@ -425,7 +423,6 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		
 		WifiSensor.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {
-			console.log(err, data);
 			if(data !== null){
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, description:data.description, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
 				email("WifiSensor Attivato", data.name + " " + data.description);
@@ -438,14 +435,12 @@ app.post('/433mhz/:binCode', function(req, res) {
 				var isLock = null;
 				if(binCode.length === 24){ 
 					var state = binCode.substr(16,8);
-					console.log(state);
 					if(state === "00000011"){ //OFF
 						isLock = false;
 					}else if(state === "11000000"){ //ON
 						isLock = true;
 					}
 				}
-				console.log("------\n",data);
 				if(data.area !== null){
 					var alarmState = null;
 					if(isLock === false){
@@ -454,7 +449,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 						alarmState = data.area.name;
 					}
 					if(alarmState !== null){
-						AlarmState.create({state: alarmState, provider:"remote-control", date: new Date()}, function (err, data) {console.log("------\n",data);});
+						AlarmState.create({state: alarmState, provider:"remote-control", date: new Date()}, function (err, data) {});
 						io.sockets.emit("change-alarm-state", {state:alarmState});						
 					}
 
