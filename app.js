@@ -4,12 +4,13 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var fs = require('fs');
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
+var os = require('os');
+var email = require('./email.js');
 
 
-//var waApi = require('node-wa');
-//waApi.waApi("+393473834506", "35 207006 115092 3", { displayName: 'Minde', debug: true });
-//
-//return;
+//var gpio = require("pi-gpio");
 
 
 //var request = require('request');
@@ -22,41 +23,11 @@ var fs = require('fs');
 //return;
 
 
-//var nodemailer = require('nodemailer');
-//
-//var transporter = nodemailer.createTransport({
-// service: 'Gmail',
-// auth: {
-//     user: 'mindaugas.ajauskas@gmail.com',
-//     pass: 'Ajauskam22_'
-// }
-//});
-//var mailOptions = {
-//    from: 'Fred Foo<foo@blurdybloop.com>', // sender address
-//    to: 'mindaugas.ajauskas@lispa.it', // list of receivers
-//    subject: 'Hello', // Subject line
-//    text: 'Hello world ', // plaintext body
-//    html: '<b>Hello world </b>' // html body
-//};
-//
-//transporter.sendMail(mailOptions, function(error, info){
-//    if(error){
-//        console.log(error);
-//    }else{
-//        console.log('Message sent: ' + info.response);
-//    }
-//});
-//console.log("END");
-//return;
 
 
 
 
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var config = require('./config.json');
-var os = require('os');
-//var gpio = require("pi-gpio");
+
 
 //app.set('view engine', 'html');
 app.use(bodyParser.json());
@@ -122,6 +93,8 @@ function switchOnAlarm(sensor) {
 	//sending to client the notification
 	io.sockets.emit("ALARM_DETECTION", sensor);
 	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"web-app", name:"Mobile", description:"Allarme Attivato"}}, function (err, data) {});
+	
+	email("Allarme Attivato", sensor.name + " " + sensor.description);
 	
 	//TODO: activate the siren and email/sms notifications
 //	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
@@ -452,6 +425,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 			console.log(err, data);
 			if(data !== null){
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, description:data.description, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
+				email("WifiSensor Attivato", data.name + " " + data.description);
 			}
 		});		
 		
