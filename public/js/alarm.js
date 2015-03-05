@@ -323,7 +323,7 @@ $(function() {
 		
 		
 		$.ajax({
-			type:'PUT', url:"/RemoteControl",
+			type:'POST', url:"/RemoteControl",
 			dataType : "json",
 			data : {
 				binCode :  data.binCode,

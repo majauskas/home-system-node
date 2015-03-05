@@ -326,11 +326,12 @@ app.get('/RemoteControl/:code', function(req, res) {
 		res.send(data);
 	});
 });
-//app.put('/RemoteControl', function(req, res) {
-//	RemoteControl.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
-//        res.send({});
-//	});	
-//});
+app.post('/RemoteControl', function(req, res) {
+	RemoteControl.create(req.body, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
 
 app.put('/RemoteControl/:id', function(req, res) {
 	console.log(req.body);
