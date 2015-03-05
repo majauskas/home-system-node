@@ -10,6 +10,8 @@ var fs = require('fs');
 //waApi.waApi("+393473834506", "35 207006 115092 3", { displayName: 'Minde', debug: true });
 //
 //return;
+
+
 //var request = require('request');
 //request({'url':'http://www.google.com',
 //        'proxy':'http://miajausk:li8d1toy@10.211.1.100:8080'}, function (error, response, body) {
@@ -19,7 +21,35 @@ var fs = require('fs');
 //});
 //return;
 
-//md5(strrev('35 207006 115092 3'))
+
+//var nodemailer = require('nodemailer');
+//
+//var transporter = nodemailer.createTransport({
+// service: 'Gmail',
+// auth: {
+//     user: 'mindaugas.ajauskas@gmail.com',
+//     pass: 'Ajauskam22_'
+// }
+//});
+//var mailOptions = {
+//    from: 'Fred Foo<foo@blurdybloop.com>', // sender address
+//    to: 'mindaugas.ajauskas@lispa.it', // list of receivers
+//    subject: 'Hello', // Subject line
+//    text: 'Hello world ', // plaintext body
+//    html: '<b>Hello world </b>' // html body
+//};
+//
+//transporter.sendMail(mailOptions, function(error, info){
+//    if(error){
+//        console.log(error);
+//    }else{
+//        console.log('Message sent: ' + info.response);
+//    }
+//});
+//console.log("END");
+//return;
+
+
 
 
 var mongoose = require('mongoose');
