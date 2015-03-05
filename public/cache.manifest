@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 0.0.0
+# Cache manifest version 0.0.2
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -44,6 +44,7 @@ images/Remote-Control-24-1C95FF.png
 images/ListBox-24-1C95FF.png
 images/Warning-Message-24-F50000.png
 images/Lock-Open-24-04C263.png
+images/Battery-Low-24-FF0000.png
  
 
 

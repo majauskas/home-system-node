@@ -272,7 +272,6 @@ var Event = mongoose.model('Event');
 
 app.get('/Event', function(req, res) {
 	Event.find({}).sort('-date').populate('wifisensor','name -_id description isOpen isBatteryLow').limit(30).exec(function(err, data) {
-		console.log(err, data);
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
 	});	
@@ -321,7 +320,6 @@ app.post('/RemoteControl', function(req, res) {
 });
 
 app.put('/RemoteControl/:id', function(req, res) {
-	console.log(req.body);
 	RemoteControl.update({_id : req.params.id}, req.body, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
@@ -351,26 +349,24 @@ var lastTime = new Date();
 app.post('/433mhz/:binCode', function(req, res) {
 	
 	var duration = Number(new Date() - lastTime);
-	if(duration < 1000){
+	
+	if(duration < 1500){
 		res.send();
 		return;		
 	}
 	lastTime = new Date();
-
-	
 	
 	var binCode = req.params.binCode;
+	console.log("duration: ",duration);
 	var code=null;
 	if(binCode.length === 24 || binCode.length === 40 ){
 		
 		code = parseInt(binCode.substr(0,16), 2);
 		
-		console.log("433mhx: ",code, binCode); 
 		
 		var isOpen = null, isBatteryLow = null; 
 		if(binCode.length === 40){ 
 			var state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
-			console.log(state);
 			if(state === "0010"){
 				isOpen = true;
 			}else if(state === "1000"){
