@@ -31,11 +31,6 @@ var email = require('./email.js');
 
 
 
-
-
-
-
-
 //app.set('view engine', 'html');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -353,17 +348,20 @@ app.del('/RemoteControl', function(req, res) {
 
 
 var lastTime = new Date();
+var lastBinCode;
 app.post('/433mhz/:binCode', function(req, res) {
+	
+	var binCode = req.params.binCode;
 	
 	var duration = Number(new Date() - lastTime);
 	
-	if(duration < 2000){
+	if(duration < 2200 || lastBinCode === binCode){
 		res.send();
 		return;		
 	}
 	lastTime = new Date();
+	lastBinCode = binCode;
 	
-	var binCode = req.params.binCode;
 	console.log("duration: ",duration);
 	var code=null;
 	if(binCode.length === 24 || binCode.length === 40 ){
