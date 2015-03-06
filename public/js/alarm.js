@@ -368,12 +368,16 @@ $(function() {
 	$("#EDIT-REMOTE-CONTROL-PAGE").on("click", "#btAddZoneToRemoteControl", function (event) {
 		var remotecontrol = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
 
-		console.log($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
-		console.log(JSON.stringify(APPLICATION.areas));
+		var areas = APPLICATION.areas;
+		if(remotecontrol.area){
+			areas = $.grep(APPLICATION.areas, function(target, i) {	
+				return (target._id !== remotecontrol.area._id);
+			});
+		}
 		
-		var areas = $.grep(APPLICATION.areas, function(target, i) {	
-			return (remotecontrol.area === null || target._id !== remotecontrol.area._id);
-		});
+//		var areas = $.grep(APPLICATION.areas, function(target, i) {	
+//			return (remotecontrol.area === null || target._id !== remotecontrol.area._id);
+//		});
 		
 		$("#add-remove-areas-panel").panel("open");
 		$("#listview-areas-for-remote-control").empty();

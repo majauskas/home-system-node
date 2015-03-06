@@ -10,24 +10,24 @@
 	<link rel="apple-touch-icon" href="images/security.png"/>
 	<link  rel="apple-touch-startup-image" href="images/security.png"/>		
 
-<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
-<link rel="stylesheet" href="css/main.css" />
+	<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
+	<link rel="stylesheet" href="css/main.css" />
 
 
-<script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
-<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
-<script type="text/javascript" src="js/socket.io.js"></script> 
+	<script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
+	<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
+	<script type="text/javascript" src="js/socket.io.js"></script> 
+	
+	<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
+	<script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>		
 
-<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
-<script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>		
-
-<script type="text/javascript">
-		$.mobile.page.prototype.options.domCache = true;
-		$(function() {
-			$("body>[data-role='panel']").panel().trigger( "create" );
-		});
-</script>
+	<script type="text/javascript">
+			$.mobile.page.prototype.options.domCache = true;
+			$(function() {
+				$("body>[data-role='panel']").panel().trigger( "create" );
+			});
+	</script>
 	
 </head>
 
@@ -36,6 +36,7 @@
 
 <div id="HOME-PAGE" data-role="page" class="ui-page-active">
 	<div data-role="header" style="overflow:hidden;">
+		<img style="top:5px;" src="images/security.png" width="50px" height="50px" class="ui-btn-left" />	
 		<h1>Home</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>

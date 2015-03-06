@@ -1,4 +1,45 @@
 
+
+.ui-page-theme-a {
+  background-image: url('../images//carbon_fibre.png');
+}
+
+
+
+.ui-header, .ui-footer {
+  height: 60px;  
+/*   height: auto;  */
+  border-width: 0;
+  background-image: linear-gradient( #9df09a /*{f-bar-background-start}*/, #466b45 /*{f-bar-background-end}*/);
+}
+
+.ui-header .ui-title {
+  padding: 1.2em 0;
+  white-space: normal;
+}
+  
+
+.ui-page-theme-a .ui-bar-inherit {
+  color: white;
+  text-shadow: 0 0px 0 #eee;
+  font-weight: 700;
+}
+
+.ui-header .ui-btn-icon-notext, .ui-footer .ui-btn-icon-notext {
+  font-size: 25px;
+}
+
+label {
+  color: white;
+  text-shadow: 0 px 0 #f3f3f3;
+}
+
+.ui-btn {
+  border-style: none;
+}
+
+
+
 table.alternate_color tr:nth-of-type(even) {
     background-color:#e6ebdb;
 }
@@ -103,10 +144,15 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 
 
 
+.ui-btn-icon-notext:after {
+  background-size: 24px 24px;
+  margin-left: -14px;
+  margin-top: -14px;
+  width: 28px;
+  height: 28px;  
+}
 
-#bt-page-ricette-prescritte .ui-icon { background:  url(../images/Folder-Find-01-32.png) 50% 50% no-repeat;  background-size: 32px 32px; }
-#bt-page-ricette-erogate .ui-icon { background:  url(../images/Folder-Find-01-32.png) 50% 50% no-repeat;  background-size: 32px 32px; }
-#bt-page-erogazione-ricette .ui-icon { background:  url(../images/Inventory-32.png) 50% 50% no-repeat;  background-size: 32px 32px; }
+
 
 
 .ui-icon-wifi:after {background-image: url("../images/Wifi-02-24-1C95FF.png");background-position: 3px 3px; background-size: 70%;}
