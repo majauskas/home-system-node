@@ -23,7 +23,7 @@ $(function() {
 		});
 		
 		if($(this).val() === "OFF"){
-			socket.emit('switchOffAlarm', {});
+			socket.emit('switchOffSiren', {});
 		}
 		
 	});
@@ -514,7 +514,7 @@ socket.on('433mhz', function (device) {
 socket.on('ALARM_DETECTION', function (device) {
 
 	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+" - "+device.description+"<br>Disattiva allarme?", function() {
-		socket.emit('switchOffAlarm', {});
+		socket.emit('switchOffSiren', {});
 	}, null,"Atenzione");
 	
 });

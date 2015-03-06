@@ -78,9 +78,8 @@ io.sockets.on('connection', function (socket) {
 //		back();
 //	});	
 	
-	socket.on('switchOffAlarm', function(arg1) {
-		console.log("switchOffAlarm");
-		switchOffAlarm();
+	socket.on('switchOffSiren', function(arg1) {
+		switchOffSiren();
 	});	
 		
 
@@ -91,12 +90,12 @@ io.sockets.on('connection', function (socket) {
 
 
 
-function switchOnAlarm(sensor) {
+function switchOnSiren(sensor) {
 	//sending to client the notification
 	io.sockets.emit("ALARM_DETECTION", sensor);
-	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"web-app", name:"Mobile", description:"Allarme Attivato"}}, function (err, data) {});
+	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena allarme attivata", description: sensor.name + " " + sensor.description}}, function (err, data) {});
 	
-	email("Allarme Attivato", sensor.name + " " + sensor.description);
+	email("Sicurezza di casa violata", sensor.name + " " + sensor.description + "\n Sirena allarme attivata");
 	
 	//TODO: activate the siren and email/sms notifications
 //	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
@@ -108,12 +107,12 @@ function switchOnAlarm(sensor) {
 }
 
 
-function switchOffAlarm() {
+function switchOffSiren() {
 	
-	AlarmState.create({state: "OFF", provider:"web-app", date: new Date()}, function (err, data) {});
+	AlarmState.create({state: "OFF", provider:"system", date: new Date()}, function (err, data) {});
 	io.sockets.emit("change-alarm-state", {state:"OFF"});	
 	
-	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"web-app", name:"Mobile", description:"Allarme Disattivato"}}, function (err, data) {});
+	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena allarme disattivata", description:""}}, function (err, data) {});
 	
 //	gpio.open(16, "output", function(err) { // Open pin 16 for output
 //		gpio.write(16, 0, function() { // Set pin 16 high (1)
@@ -404,7 +403,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 							var sensor = area.wifisensors[i];
 							
 							if(sensor.code ===  code){
-								switchOnAlarm(sensor);
+								switchOnSiren(sensor);
 								break;
 							}
 						}
