@@ -354,7 +354,8 @@ app.post('/433mhz/:binCode', function(req, res) {
 	
 	var duration = Number(new Date() - lastTime);
 	
-	if(duration < 2200 || lastBinCode === binCode){
+	if(duration < 1500){
+//	if(duration < 2200 || lastBinCode === binCode){
 		res.send();
 		return;		
 	}
@@ -422,7 +423,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 		WifiSensor.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {
 			if(data !== null){
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, description:data.description, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
-				email("WifiSensor Attivato", data.name + " " + data.description);
+				email("WifiSensor Attivato", data.name + " " + data.description+"\ncode: "+code+"\nbinCode: "+binCode+"\nduration: "+duration);
 			}
 		});		
 		
@@ -453,6 +454,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 				}
 				
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"remote-control", name:data.name, description:data.description, isLock:isLock}}, function (err, data) {});
+				email("RemoteControl Attivato", data.name + " " + data.description+"\ncode: "+code+"\nbinCode: "+binCode+"\nduration: "+duration);
 			}
 		});	
 		
