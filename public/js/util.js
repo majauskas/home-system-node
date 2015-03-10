@@ -135,12 +135,12 @@ var UTILITY = new initutil();function initutil() {
 
 
 
-window.onload = function() {
-	var what_to_do = document.location.hash;
-	
-	if (what_to_do != "")
-		window.location = "";
-};
+//window.onload = function() {
+//	var what_to_do = document.location.hash;
+//	
+//	if (what_to_do != "")
+//		window.location = "";
+//};
 
 
 
