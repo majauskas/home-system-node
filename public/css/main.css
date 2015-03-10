@@ -10,7 +10,8 @@
   height: 60px;  
 /*   height: auto;  */
   border-width: 0;
-  background-image: linear-gradient( #9df09a /*{f-bar-background-start}*/, #466b45 /*{f-bar-background-end}*/);
+/*   background-image: linear-gradient( #9df09a {f-bar-background-start}, #466b45 {f-bar-background-end}); */
+  background-image: linear-gradient(#6facd5,#32567B);
 }
 
 .ui-header .ui-title {
