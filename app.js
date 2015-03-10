@@ -8,16 +8,8 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./email.js');
+var moment = require('moment');
 //var gpio = require("pi-gpio");
-
-
-//var play = require('play').Play();
-//play.sound('mail666.wav');
-//
-////var player = require('play-sound')(opts = {})
-////player.play('e://the-man-aloe-blacc.mp3') // $ mplayer foo.mp3  
-//
-//return;
 
 
 //var request = require('request');
@@ -254,6 +246,16 @@ app.del('/Area/:id', function(req, res) {
 
 
 //----------- Events ---------------------------------------------
+
+//var schemaOptions = {
+//	    toObject: {
+//	      virtuals: true
+//	    }
+//	    ,toJSON: {
+//	      virtuals: true
+//	    }
+//	  };
+
 var EventSchema = new Schema({
 	code : {type : Number},
 	binCode : {type : String},
@@ -267,19 +269,41 @@ var EventSchema = new Schema({
 		isOpen : Boolean,
 		isBatteryLow : Boolean
 	}
-});
+},{toJSON:{virtuals: true}});
+//EventSchema.set('toJSON', { getters: true });
+//EventSchema.set('toJSON', { virtuals: true });
+
+
+EventSchema.methods.toJSON = function() {
+	  var obj = this.toObject();
+	  var date = moment(obj.date), formatted = date.format('DD/MM/YYYY HH:mm:ss');
+	  obj.date = formatted;
+	  return obj;
+};
+
+//EventSchema
+//.virtual('aaaa')
+//.get(function () {
+//	console.log("formatted_time: "+ this.date);
+////	var date = new Date(this.date);
+//	 var date = moment(this.date), formatted = date.format('DD/MM/YYYY HH:MM:SS');
+//	 console.log(date);
+//	 console.log(formatted);
+//	 return formatted;
+////	return ((date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear());
+//});
 
 mongoose.model('Event', EventSchema); 
 var Event = mongoose.model('Event');
 
+
+
 app.get('/Event', function(req, res) {
-	Event.find({}).sort('-date').populate('wifisensor','name -_id description isOpen isBatteryLow').limit(30).exec(function(err, data) {
+	Event.find({},'-_id -__v -code -binCode -device.provider').sort('-date').limit(30).exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
 	});	
 });
-
-
 
 
 
