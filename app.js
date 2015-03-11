@@ -117,17 +117,35 @@ function switchOffSiren() {
 
 
 
-
-
-
 if(os.hostname().toLowerCase() === "minde-pc" || os.hostname().toLowerCase() === "raspberrypi"){
 	mongoose.connect('mongodb://192.168.0.21/home-system');
 }else{
 	mongoose.connect('mongodb://10.221.160.78/home-system');
 } 
  
-var Schema = mongoose.Schema;
 
+mongoose.connection.on("connected", function(ref) {
+  console.log("Connected to DB!");
+});
+mongoose.connection.on("error", function(err) {
+  console.error('Failed to connect to DB on startup ', err);
+});
+mongoose.connection.on('disconnected', function () {
+  console.log('Mongoose default connection to DB disconnected');
+});
+
+//If the Node process ends, close the Mongoose connection 
+process.on('SIGINT', function() {  
+  mongoose.connection.close(function () { 
+    console.log('Mongoose default connection disconnected through app termination'); 
+    process.exit(0); 
+  }); 
+});
+//setTimeout(function() {
+//	mongoose.connection.close();
+//}, 5000);
+
+var Schema = mongoose.Schema;
 
 
 
