@@ -74,7 +74,14 @@ io.sockets.on('connection', function (socket) {
 	socket.on('switchOffSiren', function(arg1) {
 		switchOffSiren();
 	});	
-		
+	
+	
+	socket.on('getEvents', function(callback) {
+		Event.find({},'-__v -code -binCode -device.provider').sort('-date').limit(30).exec(function(err, data) {
+			if(err){console.log(err); callback(err); }
+			else { callback(data); }
+		});		
+	});		
 
 });
 

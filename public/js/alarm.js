@@ -596,6 +596,38 @@ $(document).on("pagecreate","#AREAS-PAGE", function(){
 
 function loadEvents(callback){
 
+	
+	
+	socket.emit('getEvents', function(response) {
+		
+		$("#listview-events").empty();
+		$("#template-events").tmpl( response ).appendTo( "#listview-events" );		
+		$("#listview-events").listview("refresh");
+		
+		if(callback){
+			callback();
+		}
+		
+		$('#listview-events li .delete-btn').on('touchend', function(e) {
+		    e.preventDefault();
+		    var _id = $(this).parents('li').attr("id");
+		    $(this).parents('li').slideUp('fast', function() {
+			    $(this).remove();
+			    setTimeout(function() {
+					$.ajax({
+						type : 'DELETE',
+						url : "/Event/"+_id,
+						global: false,
+				        error: UTILITY.httpError
+					});
+			    }, 0);
+		    });
+		});		
+	});
+	
+	return;
+	
+	
 	$.ajax({
 		type : 'GET',
 		url : "/Event",
