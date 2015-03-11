@@ -34,6 +34,10 @@ css/main.css
 jquery/jquery-2.1.1.min.js
 jquery/jquery.mobile-1.4.5.min.js
 jquery/jquery.tmpl.min.js
+jquery/jquery.mobile.iscroll.js
+jquery/jquery.mobile.iscrollview-pull.css
+jquery/jquery.mobile.iscrollview.css
+jquery/jquery.mobile.iscrollview.js
 js/socket.io.js 
 js/util.js	
 js/alarm.js	
@@ -46,7 +50,8 @@ images/Warning-Message-24-F50000.png
 images/Lock-Open-24-04C263.png
 images/Battery-Low-24-FF0000.png
 images/security.png
-/images/carbon_fibre.png
+images/carbon_fibre.png
+jquery/images/iscroll-pull-icon@2x.png
  
 
 
