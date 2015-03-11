@@ -12,6 +12,7 @@
 	<link  rel="apple-touch-startup-image" href="images/security.png"/>		
 
 	<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
+	
 	<link rel="stylesheet" href="css/main.css" />
 
 
@@ -20,28 +21,41 @@
 	<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
 	<script type="text/javascript" src="js/socket.io.js"></script> 
 	
+	
+	<script type="text/javascript" src="jquery/jquery.mobile.iscroll.js"></script>
+    <script type="text/javascript" src="jquery/jquery.mobile.iscrollview.js"></script>
+    <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview.css"/>
+    <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview-pull.css"/>	
+    
+	
+	
+	
+	
+	
 	<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
 	<script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>		
-
 	<script type="text/javascript">
 			$.mobile.page.prototype.options.domCache = true;
 			$(function() {
 				$("body>[data-role='panel']").panel().trigger( "create" );
 			});
 	</script>
+
+
+
 	
 </head>
 
 	<body>
 
 
-<div id="HOME-PAGE" data-role="page" class="ui-page-active">
+<div id="HOME-PAGE" data-role="page" class="ui-page-active pull-demo-page">
 	<div data-role="header" data-position="fixed">
 		<img style="top:5px;" src="images/security.png" width="50px" height="50px" class="ui-btn-left" />	
 		<h1>Home</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	
+
 	<div role="main" class="ui-content" style="text-align: center;">
 		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-alarm"></fieldset>
 		<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
@@ -50,10 +64,7 @@
 		</script>	
 	</div>
 
-</div> 
-
-
-	 
+</div>	 
 		 
 		 
 
@@ -71,9 +82,10 @@
 						<p class='ui-li-aside' style='text-align: center;'>{{if (isOpen == false)}}<font style='color:green;'>Chiuso</font></br>{{/if}}{{if (isOpen == true)}}<font style='color:red; font-weight: bold;'>Aperto</font></br>{{/if}}{{if (isBatteryLow == true)}}<img  src='images/Battery-Low-24-FF0000.png'>{{/if}}</p>
 					</a></li>
 		</script>
-		
-	
 	</div>
+	
+	
+	
 	<div data-role="main" class="ui-content" style="text-align: center;">
 		<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a>
 	</div>
@@ -225,8 +237,10 @@
 		<h1>Eventi</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	
-	<div data-role="main" class="ui-content" style="text-align: center;">
+	<div data-role="main" class="ui-content events-wrapper" style="text-align: center; width: auto;" data-iscroll>
+        <div class="iscroll-pulldown">
+          <span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span>
+        </div>	
 		<ul data-role="listview" data-inset="false" id="listview-events" class="ui-nodisc-icon swipe-delete"></ul>	
 <!-- 		<li data-role="list-divider">Friday, October 8, 2010 <span class="ui-li-count">2</span></li> -->
 		<script id="template-events" type="text/x-jquery-tmpl">

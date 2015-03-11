@@ -5,8 +5,6 @@ var isActiveSearchRemoteControls = false;
 $(function() {
 
 
-
-
 	$("#HOME-PAGE").on("change", "[name='radio-choice-alarm-state']", function (event) {
 		
 		
@@ -523,7 +521,7 @@ socket.on('ALARM_DETECTION', function (device) {
 
 
 $(document).on("pagecreate","#HOME-PAGE", function(){
-
+ 
 	$.ajax({
 		type : 'GET',
 		url : "/Area",
@@ -559,6 +557,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 	
 });	
 
+
 $(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
 
 	$.ajax({
@@ -592,21 +591,23 @@ $(document).on("pagecreate","#AREAS-PAGE", function(){
 	});		
 });	
 
-$(document).on("pageshow","#EVENTS-PAGE", function(){
-
+function loadEvents(callback){
+	
 	$.ajax({
 		type : 'GET',
 		url : "/Event",
 		success: function(response) {
+			
+			
 			$("#listview-events").empty();
 			$("#template-events").tmpl( response ).appendTo( "#listview-events" );		
 			$("#listview-events").listview("refresh");
 			
+			if(callback){
+    			callback();
+			}
 			
-			
-
-			
-			$('li .delete-btn').on('touchend', function(e) {
+			$('#listview-events li .delete-btn').on('touchend', function(e) {
 			    e.preventDefault();
 			    var _id = $(this).parents('li').attr("id");
 			    $(this).parents('li').slideUp('fast', function() {
@@ -620,16 +621,30 @@ $(document).on("pageshow","#EVENTS-PAGE", function(){
 				    }, 0);
 			    });
 			});
-//			$('li .edit-btn').on('touchend', function(e) {
-//			    e.preventDefault();
-//			    $(this).parents('li').children('a').html('edited');
-//			});			
-			
 			
         },
         error: UTILITY.httpError
-	});		
+	});	
+} 
+
+
+
+$(document).on("pagecreate","#EVENTS-PAGE", function(){
+
+	  $(".events-wrapper").bind( {
+		    iscroll_onpulldown : function(event, data){
+		    	loadEvents(function(){
+		    		data.iscrollview.refresh();
+		    	});
+		    }
+		  });
+	  
+	loadEvents();
+	
+		
 });
+
+
 
 
 $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
