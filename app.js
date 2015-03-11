@@ -379,15 +379,19 @@ app.post('/433mhz/:binCode', function(req, res) {
 	
 	var duration = Number(new Date() - lastTime);
 	
-	if(duration < 1500){
-//	if(duration < 2200 || lastBinCode === binCode){
+//	if(duration < 1500){
+	if(duration < 2200 || (duration < 1200 && lastBinCode === binCode)){
 		res.send();
 		return;		
 	}
+
+	
+	
 	lastTime = new Date();
 	lastBinCode = binCode;
 	
-	console.log("duration: ",duration);
+//	console.log("duration: ",duration);
+	
 	var code=null;
 	if(binCode.length === 24 || binCode.length === 40 ){
 		
