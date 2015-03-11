@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
 <!-- <html> -->
-<html manifest="cache.manifest" type="text/cache-manifest">
+<!-- <html manifest="cache.manifest" type="text/cache-manifest"> -->
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
 	
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -35,7 +36,7 @@
 
 
 <div id="HOME-PAGE" data-role="page" class="ui-page-active">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<img style="top:5px;" src="images/security.png" width="50px" height="50px" class="ui-btn-left" />	
 		<h1>Home</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
@@ -57,7 +58,7 @@
 		 
 
 <div id="SENSORI-WIFI-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
 		<h1>Sensori Wifi</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
@@ -70,6 +71,8 @@
 						<p class='ui-li-aside' style='text-align: center;'>{{if (isOpen == false)}}<font style='color:green;'>Chiuso</font></br>{{/if}}{{if (isOpen == true)}}<font style='color:red; font-weight: bold;'>Aperto</font></br>{{/if}}{{if (isBatteryLow == true)}}<img  src='images/Battery-Low-24-FF0000.png'>{{/if}}</p>
 					</a></li>
 		</script>
+		
+	
 	</div>
 	<div data-role="main" class="ui-content" style="text-align: center;">
 		<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a>
@@ -78,7 +81,7 @@
 
 
 <div id="NEW-WIFI-SENSOR-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#SENSORI-WIFI-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Nuovo Sensore</h1>
 	</div>
@@ -102,7 +105,7 @@
 
 
 <div id="EDIT-WIFI-SENSOR-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#SENSORI-WIFI-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Modifica Sensore</h1>
 	</div>
@@ -133,7 +136,7 @@
 
 
 <div id="AREAS-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
 		<h1>Zone</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
@@ -146,7 +149,6 @@
 						<h2>${name}<font style='white-space:normal;font-weight:normal;'> - ${description}</font></h2>												
 					</a></li>
 		</script>
-
 		<div data-role="main" class="ui-content" style="text-align: center;">
 			<a id="btAddNewArea" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Nuova Zona</a>
 		</div>
@@ -156,7 +158,7 @@
 
 
 <div id="NEW-AREA-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#AREAS-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Nuova Zona</h1>
 	</div>
@@ -177,7 +179,7 @@
 </div> 
 
 <div id="EDIT-AREA-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#AREAS-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Modifica Zona</h1>
 		<a id="btAddSensorToArea" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-plus">Aggiungi sensore</a>
@@ -218,16 +220,21 @@
 
 
 <div id="EVENTS-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
 		<h1>Eventi</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
 	
 	<div data-role="main" class="ui-content" style="text-align: center;">
-		<ul data-role="listview" data-inset="false" id="listview-events" class="ui-nodisc-icon"></ul>	
+		<ul data-role="listview" data-inset="false" id="listview-events" class="ui-nodisc-icon swipe-delete"></ul>	
+<!-- 		<li data-role="list-divider">Friday, October 8, 2010 <span class="ui-li-count">2</span></li> -->
 		<script id="template-events" type="text/x-jquery-tmpl">
-					<li data-icon='{{if (device != null)}}wifi{{else}}none{{/if}}' class="ui-nodisc-icon"><a>
+					<li data-icon='{{if (device != null)}}wifi{{else}}none{{/if}}' class="ui-nodisc-icon" id='${_id}'>
+					<div class='behind'>
+                            <a href='#' class='ui-btn delete-btn'>Delete</a>
+					</div>
+					<a>
 						<p>{{if (device != null)}} ${device.name} - ${device.description} {{else}} ${code} - ${binCode} {{/if}}</p>					
 						<p>${date}</p>						
 						{{if (device != null)}}
@@ -250,7 +257,7 @@
 <!-- 						</p> -->
 
 <div id="REMOTE-CONTROL-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
 		<h1>Telecomandi</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
@@ -270,7 +277,7 @@
 
 
 <div id="NEW-REMOTE-CONTROL-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#REMOTE-CONTROL-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Nuovo Telecomando</h1>
 	</div>
@@ -293,7 +300,7 @@
 
 
 <div id="EDIT-REMOTE-CONTROL-PAGE" data-role="page">
-	<div data-role="header" style="overflow:hidden;">
+	<div data-role="header" data-position="fixed">
 		<a href="#REMOTE-CONTROL-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Modifica Telecomando</h1>
 		<a id="btAddZoneToRemoteControl" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-plus"></a>

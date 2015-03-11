@@ -3,7 +3,9 @@ var isActiveSearchWifiSensors = false;
 var isActiveSearchRemoteControls = false;
 
 $(function() {
-	
+
+
+
 
 	$("#HOME-PAGE").on("change", "[name='radio-choice-alarm-state']", function (event) {
 		
@@ -599,6 +601,31 @@ $(document).on("pageshow","#EVENTS-PAGE", function(){
 			$("#listview-events").empty();
 			$("#template-events").tmpl( response ).appendTo( "#listview-events" );		
 			$("#listview-events").listview("refresh");
+			
+			
+			
+
+			
+			$('li .delete-btn').on('touchend', function(e) {
+			    e.preventDefault();
+			    var _id = $(this).parents('li').attr("id");
+			    $(this).parents('li').slideUp('fast', function() {
+				    $(this).remove();
+				    setTimeout(function() {
+						$.ajax({
+							type : 'DELETE',
+							url : "/Event/"+_id,
+					        error: UTILITY.httpError
+						});
+				    }, 0);
+			    });
+			});
+//			$('li .edit-btn').on('touchend', function(e) {
+//			    e.preventDefault();
+//			    $(this).parents('li').children('a').html('edited');
+//			});			
+			
+			
         },
         error: UTILITY.httpError
 	});		
@@ -618,4 +645,10 @@ $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
         },
         error: UTILITY.httpError
 	});		
+});
+
+$(document).on("pagecreate","#EVENTS-PAGE", function(){
+	
+
+
 });

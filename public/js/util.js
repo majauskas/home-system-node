@@ -25,7 +25,7 @@ var UTILITY = new initutil();function initutil() {
     		
     		$('#alert-popup').remove();
     		var page = $.mobile.activePage;
-    		var popup = $('<div id="alert-popup" data-role="popup" data-dismissible="false" style="max-width: 400px" data-theme="b" data-shadow="true" data-overlay-theme="a"></div>').appendTo( page );
+    		var popup = $('<div id="alert-popup" data-transition="pop" data-role="popup" data-dismissible="false" style="max-width: 400px" data-theme="b" data-shadow="true" data-overlay-theme="a"></div>').appendTo( page );
     		
     		if(headerMsg){
     			$('<div data-role="header" data-theme="e"><a data-rel="back" data-role="button" data-icon="alert" data-iconpos="notext" class="ui-btn-left"></a> <h1 class="alert-popup-header">'+headerMsg+'</h1> </div>').appendTo( popup );	
@@ -158,3 +158,50 @@ Array.prototype.contains = function (item){
 	}
 	return false;
 };
+
+
+
+//***************** Swipe to delete *************************
+$(function() {
+	var x;
+	$(".swipe-delete").on("touchstart", "li > a", function (e) {
+		
+		$('.behind a.ui-btn').css('height', ($(e.currentTarget).height()+2)+"px");
+		
+	    $('.swipe-delete li > a.open').css('left', '0px').removeClass('open'); // close em all
+	    $(e.currentTarget).addClass('open');
+	    x = e.originalEvent.targetTouches[0].pageX;		
+	});
+	$(".swipe-delete").on("touchmove", "li > a", function (e) {
+	    var change = e.originalEvent.targetTouches[0].pageX - x;
+	    change = Math.min(Math.max(-100, change), 100); // restrict to -100px left, 0px right
+	    if(change>0)return;
+	    if(e.originalEvent.targetTouches[0].pageX < 180) return;
+	    e.currentTarget.style.left = change + 'px';
+	    if (change < -10) {disable_scroll();} // disable scroll once we hit 10px horizontal slide	
+	});	
+	$(".swipe-delete").on("touchend", "li > a", function (e) {
+	    var left = parseInt(e.currentTarget.style.left);
+	    var new_left;
+	    if (left < -35) {
+	        new_left = '-100px';
+	    } else if (left > 35) {
+	        new_left = '100px';
+	    } else {
+	        new_left = '0px';
+	    }
+	    $(e.currentTarget).animate({left: new_left}, 200);
+	    enable_scroll();
+	});
+	
+	function prevent_default(e) {
+	    e.preventDefault();
+	}
+	
+	function disable_scroll() {
+	    $(document).on('touchmove', prevent_default);
+	}
+	function enable_scroll() {
+	    $(document).unbind('touchmove', prevent_default);
+	}
+});
