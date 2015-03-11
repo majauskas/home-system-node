@@ -302,7 +302,7 @@ app.get('/Event', function(req, res) {
 	Event.find({},'-__v -code -binCode -device.provider').sort('-date').limit(30).exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
-	});	
+	});		
 });
 
 app.del('/Event/:id', function(req, res) {

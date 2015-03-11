@@ -591,8 +591,11 @@ $(document).on("pagecreate","#AREAS-PAGE", function(){
 	});		
 });	
 
+
+
+
 function loadEvents(callback){
-	
+
 	$.ajax({
 		type : 'GET',
 		url : "/Event",
@@ -616,6 +619,7 @@ function loadEvents(callback){
 						$.ajax({
 							type : 'DELETE',
 							url : "/Event/"+_id,
+							global: false,
 					        error: UTILITY.httpError
 						});
 				    }, 0);
