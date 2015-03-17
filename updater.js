@@ -50,7 +50,7 @@ app.post('/github', function(req, res) {
 //    payload = JSON.parse(payload);
 //
 //    if (payload.ref === config.repository.branch || payload.ref === 'refs/heads/master' || payload.ref === 'refs/heads/develop'){
-      myExec("../node-cd.sh");
+      myExec();
 //    }
 
     res.writeHead(200);
@@ -63,7 +63,7 @@ app.post('/github', function(req, res) {
 
 
 
-var myExec = function(line) {
+var myExec = function() {
 
 	
 //	var spawn = require('child_process').spawn('C:\\cygwin64\\bin\\mintty.exe', ['"E:\\LombardiaInformatica\\workspace\\home-system-node\\node-cd.sh"'], { 
@@ -75,13 +75,19 @@ var myExec = function(line) {
 //	spawn.on('error', function() { console.log(arguments); });
 //	
 //	
-
+	var executionFile = "node-cd.bat";
+	if(os.hostname().toLowerCase() === "raspberrypi"){
+		executionFile = "node-cd.sh";
+	}
+	
     var exec = require('child_process').exec;
     var execCallback = function (error, stdout, stderr) {
     console.log(error, stdout.split("\r\n"), stderr.split("\r\n"));
       if (error !== null) {
         console.log('exec error: ' + error);
       }
-    }
+    };
+    
+    
     var child = exec("node-cd.bat", execCallback);
 }
