@@ -62,13 +62,6 @@ app.post('/github', function(req, res) {
 });
 
 
-app.get('/github', function(req, res) {
-
-	console.log("exports.github GET");
-	 res.writeHead(200);
-	 res.end();
-});
-
 
 var myExec = function() {
 
