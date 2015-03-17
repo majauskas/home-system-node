@@ -67,23 +67,27 @@
 <div id="SENSORI-WIFI-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
-		<h1>Sensori Wifi</h1>
+		<h1>Sensori Wifi<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	<div data-role="main" class="ui-content" style="text-align: center;">
-		<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
-		<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
+	<div class="wrapper" data-iscroll>
+		<div class="iscroll-pulldown"><span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span></div>
+		<div data-role="main" class="ui-content" style="text-align: center;">
+			
+			<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
+			<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
 					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>${name} - ${description}</font></h2>												
 						<p class='ui-li-aside' style='text-align: center;'>{{if (isOpen == false)}}<font style='color:green;'>Chiuso</font></br>{{/if}}{{if (isOpen == true)}}<font style='color:red; font-weight: bold;'>Aperto</font></br>{{/if}}{{if (isBatteryLow == true)}}<img  src='images/Battery-Low-24-FF0000.png'>{{/if}}</p>
 					</a></li>
 		</script>
-	</div>
-	
-	
-	
-	<div data-role="main" class="ui-content" style="text-align: center;">
-		<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a>
+		</div>
+		
+		
+		
+		<div data-role="main" class="ui-content" style="text-align: center;">
+			<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a>
+		</div>
 	</div>
 </div> 				
 
@@ -146,11 +150,12 @@
 <div id="AREAS-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
-		<h1>Zone</h1>
+		<h1>Zone<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	
-	<div data-role="main" class="ui-content" style="text-align: center;">
+		
+	<div data-role="main" class="ui-content wrapper" style="text-align: center;" data-iscroll>
+		<div class="iscroll-pulldown"><span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span></div>
 		<ul data-role="listview" data-inset="false" id="listview-areas" class="ui-nodisc-icon"></ul>	
 		<script id="template-areas" type="text/x-jquery-tmpl">
 					<li data-icon='node' data='${target}'><a>
@@ -230,10 +235,10 @@
 <div id="EVENTS-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
-		<h1>Eventi</h1>
+		<h1>Eventi<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	<div data-role="main" class="ui-content events-wrapper" style="text-align: center; width: auto;" data-iscroll>
+	<div data-role="main" class="ui-content wrapper" style="text-align: center; width: auto;" data-iscroll>
         <div class="iscroll-pulldown">
           <span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span>
         </div>	
@@ -269,20 +274,22 @@
 <div id="REMOTE-CONTROL-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
-		<h1>Telecomandi</h1>
+		<h1>Telecomandi<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	<div data-role="main" class="ui-content" style="text-align: center;">
+	<div data-role="main" class="ui-content wrapper" style="text-align: center;" data-iscroll>
+		<div class="iscroll-pulldown"><span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span></div>	
 		<ul data-role="listview" data-inset="false" id="listview-remote-controls"></ul>	
 		<script id="template-remote-controls" type="text/x-jquery-tmpl">
 					<li data-icon='remote' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>${name} - ${description}</font></h2>												
 					</a></li>
 		</script>
+		<div data-role="main" class="ui-content" style="text-align: center;">
+			<a id="btSearchRemoteControls" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Telecomando</a>
+		</div>	
 	</div>
-	<div data-role="main" class="ui-content" style="text-align: center;">
-		<a id="btSearchRemoteControls" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Telecomando</a>
-	</div>
+	
 </div> 				
 
 

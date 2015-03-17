@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./email.js');
 var moment = require('moment');
+
 //var gpio = require("pi-gpio");
 
 
@@ -27,7 +28,7 @@ var moment = require('moment');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.enable('view cache');
 var server = app.listen(process.env.PORT || 8081, function () {
 	var interfaces = os.networkInterfaces();
 	var host = "";
@@ -76,12 +77,12 @@ io.sockets.on('connection', function (socket) {
 	});	
 	
 	
-	socket.on('getEvents', function(callback) {
-		Event.find({},'-__v -code -binCode -device.provider').sort('-date').limit(30).exec(function(err, data) {
-			if(err){console.log(err); callback(err); }
-			else { callback(data); }
-		});		
-	});		
+//	socket.on('getEvents', function(callback) {
+//		Event.find({},'-__v -code -binCode -device.provider').sort('-date').limit(30).exec(function(err, data) {
+//			if(err){console.log(err); callback(err); }
+//			else { callback(data); }
+//		});		
+//	});		
 
 });
 
@@ -272,15 +273,6 @@ app.del('/Area/:id', function(req, res) {
 
 //----------- Events ---------------------------------------------
 
-//var schemaOptions = {
-//	    toObject: {
-//	      virtuals: true
-//	    }
-//	    ,toJSON: {
-//	      virtuals: true
-//	    }
-//	  };
-
 var EventSchema = new Schema({
 	code : {type : Number},
 	binCode : {type : String},
@@ -295,8 +287,6 @@ var EventSchema = new Schema({
 		isBatteryLow : Boolean
 	}
 },{toJSON:{virtuals: true}});
-//EventSchema.set('toJSON', { getters: true });
-//EventSchema.set('toJSON', { virtuals: true });
 
 
 EventSchema.methods.toJSON = function() {
@@ -318,15 +308,23 @@ EventSchema.methods.toJSON = function() {
 ////	return ((date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear());
 //});
 
+
+
+
 mongoose.model('Event', EventSchema); 
 var Event = mongoose.model('Event');
 
 
 
+
 app.get('/Event', function(req, res) {
+	
+//	Event.find({},'-__v -code -binCode -device.provider').setOptions({ tailableRetryInterval: 10 }).sort('-date').limit(30).exec(function(err, data) {
 	Event.find({},'-__v -code -binCode -device.provider').sort('-date').limit(30).exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
-		else { res.send(data); }
+		else {
+//			console.log(err, data); 
+			res.send(data); }
 	});		
 });
 
@@ -435,14 +433,18 @@ app.post('/433mhz/:binCode', function(req, res) {
 			}else if(state === "1000"){
 				isOpen = false;
 			}
-			var battery = binCode.substr(30,1); 	//31bit 1 - KO  0 - OK	
+			var battery = binCode.substr(31,1); 	//31bit 1 - KO  0 - OK	
 			if(battery === "1"){
-				isBatteryLow = true;
-			}else if(battery === "0"){
 				isBatteryLow = false;
+			}else if(battery === "0"){
+				isBatteryLow = true;
 			}
 			
 		}
+//		000011110011110100000000|0000|101|0|10101010        batt KO inserita
+//		000011111010010100000000|0000|101|1|01000001        batt OK inserita
+		
+		
 //		else if(binCode.length === 24){ 
 ////			state = binCode.substr(19,4);
 ////			battery = "1";
@@ -521,10 +523,4 @@ app.post('/433mhz/:binCode', function(req, res) {
 	res.send();
 	
 });
-
-
-
-
-
-
 

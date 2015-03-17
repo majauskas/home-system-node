@@ -1,0 +1,1 @@
+forever stop app.js && mkdir minde && forever start app.js

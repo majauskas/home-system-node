@@ -162,8 +162,7 @@ Array.prototype.contains = function (item){
 $(document).bind("ajaxSend", function(){
 	setTimeout(function() {$.mobile.loading( "show");}, 0); 
 }).bind("ajaxComplete", function(){
-	setTimeout(function() { $.mobile.loading("hide");}, 0); 
-   
+	setTimeout(function() { $.mobile.loading("hide");}, 0);    
 });
 
 

@@ -17,6 +17,10 @@ sudo adduser $USER gpio
 
 
 ### Tools
+
+ApacheBench
+ab -n 100 -c 100 http://10.221.6.69:8081/Event
+
 curl -X POST http://10.221.6.69:8080/433mhz/24/0111111111100011001/123683453
 
 001001010101000101010001

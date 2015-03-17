@@ -9,6 +9,7 @@ $(function() {
 		
 		
 		$.ajax({
+			global: false,
 			type : 'POST',
 			url : "/AlarmState",
 			dataType : "json",
@@ -45,6 +46,7 @@ $(function() {
 		
 		
 		$.ajax({
+			global: false,
 			type:'PUT', url:"/WifiSensor",
 			dataType : "json",
 			data : {
@@ -73,6 +75,7 @@ $(function() {
 			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
 			
 			$.ajax({
+				global: false,
 				type:'DELETE', url:"/WifiSensor",
 				dataType : "json",
 				data : {
@@ -106,6 +109,7 @@ $(function() {
 	$("#NEW-AREA-PAGE").on("click", "#btConferma", function (event) {
 
 		$.ajax({
+			global: false,
 			type: "POST", 
 			url: "/Area",
 			dataType : "json",
@@ -131,6 +135,7 @@ $(function() {
 		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
 		
 		$.ajax({
+			global: false,
 			type: "PUT", 
 			url: "/Area/"+data._id,
 			dataType : "json",
@@ -155,6 +160,7 @@ $(function() {
 			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
 			
 			$.ajax({
+				global: false,
 				type: "DELETE", 
 				url: "/Area/"+data._id,
 				error: UTILITY.httpError,
@@ -239,6 +245,7 @@ $(function() {
 		
 		
 		$.ajax({
+			global: false,
 			type: "PUT", url: "Area/wifisensors/"+area._id,
 			dataType : "json",
 			data : {
@@ -281,6 +288,7 @@ $(function() {
 			}
 			console.log(JSON.stringify(area));
 			$.ajax({
+				global: false,
 				type: "PUT", url: "Area/wifisensors/"+area._id,
 				dataType : "json",
 				data : area,
@@ -323,6 +331,7 @@ $(function() {
 		
 		
 		$.ajax({
+			global: false,
 			type:'POST', url:"/RemoteControl",
 			dataType : "json",
 			data : {
@@ -415,6 +424,7 @@ $(function() {
 			area = {_id:data.area._id, name:data.area.name};
 		}
 		$.ajax({
+			global: false,
 			type: "PUT", 
 			url: "/RemoteControl/"+data._id,
 			dataType : "json",
@@ -437,6 +447,7 @@ $(function() {
 			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
 			
 			$.ajax({
+				global: false,
 				type: "DELETE", 
 				url: "/RemoteControl/"+data._id,
 				error: UTILITY.httpError,
@@ -449,7 +460,6 @@ $(function() {
 	});	
 	
 	
-//	minde
 //-------------------------------------------------------------------------	
 	
 });
@@ -471,6 +481,7 @@ socket.on('433mhz', function (device) {
 		isActiveSearchWifiSensors = false;
 		
 		$.ajax({
+			global: false,
 			type:'GET', url:"/WifiSensor/"+device.code,		
 			success: function(response) {
 				if(response.length === 0){
@@ -491,6 +502,7 @@ socket.on('433mhz', function (device) {
 		isActiveSearchRemoteControls = false;
 		
 		$.ajax({
+			global: false,
 			type:'GET', url:"/RemoteControl/"+device.code,		
 			success: function(response) {
 				if(response.length === 0){
@@ -506,7 +518,6 @@ socket.on('433mhz', function (device) {
 	        },
 	        error: UTILITY.httpError
 		});	
-//		minde
 	}
 	
 });
@@ -539,6 +550,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			
 			
 			$.ajax({
+				global: false,
 				type : 'GET',
 				url : "/AlarmState",
 				success: function(response) {
@@ -555,15 +567,32 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
         }
 	});	
 	
+	
+	
+//	setTimeout(function() {
+//		setInterval(function() {
+//			$.ajax({type : 'GET', url : "/Event"});
+//			$.ajax({type : 'GET', url : "/AlarmState"});
+//			$.ajax({type : 'GET', url : "/WifiSensor"});
+//			$.ajax({type : 'GET', url : "/Area"});
+//			$.ajax({type : 'GET', url : "/RemoteControl"});
+//		}, 100);
+//	}, 5000);
+	
+	
 });	
 
 
-$(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
-
+function loadSensoriWiFi(callback){
+	
+	
+	var st = Date.now();
 	$.ajax({
 		type : 'GET',
 		url : "/WifiSensor",
 		success: function(response) {
+			var dur = Date.now() - st; 
+			$("#SENSORI-WIFI-PAGE h1 font").html(dur+" ms");
 			
 			$("#listview-wifi-sensors").empty();
 			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
@@ -571,16 +600,41 @@ $(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
 			$("#listview-wifi-sensors").listview("refresh");
 			
 			APPLICATION.wifisensors = response;
+			
+			if(callback){ callback();}
         }
 	});		
+	
+}
+
+
+$(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
+
+	
+	  $(this).find('.wrapper').bind( {
+		    iscroll_onpulldown : function(event, data){
+		    	loadSensoriWiFi(function(){
+		    		data.iscrollview.refresh();
+		    	});
+		    }
+	  });
+	  
+	  loadSensoriWiFi();
+		  
 });	
 
 
-$(document).on("pagecreate","#AREAS-PAGE", function(){
+function loadAreas(callback){
+
+	var st = Date.now();
 	$.ajax({
 		type : 'GET',
 		url : "/Area",
 		success: function(response) {
+			
+			var dur = Date.now() - st; 
+			$("#AREAS-PAGE h1 font").html(dur+" ms");
+			
 			$("#listview-areas").empty();
 			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
 			$("#template-areas").tmpl( response ).appendTo( "#listview-areas" );		
@@ -588,7 +642,21 @@ $(document).on("pagecreate","#AREAS-PAGE", function(){
 			
 			APPLICATION.areas = response;
         }
-	});		
+	});	
+	
+}
+
+$(document).on("pagecreate","#AREAS-PAGE", function(){
+
+	  $(this).find('.wrapper').bind( {
+		    iscroll_onpulldown : function(event, data){
+		    	loadAreas(function(){
+		    		data.iscrollview.refresh();
+		    	});
+		    }
+	  });
+	
+	loadAreas();
 });	
 
 
@@ -598,49 +666,20 @@ function loadEvents(callback){
 
 	
 	
-	socket.emit('getEvents', function(response) {
-		
-		$("#listview-events").empty();
-		$("#template-events").tmpl( response ).appendTo( "#listview-events" );		
-		$("#listview-events").listview("refresh");
-		
-		if(callback){
-			callback();
-		}
-		
-		$('#listview-events li .delete-btn').on('touchend', function(e) {
-		    e.preventDefault();
-		    var _id = $(this).parents('li').attr("id");
-		    $(this).parents('li').slideUp('fast', function() {
-			    $(this).remove();
-			    setTimeout(function() {
-					$.ajax({
-						type : 'DELETE',
-						url : "/Event/"+_id,
-						global: false,
-				        error: UTILITY.httpError
-					});
-			    }, 0);
-		    });
-		});		
-	});
 	
-	return;
-	
-	
+	var st = Date.now();
 	$.ajax({
 		type : 'GET',
 		url : "/Event",
 		success: function(response) {
+			var dur = Date.now() - st; 
 			
+			$("#EVENTS-PAGE h1 font").html(dur+" ms");
 			
 			$("#listview-events").empty();
 			$("#template-events").tmpl( response ).appendTo( "#listview-events" );		
 			$("#listview-events").listview("refresh");
 			
-			if(callback){
-    			callback();
-			}
 			
 			$('#listview-events li .delete-btn').on('touchend', function(e) {
 			    e.preventDefault();
@@ -649,9 +688,9 @@ function loadEvents(callback){
 				    $(this).remove();
 				    setTimeout(function() {
 						$.ajax({
+							global: false,
 							type : 'DELETE',
 							url : "/Event/"+_id,
-							global: false,
 					        error: UTILITY.httpError
 						});
 				    }, 0);
@@ -667,13 +706,13 @@ function loadEvents(callback){
 
 $(document).on("pagecreate","#EVENTS-PAGE", function(){
 
-	  $(".events-wrapper").bind( {
+		$(this).find('.wrapper').bind( {
 		    iscroll_onpulldown : function(event, data){
 		    	loadEvents(function(){
 		    		data.iscrollview.refresh();
 		    	});
 		    }
-		  });
+	  });
 	  
 	loadEvents();
 	
@@ -681,14 +720,15 @@ $(document).on("pagecreate","#EVENTS-PAGE", function(){
 });
 
 
-
-
-$(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
-
+function loadRemoteControls(callback){
+	var st = Date.now();
 	$.ajax({
 		type : 'GET',
 		url : "/RemoteControl",
 		success: function(response) {
+			var dur = Date.now() - st; 
+			$("#REMOTE-CONTROL-PAGE h1 font").html(dur+" ms");
+			
 			$("#listview-remote-controls").empty();
 			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
 			$("#template-remote-controls").tmpl( response ).appendTo( "#listview-remote-controls" );		
@@ -696,6 +736,19 @@ $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
         },
         error: UTILITY.httpError
 	});		
+}
+
+$(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
+
+	$(this).find('.wrapper').bind( {
+	    iscroll_onpulldown : function(event, data){
+	    	loadRemoteControls(function(){
+	    		data.iscrollview.refresh();
+	    	});
+	    }
+  });
+	
+	loadRemoteControls();
 });
 
 $(document).on("pagecreate","#EVENTS-PAGE", function(){
