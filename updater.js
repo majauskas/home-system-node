@@ -50,7 +50,7 @@ app.post('/github', function(req, res) {
 //    payload = JSON.parse(payload);
 //
 //    if (payload.ref === config.repository.branch || payload.ref === 'refs/heads/master' || payload.ref === 'refs/heads/develop'){
-      myExec();
+//      myExec();
 //    }
 
     res.writeHead(200);
@@ -61,6 +61,13 @@ app.post('/github', function(req, res) {
 	
 });
 
+
+app.get('/github', function(req, res) {
+
+	console.log("exports.github GET");
+	 res.writeHead(200);
+	 res.end();
+});
 
 
 var myExec = function() {
