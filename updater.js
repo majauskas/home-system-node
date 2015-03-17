@@ -11,18 +11,22 @@ var server = app.listen(process.env.PORT || 8082, function () {
 app.post('/github', function(req, res) {
 	 
 	var exec = child_process.exec;
-
+	console.log("\n\n\n------------- UPDATING ------ "+Date.now());
 	exec('forever stop app.js', function(error, output) {
-		console.log(output);
+		console.log("\n\n"+output);
 		exec('git pull origin', function(error, output) {
-			console.log(output);
+			console.log("\n\n"+output);
 			exec('npm install', function(error, output) {
-				console.log(output);
+				console.log("\n\n"+output);
 				exec('forever start app.js', function(error, output) {
-					console.log(output);
-//					exec('forever list', function(error, output) {
-//						console.log(output);
-//					});
+					console.log("\n\n"+output);
+					setTimeout(function() {
+						exec('forever list', function(error, output) {
+							console.log("\n\n"+output);
+						});						
+					}, 1000);
+					
+
 				});
 			});				
 		});			
