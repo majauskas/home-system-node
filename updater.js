@@ -20,9 +20,9 @@ app.post('/github', function(req, res) {
 				console.log(output);
 				exec('forever start app.js', function(error, output) {
 					console.log(output);
-					exec('forever list', function(error, output) {
-						console.log(output);
-					});
+//					exec('forever list', function(error, output) {
+//						console.log(output);
+//					});
 				});
 			});				
 		});			
