@@ -7,6 +7,8 @@ var fs = require('fs');
 var bodyParser = require('body-parser');
 var os = require('os');
 
+var child_process = require('child_process');
+
 //app.set('view engine', 'html');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -37,27 +39,51 @@ var server = app.listen(process.env.PORT || 8082, function () {
 
 app.post('/github', function(req, res) {
 
-	console.log("exports.github");
-	
-//  var authorizedIps = config.security.authorizedIps;
-//  var githubIps = config.security.githubIps;
-//  var payload = req.body.payload;
-//
-//  console.log('From IP Address:', req.ip);
-//  console.log('payload', payload);
-//
-//  if (payload && (inAuthorizedSubnet(req.ip) || authorizedIps.indexOf(req.ip) >= 0 || githubIps.indexOf(req.ip) >= 0)){
-//    payload = JSON.parse(payload);
-//
-//    if (payload.ref === config.repository.branch || payload.ref === 'refs/heads/master' || payload.ref === 'refs/heads/develop'){
 //      myExec();
-//    }
 
-    res.writeHead(200);
-//  } else {
-//    res.writeHead(403);
-//  }
-  res.end();	
+    
+	 
+	var exec = child_process.exec;
+
+	exec('forever stop app.js', function(error, output) {
+		console.log(output);
+		exec('git pull origin', function(error, output) {
+			console.log(output);
+			exec('npm install', function(error, output) {
+				console.log(output);
+				exec('forever start app.js', function(error, output) {
+					console.log(output);
+					exec('forever list', function(error, output) {
+						console.log(output);
+					});
+				});
+			});				
+		});			
+	});	
+	
+	
+//	var child = exec("forever stop app.js", {silent:true}, {async:true});
+//	child.stdout.on('data', function(data) {console.log('data:', data);});
+//	child.on('error', function() { console.log(arguments); });
+//	
+//	child = exec("git pull origin", {silent:true}, {async:true});	
+//	child.stdout.on('data', function(data) {console.log('data:', data);});
+//	child.on('error', function() { console.log(arguments); });
+//	
+//	child = exec("npm install", {silent:true}, {async:true});	
+//	child.stdout.on('data', function(data) {console.log('data:', data);});
+//	child.on('error', function() { console.log(arguments); });
+//	
+//	
+//	child = exec("forever start app.js", {silent:true}, {async:true});	
+//	child.stdout.on('data', function(data) {console.log('data:', data);});
+//	child.on('error', function() { console.log(arguments); });
+//	
+	
+	
+	 res.writeHead(200);
+	 res.end();
+  	
 	
 });
 
