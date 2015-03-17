@@ -1,0 +1,1 @@
+forever stop app.js && git pull origin && npm install && forever start app.js

@@ -1,1 +1,0 @@
-forever stop app.js && git pull origin && forever start app.js

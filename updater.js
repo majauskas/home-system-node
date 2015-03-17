@@ -83,5 +83,5 @@ var myExec = function(line) {
         console.log('exec error: ' + error);
       }
     }
-    var child = exec("node-cd.bat", execCallback);
+    var child = exec("node-cd.sh", execCallback);
 }
