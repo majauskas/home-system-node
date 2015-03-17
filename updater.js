@@ -8,27 +8,30 @@ var server = app.listen(process.env.PORT || 8082, function () {
 });
 
 app.post('/github', function(req, res) {
-	 
+//	forever start /home/pi/home-system-node/updater.js 
 	var exec = child_process.exec;
 	console.log("\n\n\n------------- UPDATING ------ "+Date.now());
-	exec('forever stop app.js', function(error, output) {
-		console.log("\n\n"+output);
-		exec('git pull origin', function(error, output) {
+	exec('cd /home/pi/home-system-node/', function(error, output) {
+		console.log("\n\n /home/pi/home-system-node/"+output);	
+		exec('forever stop app.js', function(error, output) {
 			console.log("\n\n"+output);
-			exec('npm install', function(error, output) {
+			exec('git pull origin', function(error, output) {
 				console.log("\n\n"+output);
-				exec('forever start app.js', function(error, output) {
+				exec('npm install', function(error, output) {
 					console.log("\n\n"+output);
-					setTimeout(function() {
-						exec('forever list', function(error, output) {
-							console.log("\n\n"+output);
-						});						
-					}, 1000);
-					
-
-				});
-			});				
-		});			
+					exec('forever start app.js', function(error, output) {
+						console.log("\n\n"+output);
+						setTimeout(function() {
+							exec('forever list', function(error, output) {
+								console.log("\n\n"+output);
+							});						
+						}, 1000);
+						
+	
+					});
+				});				
+			});			
+		});	
 	});	
 	
 	
