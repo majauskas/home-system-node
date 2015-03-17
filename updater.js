@@ -75,6 +75,11 @@ var myExec = function() {
 //	spawn.on('error', function() { console.log(arguments); });
 //	
 //	
+	
+//	var spawn = require('child_process').spawn,
+//	cp=spawn('i2cget', ['-y', '1', iicAddr, 0x12, 'w']);	
+	
+	
 	var executionFile = "node-cd.bat";
 	if(os.hostname().toLowerCase() === "raspberrypi"){
 		executionFile = "node-cd.sh";
