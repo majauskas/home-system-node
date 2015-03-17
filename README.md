@@ -12,6 +12,8 @@ make
 sudo make install
 sudo adduser $USER gpio
 
+suso npm install forever -g
+
 ## Developing
 
 
