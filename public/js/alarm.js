@@ -4,28 +4,62 @@ var isActiveSearchRemoteControls = false;
 
 $(function() {
 
-
-	$("#HOME-PAGE").on("change", "[name='radio-choice-alarm-state']", function (event) {
+//	$('#550973c3065847840b9fd049').click(function() {
+//        if (!$(this).is(':checked')) {
+//            return confirm("Are you sure?");
+//        }
+//    });
+	
+//	$("#HOME-PAGE").on("change", "[name='radio-choice-alarm-state']", function (event) {
+	
+	
+//	$("#HOME-PAGE").on("change", "[data-role='flipswitch']", function (event) {
+   $("#HOME-PAGE [data-role='flipswitch']").unbind("change").on("change", function() {	
 		
+		var id =  $(this).attr("id"); 
+		console.log(id);
+//		var isChecked =  $(this).prop("checked"); 
+//		alert(isChecked);
+//		$.mobile.activePage.find("[data-role='flipswitch']").prop('checked', false).flipswitch('refresh');
 		
-		$.ajax({
-			global: false,
-			type : 'POST',
-			url : "/AlarmState",
-			dataType : "json",
-			data : {
-				"state" : $(this).val(),
-				"provider" : "W",
-				"date" : new Date()
-			},
-			success: function(data) {
-				//socket.emit('change-alarm-state', data);
-	        }
+		$("#HOME-PAGE [data-role='flipswitch']" ).each(function( index, obj ) {
+			
+			if($(this).attr("id") !== id){
+//				console.log($(this).attr("id"));
+				$(this).prop('checked', false).flipswitch('refresh');
+			}
 		});
 		
-		if($(this).val() === "OFF"){
-			socket.emit('switchOffSiren', {});
-		}
+		
+//		$("#HOME-PAGE [data-role='flipswitch']" ).flipswitch('refresh');
+		
+//		$.each(data.wifisensors, function (i, obj) { obj.target = JSON.stringify(obj); });
+		
+//		
+//		$(this).prop('checked', isChecked).flipswitch('refresh');
+		
+//		$("#550973c3065847840b9fd049").prop('checked', true).flipswitch('refresh');
+		
+		
+		
+//		$.ajax({
+//			global: false,
+//			type : 'POST',
+//			url : "/AlarmState",
+//			dataType : "json",
+//			data : {
+//				"state" : $(this).val(),
+//				"provider" : "W",
+//				"date" : new Date()
+//			},
+//			success: function(data) {
+//				//socket.emit('change-alarm-state', data);
+//	        }
+//		});
+//		
+//		if($(this).val() === "OFF"){
+//			socket.emit('switchOffSiren', {});
+//		}
 		
 	});
 	
@@ -537,33 +571,62 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 		type : 'GET',
 		url : "/Area",
 		success: function(response) {
-			var areas = [{_id:1000000001,name:"OFF"}];
+
 			
-			response.forEach(function(elt, i) {
-				areas.push(elt);
-			});
+			if(response.length > 0){
+				$("#fsSecurity").show();
+			}
 			
 			$("#controlgroup-alarm").html("");
-			$("#template-controlgroup-alarm").tmpl( areas ).appendTo( "#controlgroup-alarm" );	
+			$("#template-controlgroup-alarm").tmpl( response ).appendTo( "#controlgroup-alarm" );	
 			$("#HOME-PAGE").trigger("create");
 			
+        	$("#SENSORI-WIFI-PAGE").page();	
+        	$("#AREAS-PAGE").page();
 			
 			
-			$.ajax({
-				global: false,
-				type : 'GET',
-				url : "/AlarmState",
-				success: function(response) {
-					if(!response){response = {state :"OFF"};}
-		        	$( "#controlgroup-alarm input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
-		        	$( "#controlgroup-alarm input[value='"+response.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
-		        	
-		        	
-		        	$("#SENSORI-WIFI-PAGE").page();	
-		        	$("#AREAS-PAGE").page();	
-		        	
-		        }
-			});				
+			function OnOffZone(){
+				$.mobile.activePage.find("[data-role='flipswitch']").off("change");
+
+				var id =  $(this).attr("id"); 
+				
+				$.ajax({
+					global: false,
+					type: "PUT", url: "Area/isActivated/"+id,
+					dataType : "json",
+					data : { isActivated :  $(this).prop("checked")},
+					error: UTILITY.httpError
+				});					
+				
+				
+				
+				setTimeout(function() {$.mobile.activePage.find("[data-role='flipswitch']").on("change",OnOffZone); },10);	
+				
+				$.mobile.activePage.find("[data-role='flipswitch']").each(function( index, obj ) {
+					if($(this).attr("id") !== id){
+						$(this).prop('checked', false).flipswitch('refresh');
+					}
+				});
+				
+				
+			}			
+			$("#HOME-PAGE [data-role='flipswitch']").unbind("change").on("change", OnOffZone);
+			
+//			$.ajax({
+//				global: false,
+//				type : 'GET',
+//				url : "/AlarmState",
+//				success: function(response) {
+//					if(!response){response = {state :"OFF"};}
+//		        	$( "#controlgroup-alarm input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
+//		        	$( "#controlgroup-alarm input[value='"+response.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
+//		        	
+//		        	
+//		        	$("#SENSORI-WIFI-PAGE").page();	
+//		        	$("#AREAS-PAGE").page();	
+//		        	
+//		        }
+//			});				
         }
 	});	
 	

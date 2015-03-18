@@ -51,14 +51,28 @@
 		<h1>Home</h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
+	<div class="ui-content">
 
-	<div role="main" class="ui-content" style="text-align: center;">
-		<fieldset data-role="controlgroup" data-type="horizontal" id="controlgroup-alarm"></fieldset>
-		<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
-				<input name="radio-choice-alarm-state" id="${_id}" value="${name}" type="radio">
-		    	<label for="${_id}">${name}</label>
-		</script>	
+		<fieldset id="fsSecurity" style="display: none">
+			<legend>Sicurezza</legend>
+		
+					<table width="100%" style="border-collapse: collapse" id="controlgroup-alarm"></table>
+						<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
+				<tr>
+					<td width="60%" style="font-weight: bold; text-shadow: none; color: white">${name}</td>
+					<td width="40%" style="text-align: right;">
+						<input type="check" data-role="flipswitch" id="${_id}" {{if (isActivated === true)}}checked{{/if}}  data-theme="b">
+					</td>
+				</tr>
+				</script>
+					
+		</fieldset>
+
 	</div>
+
+	
+
+
 
 </div>	 
 		 

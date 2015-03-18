@@ -39,6 +39,26 @@ label {
   border-style: none;
 }
 
+/* .minde td { */
+/*   border-bottom:solid; */
+/*   border-top:solid; */
+/* 	border-color: blue; */
+/* } */
+
+
+#HOME-PAGE fieldset
+{
+	border: 1px solid #ABABAB !important;
+	padding: 10px !important;
+	border-radius: 10px;
+}
+
+#HOME-PAGE legend
+{
+	padding: 0.2em 1em !important;
+	 text-shadow: none;
+	  color: red;
+}
 
 
 table.alternate_color tr:nth-of-type(even) {

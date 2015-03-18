@@ -10,6 +10,35 @@ var os = require('os');
 var email = require('./email.js');
 var moment = require('moment');
 
+//require('shelljs/global');
+//var child = exec('forever list', {silent:true}, {async:true});
+//child.stdout.on('data', function(data) {
+//	console.log('data:', data);
+//});
+
+
+
+//var exec = require('child_process').exec;
+//exec('forever list', {silent:true}, function(error, output) {
+//	console.log(output);
+//});
+//return;
+
+//var child = exec("forever list", {silent:true}, {async:true});
+//child.stdout.on('data', function(data) {
+//	console.log('data:', data);
+//});
+
+
+//exec("forever list", {silent:true}, {async:true});
+
+//exec('forever list', {silent:true}, function(code, output) {
+//	  console.log('Exit code:', code);
+//	  console.log('Program output:', output);
+//});
+
+
+//return;
 //var gpio = require("pi-gpio");
 
 
@@ -227,6 +256,7 @@ var AreaSchema = new Schema({
 	name : {type : String, required : true, unique: true, trim: true},
 	description : String,
 	wifisensors: [WifiSensorSchema],
+	isActivated: {type : Boolean, 'default': false},
 	date: {type : Date, 'default': Date.now()}	
 	
 });
@@ -246,7 +276,14 @@ app.put('/Area/:id', function(req, res) {
 		else { res.send({}); }
 	});	
 });
-
+app.put('/Area/isActivated/:id', function(req, res) {
+	Area.update({}, {isActivated: false},{multi: true}, function (err, data) {
+		Area.findByIdAndUpdate(req.params.id, {isActivated: req.body.isActivated}, function (err, data) {
+			if(err){console.log(err); res.status(500).send(err); }
+			else { res.send({}); }
+		});	
+	});
+});
 
 app.put('/Area/wifisensors/:id', function(req, res) {
 	Area.findByIdAndUpdate(req.params.id, {'$set':  {'wifisensors': new Area(req.body).wifisensors}}, function (err, data) {
