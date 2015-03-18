@@ -503,8 +503,12 @@ var socket = io.connect();
 
 socket.on('change-alarm-state', function (data) {
 	
-	$( "#controlgroup-alarm input[type='radio']" ).prop( "checked", false ).checkboxradio( "refresh" );
-	$( "#controlgroup-alarm input[value='"+data.state+"']").prop( "checked", true ).checkboxradio( "refresh" );
+
+//	$.mobile.activePage.find("[data-role='flipswitch']").off("change");
+	
+	$("#"+data._id).prop('checked', data.isActivated).flipswitch('refresh');
+	
+//	setTimeout(function() {$.mobile.activePage.find("[data-role='flipswitch']").on("change",OnOffZone); },10);	
 	
 });
 

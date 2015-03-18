@@ -187,27 +187,27 @@ var Schema = mongoose.Schema;
 
 
 //-----------AlarmState---------------------------------------------
-var AlarmStateSchema = new Schema({
-	state: String,
-	user: String,
-	provider: String,
-	date: Date
-});
-mongoose.model('AlarmState', AlarmStateSchema); 
-var AlarmState = mongoose.model('AlarmState');
-
-
-app.get('/AlarmState', function(req, res) {
-	AlarmState.findOne({}).sort('-date').exec(function(err, data) {
-		res.send(data);
-	});
-});
-app.post('/AlarmState', function(req, res) {
-	AlarmState.create(req.body, function (err, data) {
-		io.sockets.emit("change-alarm-state", data);
-	    res.send(data);
-	 });
-});
+//var AlarmStateSchema = new Schema({
+//	state: String,
+//	user: String,
+//	provider: String,
+//	date: Date
+//});
+//mongoose.model('AlarmState', AlarmStateSchema); 
+//var AlarmState = mongoose.model('AlarmState');
+//
+//
+//app.get('/AlarmState', function(req, res) {
+//	AlarmState.findOne({}).sort('-date').exec(function(err, data) {
+//		res.send(data);
+//	});
+//});
+//app.post('/AlarmState', function(req, res) {
+//	AlarmState.create(req.body, function (err, data) {
+//		io.sockets.emit("change-alarm-state", data);
+//	    res.send(data);
+//	 });
+//});
 
 
 
@@ -280,7 +280,11 @@ app.put('/Area/isActivated/:id', function(req, res) {
 	Area.update({}, {isActivated: false},{multi: true}, function (err, data) {
 		Area.findByIdAndUpdate(req.params.id, {isActivated: req.body.isActivated}, function (err, data) {
 			if(err){console.log(err); res.status(500).send(err); }
-			else { res.send({}); }
+			else { 
+				io.sockets.emit("change-alarm-state", data);
+				res.send({});
+				
+			}
 		});	
 	});
 });
