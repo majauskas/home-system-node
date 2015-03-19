@@ -5,12 +5,38 @@
 }
 
 
+.customPopup .ui-header {
+  height: 40px;  
+}
+
+.customPopup .ui-header .ui-btn-icon-notext {
+  font-size: 16px;
+}
+
+.customPopup .ui-page-theme-a .ui-bar-inherit {
+  color: white;
+  text-shadow: 0 0px 0 #eee;
+  font-weight: 700;
+}
+
+.customPopup .ui-header .ui-title {
+  padding: 0.7em 0;
+  white-space: normal;
+}
+
+.customPopup .ui-btn-icon-notext:after {
+  background-size: 18px 18px;
+  margin-left: -11px;
+  margin-top: -11px;
+  width: 22px;
+  height: 22px;  
+}
+
+
 
 .ui-header, .ui-footer {
   height: 60px;  
-/*   height: auto;  */
   border-width: 0;
-/*   background-image: linear-gradient( #9df09a {f-bar-background-start}, #466b45 {f-bar-background-end}); */
   background-image: linear-gradient(#6facd5,#32567B);
 }
 
@@ -30,6 +56,16 @@
   font-size: 25px;
 }
 
+
+.ui-btn-icon-notext:after {
+  background-size: 24px 24px;
+  margin-left: -14px;
+  margin-top: -14px;
+  width: 28px;
+  height: 28px;  
+}
+
+
 label {
   color: white;
   text-shadow: 0 px 0 #f3f3f3;
@@ -39,11 +75,6 @@ label {
   border-style: none;
 }
 
-/* .minde td { */
-/*   border-bottom:solid; */
-/*   border-top:solid; */
-/* 	border-color: blue; */
-/* } */
 
 
 #HOME-PAGE fieldset
@@ -108,10 +139,6 @@ table.alternate_color tr:nth-of-type(even) {
 }
 
 
-/* .ui-li-count-siss { font-size: 11px; font-weight: bold;} */
-
-/* .ui-bar {margin: -10px; } */
-
 #tbody-certificati td {
 	vertical-align: middle;
 }
@@ -125,20 +152,11 @@ table.alternate_color tr:nth-of-type(even) {
 em { color: red; font-weight: bold; padding-right: .25em;}
 
 
-/* .ui-dialog-background { 	opacity: 0.5; 	display: block !important; 	-webkit-transition: opacity 0.5s ease-in; 	} 	.ui-dialog-background.pop.in { 	opacity: 1; 	-webkit-transition: opacity 0.5s ease-in; 	} 	.ui-dialog { 	min-height: 100% !important; 	background: transparent !important; 	} */
 
 .ui-field-contain {
 	border: none;
 } 
 
-
-/* .my-list-view.ui-li-desc { */
-/* 			overflow:show; */
-/* 			text-overflow:clip; */
-/* 			white-space:normal; */
-/* 			height:30px; */
-/* 			margin-bottom:0px; */
-/* 		} */
 
 
 .ui-bar-cittadino {
@@ -165,15 +183,6 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 
 
 
-.ui-btn-icon-notext:after {
-  background-size: 24px 24px;
-  margin-left: -14px;
-  margin-top: -14px;
-  width: 28px;
-  height: 28px;  
-}
-
-
 
 
 .ui-icon-wifi:after {background-image: url("../images/Wifi-02-24-1C95FF.png");background-position: 3px 3px; background-size: 70%;}
@@ -191,15 +200,7 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 .ui-icon-error:after {background-image: url("../images/Warning-Message-24-F50000.png"); background-size: 18px 18px;}
 /* .ui-icon-error:after {background-image: url("../images/Warning-Message-24-F50000.png");background-position: 3px 3px; background-size: 70%;} */
 
-/* .ui-icon-zone:after { */
-/*     background-image: url("../images/Graph-Diagram-24.png"); */
-/*     background-position: 3px 3px; */
-/*     background-size: 70%; */
-/* } */
 
-/* ul.ui-nodisc-icon .ui-btn:after { */
-/*   background-color: #4da6ff; */
-/* } */
 
 .ui-icon-stampa {
 	background-image: url(../images/icone/16/printer.png);
