@@ -9,7 +9,9 @@ var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./lib/email.js');
 var MCP23017 = require('./lib/MCP23017.js');
+var Sound = require('./lib/Sound.js');
 var moment = require('moment');
+var CronJob = require('cron').CronJob;
 
 //require('shelljs/global');
 //var child = exec('forever list', {silent:true}, {async:true});
@@ -77,11 +79,18 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
-  MCP23017.scan(function(data) {
-//	  console.log("MCP23017: ", data);
-  });
-   
+//  MCP23017.scan(function(data) {
+////	  console.log("MCP23017: ", data);
+//  });
+
   
+  new CronJob('00 10 00 * * 1-7', function(){
+      console.log('job init');
+      Sound.playMp3("/home/pi/Bailando.mp3");
+  },null, true);
+  
+  
+    
   
   email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
