@@ -449,7 +449,7 @@ socket.on('SOCKET-CHANGE-ALARM-STATE', function (data) {
 	
 });
 
-socket.on('433mhz', function (device) {
+socket.on('433MHZ', function (device) {
 	
 	
 	if(isActiveSearchWifiSensors){
@@ -475,7 +475,6 @@ socket.on('433mhz', function (device) {
 		});			
 	} else if(isActiveSearchRemoteControls){
 		isActiveSearchRemoteControls = false;
-		
 		$.ajax({
 			global: false,
 			type:'GET', url:"/RemoteControl/"+device.code,		

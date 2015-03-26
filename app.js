@@ -7,7 +7,8 @@ var fs = require('fs');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var os = require('os');
-var email = require('./email.js');
+var email = require('./lib/email.js');
+var MCP23017 = require('./lib/MCP23017.js');
 var moment = require('moment');
 
 //require('shelljs/global');
@@ -73,9 +74,15 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		    }
 		}
 	}
-
+  
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
+  MCP23017.scan(function(data) {
+//	  console.log("MCP23017: ", data);
+  });
+  
+  
+  
   email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
 
@@ -466,7 +473,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 				});
 			}else{
 				//send codes for sensors registrations
-				io.sockets.emit("433mhz", {code:code,binCode:binCode});				
+				io.sockets.emit("433MHZ", {code:code,binCode:binCode});				
 			}			
 		});
 		
