@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 19-03-2015 12:44
+# Cache manifest version 27-03-2015 11:41
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -42,6 +42,7 @@ images/Wifi-02-24-1C95FF.png
 images/Node-24-1C95FF.png
 images/Remote-Control-24-1C95FF.png
 images/ListBox-24-1C95FF.png
+images/Lock-24-FF0000.png
 images/Warning-Message-24-F50000.png
 images/Lock-Open-24-04C263.png
 images/Battery-Low-24-FF0000.png
