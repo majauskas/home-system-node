@@ -489,12 +489,15 @@ app.post('/433mhz/:binCode', function(req, res) {
 			}			
 		});
 		
-		
+//		32533
 		WifiSensor.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {
 			if(data !== null){
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, description:data.description, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
-				if(data.code === 4029 && data.isOpen === true){
+				if(data.code === 4022 && data.isOpen === true){
 					Sound.playMp3("/home/pi/home-system-node/mp3/portaCucinaAperta.mp3", "95");
+				}
+				if(data.code === 32533 && data.isOpen === true){
+					Sound.playMp3("/home/pi/home-system-node/mp3/portaIngressoAperta.mp3", "95");
 				}
 				
 				//email("WifiSensor Attivato", data.name + " " + data.description+"\ncode: "+code+"\nbinCode: "+binCode+"\nduration: "+duration);
