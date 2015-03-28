@@ -81,7 +81,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
   console.log('app listening at http://%s:%s', host, port);
   MCP23017.scan(function(data) {
 	  console.log("MCP23017: ", data);
-	  email("MCP23017 Attivato", data);
+	  email("MCP23017 Attivato", data.bin);
   });
 
   
