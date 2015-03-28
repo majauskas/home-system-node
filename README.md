@@ -15,7 +15,7 @@ sudo adduser $USER gpio
 suso npm install forever -g
 
 ## Developing
-
+http://translate.google.com/translate_tts?tl=it&q=allarme%20%C3%A8%20stato%20disattivato
 
 
 ### Tools

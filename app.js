@@ -86,12 +86,12 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
   new CronJob('00 25 06 * * 1-5', function(){
       console.log('job init at ', new Date());
-      Sound.playMp3("/home/pi/Bailando.mp3","35");
+      Sound.playMp3("/home/pi/Bailando.mp3","75");
   },null, true);
   
   new CronJob('00 00 09 * * 6-7', function(){
       console.log('job init at ', new Date());
-      Sound.playMp3("/home/pi/Bailando.mp3","35");
+      Sound.playMp3("/home/pi/Bailando.mp3","75");
   },null, true);  
     
   
@@ -505,9 +505,11 @@ app.post('/433mhz/:binCode', function(req, res) {
 					var state = binCode.substr(16,8);
 					if(state === "00000011"){ //OFF
 						isActivated = false;
+						Sound.playMp3("mp3/allarmeDisattivato.mp3", "95");
 					}else if(state === "11000000"){ //ON
 						isActivated = true;
-						Sound.playMp3("mp3/remote_button_on.mp3", "90");
+//						Sound.playMp3("mp3/remote_button_on.mp3", "80");
+						Sound.playMp3("mp3/allarmeAttivato.mp3", "95");
 					}
 				}
 				console.log("isActivated",isActivated);
