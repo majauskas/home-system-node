@@ -505,11 +505,11 @@ app.post('/433mhz/:binCode', function(req, res) {
 					var state = binCode.substr(16,8);
 					if(state === "00000011"){ //OFF
 						isActivated = false;
-						Sound.playMp3("mp3/allarmeDisattivato.mp3", "95");
+						Sound.playMp3("/home/pi/home-system-node/mp3/allarmeDisattivato.mp3", "95");
 					}else if(state === "11000000"){ //ON
 						isActivated = true;
 //						Sound.playMp3("mp3/remote_button_on.mp3", "80");
-						Sound.playMp3("mp3/allarmeAttivato.mp3", "95");
+						Sound.playMp3("/home/pi/home-system-node/mp3/allarmeAttivato.mp3", "95");
 					}
 				}
 				console.log("isActivated",isActivated);
