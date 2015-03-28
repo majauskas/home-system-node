@@ -507,7 +507,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 						isActivated = false;
 					}else if(state === "11000000"){ //ON
 						isActivated = true;
-						Sound.playMp3("/home/pi/mp3/DigitalButtons.mp3", "90");
+						Sound.playMp3("mp3/remote_button_on.mp3", "90");
 					}
 				}
 				console.log("isActivated",isActivated);
