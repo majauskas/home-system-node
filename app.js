@@ -94,7 +94,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 				if(!doc.pins[index]){
 					doc.pins[index] = {code : code, state : val};
 				}else{
-					if(doc.pins[index].state !== val && doc.pins[index].name !== "" && doc.pins[index].state === 0){
+					if(doc.pins[index].state !== val && doc.pins[index].name && doc.pins[index].name !== "" && doc.pins[index].name !== undefined && doc.pins[index].state === 0){
 						Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:doc.pins[index].name, description:"ON"}}, function (err, data) {});
 					}					
 					doc.pins[index].code = code;
