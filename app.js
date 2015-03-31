@@ -84,15 +84,15 @@ var server = app.listen(process.env.PORT || 8081, function () {
   });
 
   
-  new CronJob('00 25 06 * * 1-5', function(){
-      console.log('job init at ', new Date());
-      Sound.playMp3("/home/pi/Bailando.mp3","75");
-  },null, true);
-  
-  new CronJob('00 00 09 * * 6-7', function(){
-      console.log('job init at ', new Date());
-      Sound.playMp3("/home/pi/Bailando.mp3","75");
-  },null, true);  
+//  new CronJob('00 25 06 * * 1-5', function(){
+//      console.log('job init at ', new Date());
+//      Sound.playMp3("/home/pi/Bailando.mp3","75");
+//  },null, true);
+//  
+//  new CronJob('00 00 09 * * 6-7', function(){
+//      console.log('job init at ', new Date());
+//      Sound.playMp3("/home/pi/Bailando.mp3","75");
+//  },null, true);  
     
   
   email("Home System Attivato", "App listening at http://"+host+":"+port);
