@@ -603,6 +603,13 @@ $(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
 });	
 
 
+
+
+
+
+
+
+
 function loadAreas(callback){
 
 	var st = Date.now();

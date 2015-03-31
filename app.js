@@ -13,6 +13,10 @@ var Sound = require('./lib/Sound.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
 
+
+
+var isActiveSearchPirSensors = false;
+
 //require('shelljs/global');
 //var child = exec('forever list', {silent:true}, {async:true});
 //child.stdout.on('data', function(data) {
@@ -80,7 +84,21 @@ var server = app.listen(process.env.PORT || 8081, function () {
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
   MCP23017.scan(function(data) {
-	  console.log("MCP23017: ", data.bin);
+	  console.log("MCP23017: ", data.gpa);
+		PIR_SENSOR.findOneAndUpdate({type : 'GPA'}, {'$set':  {'date': new Date()}}, {upsert : true}, function (err, doc) {
+			data.gpa.forEach(function(val, index) {
+				if(!doc.pins[index]){
+					doc.pins[index] = {code : "GPA-"+val, state : val};
+				}else{
+					doc.pins[index].code = "GPA-"+val;
+					doc.pins[index].state = val;				
+				}
+			  });
+			PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
+				console.log(err, doc);
+				io.sockets.emit("PIRSENSOR", doc);
+			});	
+		});	 
   });
 
   
@@ -130,6 +148,11 @@ io.sockets.on('connection', function (socket) {
 //		});		
 //	});		
 
+	
+	socket.on('isActiveSearchPirSensors', function(value) {
+		isActiveSearchPirSensors = value;
+	});	
+	
 });
 
 
@@ -201,6 +224,47 @@ process.on('SIGINT', function() {
 });
 
 var Schema = mongoose.Schema;
+
+
+//-----------PIR_SENSOR---------------------------------------------
+var PIR_SENSOR = mongoose.model('PIR_SENSOR', new Schema({
+	type: String,
+	pins: [{code: String,
+		name: String,
+		state: Number}],
+	date: Date	
+}));
+app.get('/PirSensor', function(req, res) {
+	console.log("PirSensor");
+	PIR_SENSOR.findOne({}).exec(function(err, data) {
+		console.log(err, data);
+		res.send(data);
+	});
+});
+
+//curl -X POST http://10.221.6.69:8081/PirSensorTest/00000000
+app.post('/PirSensorTest/:bytes', function(req, res) {
+	var bytes = req.params.bytes;
+	console.log("PirSensorTest", bytes);
+	var data = {gpa : bytes.split('')};
+	PIR_SENSOR.findOneAndUpdate({type : 'GPA'}, {'$set':  {'date': new Date()}}, {upsert : true}, function (err, doc) {
+		data.gpa.forEach(function(val, index) {
+			if(!doc.pins[index]){
+				doc.pins[index] = {code : "GPA-"+val, state : val};
+			}else{
+				doc.pins[index].code = "GPA-"+val;
+				doc.pins[index].state = val;				
+			}
+		  });
+		PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
+			console.log(err, doc);
+			io.sockets.emit("PIRSENSOR", doc);
+		});	
+	});	
+	
+	res.send();
+});
+
 
 
 
