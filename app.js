@@ -230,9 +230,11 @@ var Schema = mongoose.Schema;
 //-----------PIR_SENSOR---------------------------------------------
 var PIR_SENSOR = mongoose.model('PIR_SENSOR', new Schema({
 	type: String,
-	pins: [{code: String,
-		name: String,
-		state: Number}],
+	pins: [{
+		    code: String,
+		    name: String,
+		    state: Number
+		  }],
 	date: Date	
 }));
 app.get('/PirSensor', function(req, res) {
@@ -269,6 +271,23 @@ app.post('/PirSensorTest/:bytes', function(req, res) {
 
 
 
+
+app.put('/PirSensor', function(req, res) {
+	console.log("PUT PirSensor", req.body);
+//	PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
+//		console.log(err, doc);
+//		io.sockets.emit("PIRSENSOR", doc);
+//	});	
+	
+	PIR_SENSOR.findOneAndUpdate({"pins._id" : req.body._id}, {"$set" : {"pins.$.name" : req.body.name}}, function (err, doc) {
+		console.log(err, doc);
+		res.send({});
+		 io.sockets.emit("PIRSENSOR", doc);
+	});	
+});
+//WifiSensor.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
+//    res.send({});
+//});	
 //-----------WifiSensor---------------------------------------------
 var WifiSensorSchema = new Schema({
 	code: Number,

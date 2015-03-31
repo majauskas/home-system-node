@@ -80,26 +80,47 @@
 		<h1>Sensori PIR<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-<!-- 	<div class="wrapper" data-iscroll> -->
-<!-- 		<div class="iscroll-pulldown"><span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span></div> -->
 		<div data-role="main" class="ui-content" style="text-align: center;">
 			
 			<ul data-role="listview" data-inset="false" id="listview-pir-sensors"></ul>	
 			<script id="template-pir-sensors" type="text/x-jquery-tmpl">
 					<li data-icon='node' data='${target}' class="ui-nodisc-icon"><a>
-						<h2><font style='white-space:normal;'>${code}</font></h2>												
-						<p class='ui-li-aside' style='text-align: center;'>{{if (state === 0)}}<font style='color:red;'>Active</font></br>{{/if}}</p>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>											
+						<p class='ui-li-aside' style='text-align: center;'>{{if (state === 0 && name )}}<font style='color:red; font-weight: bold;'>ON</font></br>{{/if}}</p>
 					</a></li>
 		</script>
 		</div>
 		
 		
 		
-		<div data-role="main" class="ui-content" style="text-align: center;">
-			<a id="btSearchPirSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a>
-		</div>
-<!-- 	</div> -->
+<!-- 		<div data-role="main" class="ui-content" style="text-align: center;"> -->
+<!-- 			<a id="btSearchPirSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a> -->
+<!-- 		</div> -->
 </div> 			 
+<div id="EDIT-PIR-SENSOR-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#SENSORI-PIR-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Modifica Sensore</h1>
+	</div>
+	
+	<div class="ui-content">
+
+        <div>
+            <label data-inline="true" for="code">Code:</label>
+			<input readonly name="code" id="code">
+			<label for="name">Nome:</label>
+			<input type="text" name="name" id="name">
+        </div>
+
+		<div data-role="main" class="ui-content" style="text-align: center;">
+<!-- 			<a id="btWiFiSensorDelete" class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline ui-corner-all">Elimina</a> -->
+			<a id="btPirSensorConferma" class="ui-btn ui-icon-edit ui-btn-icon-left ui-btn-inline ui-corner-all">Conferma</a>
+		</div>
+	</div>
+</div> 
+
+
+
 
 <div id="SENSORI-WIFI-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
