@@ -87,9 +87,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	  console.log("MCP23017: ", data.gpa);
 		PIR_SENSOR.findOneAndUpdate({type : 'GPA'}, {'$set':  {'date': new Date()}}, {upsert : true}, function (err, doc) {
 			data.gpa.forEach(function(val, index) {
-				
-
-				
 				var code = "GPA-"+index;
 				if(!doc.pins[index]){
 					doc.pins[index] = {code : code, state : val};
@@ -102,10 +99,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 				}
 			  });
 			PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
-				console.log(err, doc);
 				io.sockets.emit("PIRSENSOR", doc);
-				
-				
 			});	
 		});	 
   });
