@@ -98,6 +98,10 @@ var server = app.listen(process.env.PORT || 8081, function () {
 			PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
 				console.log(err, doc);
 				io.sockets.emit("PIRSENSOR", doc);
+				if(doc.name !== "" && doc.state === 0){
+					Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:doc.name, description:"ON"}}, function (err, data) {});
+				}
+				
 			});	
 		});	 
   });
