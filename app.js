@@ -107,10 +107,11 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
   MCP23017.scan(function(data) {
 	  console.log("MCP23017: ", data);
-	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, data) {
-//		console.log(data);
-		PIR_SENSOR.find({}).exec(function(err, data) {
-			io.sockets.emit("PIRSENSOR", data);
+	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+		var name = (doc.name) ? doc.name : doc.code;
+		Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:name, description:"ON"}}, function (err, data) {});
+		PIR_SENSOR.find({}).exec(function(err, doc) {
+			io.sockets.emit("PIRSENSOR", doc);
 		});		
 	  });	 
   });
