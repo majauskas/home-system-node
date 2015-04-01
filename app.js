@@ -15,7 +15,7 @@ var CronJob = require('cron').CronJob;
 
 
 
-var isActiveSearchPirSensors = false;
+//var isActiveSearchPirSensors = false;
 
 //require('shelljs/global');
 //var child = exec('forever list', {silent:true}, {async:true});
@@ -83,26 +83,36 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
+//  MCP23017.scan(function(data) {
+//	  console.log("MCP23017: ", data.gpa);
+//		PIR_SENSOR.findOneAndUpdate({type : 'GPA'}, {'$set':  {'date': new Date()}}, {upsert : true}, function (err, doc) {
+//			data.gpa.forEach(function(val, index) {
+//				var code = "GPA-"+index;
+//				if(!doc.pins[index]){
+//					doc.pins[index] = {code : code, state : val};
+//				}else{
+//					if(doc.pins[index].state !== val && doc.pins[index].name && doc.pins[index].name !== "" && doc.pins[index].name !== undefined && doc.pins[index].state === 0){
+//						Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:doc.pins[index].name, description:"ON"}}, function (err, data) {});
+//					}					
+//					doc.pins[index].code = code;
+//					doc.pins[index].state = val;				
+//				}
+//			  });
+//			
+//			PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
+//				io.sockets.emit("PIRSENSOR", doc);
+//			});	
+//		});	 
+//  });
+  
   MCP23017.scan(function(data) {
 	  console.log("MCP23017: ", data.gpa);
-		PIR_SENSOR.findOneAndUpdate({type : 'GPA'}, {'$set':  {'date': new Date()}}, {upsert : true}, function (err, doc) {
-			data.gpa.forEach(function(val, index) {
-				var code = "GPA-"+index;
-				if(!doc.pins[index]){
-					doc.pins[index] = {code : code, state : val};
-				}else{
-					if(doc.pins[index].state !== val && doc.pins[index].name && doc.pins[index].name !== "" && doc.pins[index].name !== undefined && doc.pins[index].state === 0){
-						Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:doc.pins[index].name, description:"ON"}}, function (err, data) {});
-					}					
-					doc.pins[index].code = code;
-					doc.pins[index].state = val;				
-				}
-			  });
-			PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
-				io.sockets.emit("PIRSENSOR", doc);
-			});	
-		});	 
+	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, data) {
+		console.log(data);
+	  });	 
   });
+  
+  
 
   
 //  new CronJob('00 25 06 * * 1-5', function(){
@@ -152,9 +162,9 @@ io.sockets.on('connection', function (socket) {
 //	});		
 
 	
-	socket.on('isActiveSearchPirSensors', function(value) {
-		isActiveSearchPirSensors = value;
-	});	
+//	socket.on('isActiveSearchPirSensors', function(value) {
+//		isActiveSearchPirSensors = value;
+//	});	
 	
 });
 
@@ -230,66 +240,92 @@ var Schema = mongoose.Schema;
 
 
 //-----------PIR_SENSOR---------------------------------------------
-var PIR_SENSOR = mongoose.model('PIR_SENSOR', new Schema({
-	type: String,
-	pins: [{
-		    code: String,
-		    name: String,
-		    state: Number
-		  }],
-	date: Date	
-}));
+var PirSensorSchema = new Schema({
+    code: String,
+    name: String,
+    state: String,
+    date: Date
+},{toJSON:{virtuals: true}});
+
+PirSensorSchema.methods.toJSON = function() {
+	  var obj = this.toObject();
+	  var date = moment(obj.date), formatted = date.format('DD/MM/YYYY HH:mm:ss');
+	  obj.date = formatted;
+	  return obj;
+};
+var PIR_SENSOR = mongoose.model('PIR_SENSOR', PirSensorSchema);
+
+
+
+
+
+
 app.get('/PirSensor', function(req, res) {
-	console.log("PirSensor");
-	PIR_SENSOR.findOne({}).exec(function(err, data) {
-		console.log(err, data);
-		res.send(data);
-	});
+	PIR_SENSOR.find({}).exec(function(err, data) { res.send(data); });
 });
 
-//curl -X POST http://10.221.6.69:8081/PirSensorTest/00000000
-app.post('/PirSensorTest/:bytes', function(req, res) {
-	var bytes = req.params.bytes;
-	console.log("PirSensorTest", bytes);
-	var data = {gpa : bytes.split('')};
-	PIR_SENSOR.findOneAndUpdate({type : 'GPA'}, {'$set':  {'date': new Date()}}, {upsert : true}, function (err, doc) {
-		data.gpa.forEach(function(val, index) {
-			if(!doc.pins[index]){
-				doc.pins[index] = {code : "GPA-"+val, state : val};
-			}else{
-				doc.pins[index].code = "GPA-"+val;
-				doc.pins[index].state = val;				
-			}
-		  });
-		PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
-			console.log(err, doc);
-			io.sockets.emit("PIRSENSOR", doc);
-		});	
-	});	
-	
-	res.send();
-});
+////curl -X POST http://10.221.6.69:8081/PirSensorTest/00000000
+//app.post('/PirSensorTest/:bytes', function(req, res) {
+//	res.send();
+//	
+//	init(function(data) {
+//		console.log(data);
+//		PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, data) {
+//		  console.log(data);
+//		});	
+//	});	
+//	
+//});
+//var lastTime = new Date();
+//var last_state = null;
+//function scan(current_state, callBack){
+//	
+//	var duration = Number(new Date() - lastTime);
+//	if( duration > 1400 && duration < 2600 && last_state !== current_state){
+//		console.log("OK",duration, current_state);	
+//		var last_array = last_state.split('');
+//		var current_array = current_state.split('');
+//		current_array.forEach(function(value, i) {
+//			
+//			if(last_array[i] !== value){
+//				var code = "0x20-GP" + ( (i<8) ? ("A"+i): ("B"+(i-8)));
+//				callBack({code: code, state : last_array[i] + value, date: new Date()});
+//			}
+//	    });	
+//	}
+//
+//	last_state = current_state;
+//	lastTime = new Date();		
+//}
+//
+//function init(callBack){
+//	
+//
+//scan("1111000000000001",callBack);
+//setTimeout(function() {
+//	scan("0111000000000000",callBack);
+//	setTimeout(function() {
+//    	scan("1111000000000001",callBack);
+//	}, 2000);	
+//}, 1000);
+//
+//}    
 
 
 
 
 
 app.put('/PirSensor', function(req, res) {
-	console.log("PUT PirSensor", req.body);
-//	PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
-//		console.log(err, doc);
-//		io.sockets.emit("PIRSENSOR", doc);
-//	});	
-	
-	PIR_SENSOR.findOneAndUpdate({"pins._id" : req.body._id}, {"$set" : {"pins.$.name" : req.body.name}}, function (err, doc) {
-		console.log(err, doc);
-		res.send({});
-		 io.sockets.emit("PIRSENSOR", doc);
+	PIR_SENSOR.findByIdAndUpdate(req.body._id, {name: req.body.name}, function (err, data) {
+		PIR_SENSOR.find({}).exec(function(err, data) {
+			res.send(data);
+		});
 	});	
 });
-//WifiSensor.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
-//    res.send({});
-//});	
+
+
+
+
 //-----------WifiSensor---------------------------------------------
 var WifiSensorSchema = new Schema({
 	code: Number,

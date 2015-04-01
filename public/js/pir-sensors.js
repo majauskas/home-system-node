@@ -21,47 +21,15 @@ $(function() {
 		
 		
 		$("#listview-pir-sensors").empty();
-		$.each(response.pins, function (i, obj) { obj.target = JSON.stringify(obj); });
-		$("#template-pir-sensors").tmpl( response.pins ).appendTo( "#listview-pir-sensors" );		
+		$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+		$("#template-pir-sensors").tmpl( response ).appendTo( "#listview-pir-sensors" );		
 		$("#listview-pir-sensors").listview("refresh");
 		
-		APPLICATION.pirsensors = response.pins;
+		APPLICATION.pirsensors = response;
 		
 		
 //		$("#SENSORI-PIR-PAGE").page('destroy').page();	
-		
-		
-		
-		
-//		socket.emit('isActiveSearchPirSensors', false);
-		
-//		if(isActiveSearchPirSensors){
-//			isActiveSearchPirSensors = false;
-//			
-			
-//			var wifisensors = $.grep(APPLICATION.wifisensors, function(target, i) {	
-//				 return (!area.wifisensors.contains(target._id));
-//			});
-//			
-//			$.ajax({
-//				global: false,
-//				type:'GET', url:"/WifiSensor/"+device.code,		
-//				success: function(response) {
-//					if(response.length === 0){
-//						$('#NEW-WIFI-SENSOR-PAGE #binCode').val(device.binCode);
-//						$('#NEW-WIFI-SENSOR-PAGE #code').val(device.code);
-//						$('#NEW-WIFI-SENSOR-PAGE #name').val("");
-//						$('#NEW-WIFI-SENSOR-PAGE #description').val("");
-//						$("#NEW-WIFI-SENSOR-PAGE").attr("data",JSON.stringify(device));
-//						$.mobile.changePage("#NEW-WIFI-SENSOR-PAGE");
-//						
-//					}else{
-//						UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") è gia registrato..");	
-//					}
-//		        },
-//		        error: UTILITY.httpError
-//			});			
-//		} 
+ 
 		
 	});	
 	
@@ -79,8 +47,6 @@ $(function() {
 	$("#EDIT-PIR-SENSOR-PAGE").on("click", "#btPirSensorConferma", function (event) {
 
 		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
-		
-		
 		$.ajax({
 			global: false,
 			type:'PUT', url:"/PirSensor",
@@ -90,9 +56,7 @@ $(function() {
 				name :  $.mobile.activePage.find('#name').val()
 			},			
 			success: function(response) {
-
-			
-//				$("#SENSORI-WIFI-PAGE").page('destroy').page();	
+				renderListViewPirSensors(response);
 				$.mobile.changePage("#SENSORI-PIR-PAGE");
 	
 	        }
@@ -100,38 +64,6 @@ $(function() {
 
 	});	
 
-	
-	$("#EDIT-WIFI-SENSOR-PAGE").on("click", "#btWiFiSensorDelete", function (event) {
-
-		UTILITY.areYouSure("Elimina il sensore?", function() {
-
-			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
-			
-			$.ajax({
-				global: false,
-				type:'DELETE', url:"/WifiSensor",
-				dataType : "json",
-				data : {
-					code :  data.code
-				},			
-				success: function(response) {
-
-					$("#SENSORI-WIFI-PAGE").page('destroy').page();	
-					$("#HOME-PAGE").page('destroy').page();
-					$("#AREAS-PAGE").page('destroy').page();
-					$.mobile.changePage("#SENSORI-WIFI-PAGE");
-										
-					
-					
-		        }
-			});				
-			
-		});
-		
-	
-
-	});	
-	
 	
 });
 
@@ -146,21 +78,19 @@ function loadSensoriPIR(){
 	$.ajax({
 		type : 'GET',
 		url : "/PirSensor",
-		success: function(response) {
-			
-			$("#listview-pir-sensors").empty();
-			$.each(response.pins, function (i, obj) { obj.target = JSON.stringify(obj); });
-			$("#template-pir-sensors").tmpl( response.pins ).appendTo( "#listview-pir-sensors" );		
-			$("#listview-pir-sensors").listview("refresh");
-			console.log(response.pins);
-			APPLICATION.pirsensors = response.pins;
-			
-        }
+		success: renderListViewPirSensors
 	});		
 	
 }
 
-
+function renderListViewPirSensors(response){
+	
+	$("#listview-pir-sensors").empty();
+	$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+	$("#template-pir-sensors").tmpl( response ).appendTo( "#listview-pir-sensors" );		
+	$("#listview-pir-sensors").listview("refresh");
+	APPLICATION.pirsensors = response;	
+}
 
 
 
