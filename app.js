@@ -106,9 +106,12 @@ var server = app.listen(process.env.PORT || 8081, function () {
 //  });
   
   MCP23017.scan(function(data) {
-	  console.log("MCP23017: ", data.gpa);
+	  console.log("MCP23017: ", data);
 	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, data) {
-		console.log(data);
+//		console.log(data);
+		PIR_SENSOR.find({}).exec(function(err, data) {
+			io.sockets.emit("PIRSENSOR", data);
+		});		
 	  });	 
   });
   
@@ -616,6 +619,9 @@ app.post('/433mhz/:binCode', function(req, res) {
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, description:data.description, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
 				if(data.code === 4022 && data.isOpen === true){
 					Sound.playMp3("/home/pi/home-system-node/mp3/portaCucinaAperta.mp3", "95");
+				}
+				if(data.code === 4029 && data.isOpen === true){
+					Sound.playMp3("/home/pi/home-system-node/mp3/portaBagnoAperta.mp3", "95");
 				}
 				if(data.code === 32533){
 					Sound.playMp3("/home/pi/home-system-node/mp3/portaIngressoAperta.mp3", "95");

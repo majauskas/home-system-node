@@ -17,21 +17,7 @@ $(function() {
 	
 	
 	
-	socket.on('PIRSENSOR', function (response) {
-		
-		
-		$("#listview-pir-sensors").empty();
-		$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-		$("#template-pir-sensors").tmpl( response ).appendTo( "#listview-pir-sensors" );		
-		$("#listview-pir-sensors").listview("refresh");
-		
-		APPLICATION.pirsensors = response;
-		
-		
-//		$("#SENSORI-PIR-PAGE").page('destroy').page();	
- 
-		
-	});	
+
 	
 	$("#listview-pir-sensors").on("click", "li", function (event) {
 		
@@ -97,4 +83,12 @@ function renderListViewPirSensors(response){
 
 $(document).on("pagecreate","#SENSORI-PIR-PAGE", function(){
 	  loadSensoriPIR();
+	  
+		socket.on('PIRSENSOR', function (response) {
+			
+			console.log("socket PIRSENSOR", response);
+			renderListViewPirSensors(response)
+			
+		});		  
+	  
 });	
