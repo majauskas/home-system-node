@@ -91,6 +91,19 @@ label {
 	  color: red;
 }
 
+#EDIT-AREA-PAGE fieldset
+{
+	border: 1px solid #ABABAB !important;
+	padding: 10px !important;
+	border-radius: 10px;
+}
+
+#EDIT-AREA-PAGE legend
+{
+	padding: 0.2em 1em !important;
+	 text-shadow: none;
+	  color: red;
+}
 
 table.alternate_color tr:nth-of-type(even) {
     background-color:#e6ebdb;

@@ -83,35 +83,34 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
-//  MCP23017.scan(function(data) {
-//	  console.log("MCP23017: ", data.gpa);
-//		PIR_SENSOR.findOneAndUpdate({type : 'GPA'}, {'$set':  {'date': new Date()}}, {upsert : true}, function (err, doc) {
-//			data.gpa.forEach(function(val, index) {
-//				var code = "GPA-"+index;
-//				if(!doc.pins[index]){
-//					doc.pins[index] = {code : code, state : val};
-//				}else{
-//					if(doc.pins[index].state !== val && doc.pins[index].name && doc.pins[index].name !== "" && doc.pins[index].name !== undefined && doc.pins[index].state === 0){
-//						Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:doc.pins[index].name, description:"ON"}}, function (err, data) {});
-//					}					
-//					doc.pins[index].code = code;
-//					doc.pins[index].state = val;				
-//				}
-//			  });
-//			
-//			PIR_SENSOR.findByIdAndUpdate(doc._id, {'$set':  {'pins': doc.pins}}, function (err, doc) {
-//				io.sockets.emit("PIRSENSOR", doc);
-//			});	
-//		});	 
-//  });
+
   
   MCP23017.scan(function(data) {
 	  console.log("MCP23017: ", data);
 	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+		
+		var code = doc.code;
 		var name = (doc.name) ? doc.name : doc.code;
 		Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:name, description:"ON"}}, function (err, data) {});
 		PIR_SENSOR.find({}).exec(function(err, doc) {
+			if(!doc) {return;}
+			
 			io.sockets.emit("PIRSENSOR", doc);
+			
+			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
+				if(area){
+					
+					doc.forEach(function(pir) {
+						if(pir.code ===  code){
+							alarmDetection(pir, area._id);
+						}					
+					});	
+						
+				}
+			});				
+			
+			
+			
 		});		
 	  });	 
   });
@@ -180,12 +179,14 @@ io.sockets.on('connection', function (socket) {
 function alarmDetection(sensor, areaId) {
 	
 	
+	sensor.name = (sensor.name) ? sensor.name : sensor.code;
+	
 	//sending to client the notification
 	io.sockets.emit("ALARM_DETECTION", sensor, areaId);
 	
-	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme attivato", description: sensor.name + " " + sensor.description}}, function (err, data) {});
+	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme attivato", description: sensor.name}}, function (err, data) {});
 	
-	email("Sicurezza di casa violata", sensor.name + " " + sensor.description + "\n Sirena allarme attivata");
+	email("Sicurezza di casa violata", sensor.name + "\n Sirena allarme attivata");
 	
 	//TODO: activate the siren and email/sms notifications
 //	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
@@ -314,9 +315,11 @@ app.get('/PirSensor', function(req, res) {
 //}, 1000);
 //
 //}    
-
-
-
+//
+//var data = {code: "GPA-0", state : "01", date: new Date()};
+//PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, data) {
+//	  console.log(data);
+//});
 
 
 app.put('/PirSensor', function(req, res) {
@@ -376,13 +379,17 @@ app.del('/WifiSensor', function(req, res) {
 var AreaSchema = new Schema({
 	name : {type : String, required : true, unique: true, trim: true},
 	description : String,
-	wifisensors: [WifiSensorSchema],
+	activeSensors: [],
 	isActivated: {type : Boolean, 'default': false},
 	date: {type : Date, 'default': Date.now()}	
 	
 });
 mongoose.model('Area', AreaSchema); 
 var Area = mongoose.model('Area');
+
+
+
+
 
 app.post('/Area', function(req, res) {
 	Area.create(req.body, function (err, data) {
@@ -397,6 +404,7 @@ app.put('/Area/:id', function(req, res) {
 		else { res.send({}); }
 	});	
 });
+
 app.put('/Area/isActivated/:id', function(req, res) {
 	Area.update({}, {isActivated: false},{multi: true}, function (err, data) {
 		Area.findByIdAndUpdate(req.params.id, {isActivated: req.body.isActivated}, function (err, data) {
@@ -410,16 +418,19 @@ app.put('/Area/isActivated/:id', function(req, res) {
 	});
 });
 
-app.put('/Area/wifisensors/:id', function(req, res) {
-	Area.findByIdAndUpdate(req.params.id, {'$set':  {'wifisensors': new Area(req.body).wifisensors}}, function (err, data) {
+
+app.put('/Area/activeSensors/:id', function(req, res) {
+	Area.findByIdAndUpdate(req.params.id, {'$set':  {'activeSensors': req.body.activeSensors}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
+	
 });
 
 
+
 app.get('/Area', function(req, res) {
-	Area.find({}).sort('date').populate('wifisensors').exec(function(err, data) {
+	Area.find({}).sort('date').populate('wifisensors').populate('pirsensors').exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
 	});		
@@ -431,8 +442,6 @@ app.del('/Area/:id', function(req, res) {
 		else { res.send({}); }
 	 });
 });
-
-
 
 
 
@@ -551,18 +560,13 @@ app.post('/433mhz/:binCode', function(req, res) {
 	
 	var duration = Number(new Date() - lastTime);
 	
-//	if(duration < 1500){
 	if(duration < 2200 || (duration < 1200 && lastBinCode === binCode)){
 		res.send();
 		return;		
 	}
-
-	
-	
 	lastTime = new Date();
 	lastBinCode = binCode;
 	
-//	console.log("duration: ",duration);
 	
 	var code=null;
 	if(binCode.length === 24 || binCode.length === 40 ){
@@ -596,39 +600,33 @@ app.post('/433mhz/:binCode', function(req, res) {
 //		}
 		
 		console.log(code, isOpen, isBatteryLow, binCode);
-	
 		
-		//controlling if alarm is activated	
-		Area.findOne({isActivated:true}).populate('wifisensors').exec(function(err, area) {
-
-			if(area && area.wifisensors !== undefined){
-
-				area.wifisensors.forEach(function(sensor) {
-					console.log(sensor);
-					if(sensor.code ===  code){
-						alarmDetection(sensor, area._id);
-					}					
-				});
-			}else{
-				//send codes for sensors registrations
-				io.sockets.emit("433MHZ", {code:code,binCode:binCode});				
-			}			
-		});
+		io.sockets.emit("433MHZ", {code:code,binCode:binCode});	
+		
+		Area.findOne({isActivated:true, activeSensors : code.toString() }).exec(function(err, area) {
+			if(area){
+				WifiSensor.findOne({code:code}, function(err, sensor){
+					alarmDetection(sensor, area._id);
+				});	
+			}
+		});		
+		
+		
 		
 		WifiSensor.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {
 			if(data !== null){
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, description:data.description, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
-				if(data.code === 4022 && data.isOpen === true){
-					Sound.playMp3("/home/pi/home-system-node/mp3/portaCucinaAperta.mp3", "95");
-				}
-				if(data.code === 4029 && data.isOpen === true){
-					Sound.playMp3("/home/pi/home-system-node/mp3/portaBagnoAperta.mp3", "95");
-				}
-				if(data.code === 32533){
-					Sound.playMp3("/home/pi/home-system-node/mp3/portaIngressoAperta.mp3", "95");
-				}
-				
-				//email("WifiSensor Attivato", data.name + " " + data.description+"\ncode: "+code+"\nbinCode: "+binCode+"\nduration: "+duration);
+//				if(data.code === 4022 && data.isOpen === true){
+//					Sound.playMp3("/home/pi/home-system-node/mp3/portaCucinaAperta.mp3", "95");
+//				}
+//				if(data.code === 4029 && data.isOpen === true){
+//					Sound.playMp3("/home/pi/home-system-node/mp3/portaBagnoAperta.mp3", "95");
+//				}
+//				if(data.code === 32533){
+//					Sound.playMp3("/home/pi/home-system-node/mp3/portaIngressoAperta.mp3", "95");
+//				}
+//				
+//				email("WifiSensor Attivato", data.name + " " + data.description+"\ncode: "+code+"\nbinCode: "+binCode+"\nduration: "+duration);
 			}
 		});		
 		
@@ -667,4 +665,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 	res.send();
 	
 });
+
+
+
 

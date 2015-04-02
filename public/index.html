@@ -254,39 +254,62 @@
 	<div data-role="header" data-position="fixed">
 		<a href="#AREAS-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Modifica Zona</h1>
-		<a id="btAddSensorToArea" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-plus">Aggiungi sensore</a>
+		<a id="btDeleteArea" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-delete">Rimuovi zona</a>
+		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check" style="margin-right:55px;"></a>		
 	</div>
 	
 	<div class="ui-content">
 
-        <div>
-            <label data-inline="true" for="name">Nome:</label>
-			<input name="name" id="name">
-			<label for="description">Descrizione:</label>
-			<input type="text" name="description" id="description">
-        </div>
-
-		<ul data-role="listview" data-inset="true" id="listview-area-sensors"></ul>	
-		<script id="template-area-sensors" type="text/x-jquery-tmpl">
-					<li data-icon='delete' data='${target}'><a>												
-						<p>${name} - ${description}</p>
-					</a></li>
-		</script>
+		<fieldset>
+			<legend>Zona</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Descrizione:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="description" id="description">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
 		<p></p>
-		<div class="ui-content" style="text-align: center;">
-			<a id="btDelete" class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline  ui-corner-all">Elimina</a>
-			<a id="btConferma" class="ui-btn ui-icon-check ui-btn-icon-left ui-btn-inline  ui-corner-all">Conferma</a>
-		</div>				
+		<fieldset>
+			<legend>Sensori Pir</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-pirsensors"></table>
+				<script id="template-controlgroup-pirsensors" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" code="${code}" {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>
+		<fieldset>
+			<legend>Sensori Wifi</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-wifisensors"></table>
+				<script id="template-controlgroup-wifisensors" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" code="${code}" {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>
+		
+<!-- 		<p></p> -->
+<!-- 		<div class="ui-content" style="text-align: center;"> -->
+<!-- 			<a id="btDelete" class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline  ui-corner-all">Elimina</a> -->
+<!-- 			<a id="btConferma" class="ui-btn ui-icon-check ui-btn-icon-left ui-btn-inline  ui-corner-all">Conferma</a> -->
+<!-- 		</div>				 -->
 	</div>
-	
-	<div id="add-remove-sensors-panel" data-role="panel" data-display="overlay" data-position="right" data-position-fixed="true" data-theme="a">
-		<ul data-role="listview" data-inset="false"  id="listview-sensors-for-area"></ul>	
-		<script id="template-sensors-for-area" type="text/x-jquery-tmpl">
-					<li data-icon='plus' data='${target}' ><a>
-						<p>${name} - ${description}</p>
-					</a></li>
-		</script>		
- 	</div> 	
+		
  		
 </div>
 
