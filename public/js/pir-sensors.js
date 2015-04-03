@@ -3,26 +3,13 @@ var isActiveSearchPirSensors = false;
 $(function() {
 	
 	
-//	$("#SENSORI-PIR-PAGE").on("click", "#btSearchPirSensors", function (event) {
-//		
-//		UTILITY.alertPopup(null, "Ricerca sensori PIR attivata.<br>Accendi o attiva un sensore", function (event) {
-//			UTILITY.hideAlertPopup();
-//			isActiveSearchPirSensors = false;
-////			socket.emit('isActiveSearchPirSensors', false);
-//		});
-//		isActiveSearchPirSensors = true;
-////		socket.emit('isActiveSearchPirSensors', true);
-//		
-//	});	
-	
-	
 	
 
 	
 	$("#listview-pir-sensors").on("click", "li", function (event) {
 		
 		var data = jQuery.parseJSON($(this).attr("data"));
-		$('#EDIT-PIR-SENSOR-PAGE #code').val(data.code);	
+		$('#EDIT-PIR-SENSOR-PAGE #code').html(data.code);	
 		$('#EDIT-PIR-SENSOR-PAGE #name').val(data.name);
 		$("#EDIT-PIR-SENSOR-PAGE").attr("data", $(this).attr("data"));
 		

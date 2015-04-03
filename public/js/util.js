@@ -22,7 +22,7 @@ var UTILITY = new initutil();function initutil() {
     	$('#alert-popup').remove();
     	setTimeout(function() {
     		
-    		$('#alert-popup').remove();
+//    		$('#alert-popup').remove();
     		var page = $.mobile.activePage;
     		var popup = $('<div class="customPopup" id="alert-popup" data-transition="pop" data-role="popup" data-dismissible="false" style="max-width: 400px" data-theme="b" data-shadow="true" data-overlay-theme="a"></div>').appendTo( page );
     		
@@ -48,7 +48,7 @@ var UTILITY = new initutil();function initutil() {
         		$(this).off("click");
         	});	    		
     		
-    	}, 100);	
+    	}, 200);	
     };
     
     this.hideAlertPopup = function() {
@@ -199,4 +199,18 @@ $(function() {
 	function enable_scroll() {
 	    $(document).unbind('touchmove', prevent_default);
 	}
+	
+	
+
+	
 });
+
+
+
+
+
+
+
+
+
+

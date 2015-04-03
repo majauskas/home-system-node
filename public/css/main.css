@@ -1,5 +1,6 @@
 
 
+
 .ui-page-theme-a {
   background-image: url('../images/carbon_fibre.png');
 }
@@ -77,33 +78,18 @@ label {
 
 
 
-#HOME-PAGE fieldset
-{
-	border: 1px solid #ABABAB !important;
-	padding: 10px !important;
-	border-radius: 10px;
-}
 
-#HOME-PAGE legend
-{
-	padding: 0.2em 1em !important;
-	 text-shadow: none;
-	  color: red;
-}
+#HOME-PAGE fieldset { border: 1px solid #ABABAB !important; padding: 10px !important; border-radius: 10px; }
+#HOME-PAGE legend { padding: 0.2em 1em !important; text-shadow: none; color: red; }
+#EDIT-AREA-PAGE fieldset { border: 1px solid #ABABAB !important; padding: 10px !important; border-radius: 10px; }
+#EDIT-AREA-PAGE legend { padding: 0.2em 1em !important; text-shadow: none; color: red; }
+#EDIT-REMOTE-CONTROL-PAGE fieldset { border: 1px solid #ABABAB !important; padding: 10px !important; border-radius: 10px; }
+#EDIT-REMOTE-CONTROL-PAGE legend { padding: 0.2em 1em !important; text-shadow: none; color: red; }
 
-#EDIT-AREA-PAGE fieldset
-{
-	border: 1px solid #ABABAB !important;
-	padding: 10px !important;
-	border-radius: 10px;
-}
+#EDIT-PIR-SENSOR-PAGE fieldset { border: 1px solid #ABABAB !important; padding: 10px !important; border-radius: 10px; }
+#EDIT-PIR-SENSOR-PAGE legend { padding: 0.2em 1em !important; text-shadow: none; color: red; }
 
-#EDIT-AREA-PAGE legend
-{
-	padding: 0.2em 1em !important;
-	 text-shadow: none;
-	  color: red;
-}
+
 
 table.alternate_color tr:nth-of-type(even) {
     background-color:#e6ebdb;
@@ -306,5 +292,34 @@ div.growlUI h2 { font-size: small }
 /*     } */
    
    
+
+
+
+
+
+
+
+.btDownContainer {
+	position: absolute;
+    bottom: 0%;
+    width: 100%;
+   
+}
+
+.btDownContainer a {
+	background: linear-gradient(#EA3B3B,#6F070F);
+	margin-left:15px;
+    margin-right:15px;
+   
+    
+    
+
+}
+
+/* .ui-content { */
+/*   height: 100% */
+/* } */
+
+ 
 
     

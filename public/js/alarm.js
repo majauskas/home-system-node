@@ -213,24 +213,6 @@ $(function() {
 		
 		
 	});	
-
-
-
-	
-	
-	
-	
-	
-	
-	
-		
-	
-
-	
-	
-	
-	
-	
 	
 	
 	
@@ -247,90 +229,47 @@ $(function() {
 		isActiveSearchRemoteControls = true;
 	});	
 	
-	$("#NEW-REMOTE-CONTROL-PAGE").on("click", "#btConferma", function (event) {
+	
+	
+	
+	$("#EDIT-REMOTE-CONTROL-PAGE").on("click", "#btIndietro", function (event) {
 
-		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+		console.log("isUpdatedRemoteControlArea: ",isUpdatedRemoteControlArea);
+		if(isUpdatedRemoteControlArea){
+			$("#REMOTE-CONTROL-PAGE").page('destroy').page();
+		}
+		$.mobile.changePage("#REMOTE-CONTROL-PAGE");		
 		
-		
-		$.ajax({
-			global: false,
-			type:'POST', url:"/RemoteControl",
-			dataType : "json",
-			data : {
-				binCode :  data.binCode,
-				code :  data.code,
-				name :  $.mobile.activePage.find('#name').val(),
-				description :  $.mobile.activePage.find('#description').val(),
-				date : new Date()
-			},			
-			success: function(response) {
-				$("#REMOTE-CONTROL-PAGE").page('destroy').page();	
-				$.mobile.changePage("#REMOTE-CONTROL-PAGE");
-	        },
-	        error: UTILITY.httpError
-		});		
-
 	});	
-	
-	
-	
 	
 	
 	$("#listview-remote-controls").on("click", "li", function (event) {
+		isUpdatedRemoteControlArea = false;
 		
 		var data = jQuery.parseJSON($(this).attr("data"));
-		$('#EDIT-REMOTE-CONTROL-PAGE #binCode').val(data.binCode);
-		$('#EDIT-REMOTE-CONTROL-PAGE #code').val(data.code);	
+		$('#EDIT-REMOTE-CONTROL-PAGE #code').html(data.code);	
 		$('#EDIT-REMOTE-CONTROL-PAGE #name').val(data.name);
-		$('#EDIT-REMOTE-CONTROL-PAGE #description').val(data.description);
-		
-		if(data.area){
-			$('#EDIT-REMOTE-CONTROL-PAGE #area').val(data.area.name);
-		}
-		
 		
 		$("#EDIT-REMOTE-CONTROL-PAGE").attr("data", $(this).attr("data"));
+		
+		data.areas = APPLICATION.areas;
+
+		$("#controlgroup-areas").empty();
+		$.each(data.areas, function (i, obj) { obj.checked = (data.activeArea === obj._id) ? true: false;});
+		$("#template-controlgroup-areas").tmpl( data.areas ).appendTo("#controlgroup-areas");
+		
 		$.mobile.changePage("#EDIT-REMOTE-CONTROL-PAGE");
+		$("#EDIT-REMOTE-CONTROL-PAGE").trigger("create");
+		$("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").unbind("change").on("change", OnOffRemoteAreas);
+		
+		
 	});	
 	
 
-	
-	
-	$("#EDIT-REMOTE-CONTROL-PAGE").on("click", "#btAddZoneToRemoteControl", function (event) {
-		var remotecontrol = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
 
-		var areas = APPLICATION.areas;
-		if(remotecontrol.area){
-			areas = $.grep(APPLICATION.areas, function(target, i) {	
-				return (target._id !== remotecontrol.area._id);
-			});
-		}
-		
-//		var areas = $.grep(APPLICATION.areas, function(target, i) {	
-//			return (remotecontrol.area === null || target._id !== remotecontrol.area._id);
-//		});
-		
-		$("#add-remove-areas-panel").panel("open");
-		$("#listview-areas-for-remote-control").empty();
-		$.each(areas, function (i, obj) { obj.target = JSON.stringify(obj); });
-		$("#template-areas-for-remote-control").tmpl( areas  ).appendTo( "#listview-areas-for-remote-control" );		
-		$("#listview-areas-for-remote-control").listview("refresh");		
-		
-	});
 	
-	$("#listview-areas-for-remote-control").on("click", "li", function (event) {
-		
-		var remotecontrol = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
-		var area = jQuery.parseJSON($(this).attr("data"));		
-		
-		remotecontrol.area = area;
-		
-		$('#EDIT-REMOTE-CONTROL-PAGE #area').val(area.name);	
-		
-		$("#EDIT-REMOTE-CONTROL-PAGE").attr("data",JSON.stringify( remotecontrol ));
-		
-		$("#add-remove-areas-panel").panel("close");
-	});
+
+
 	
 	
 	
@@ -342,18 +281,13 @@ $(function() {
 		
 		
 		var area = null;
-		if(data.area !== undefined){
-			area = {_id:data.area._id, name:data.area.name};
-		}
 		$.ajax({
 			global: false,
 			type: "PUT", 
 			url: "/RemoteControl/"+data._id,
 			dataType : "json",
 			data : {
-				name :  $.mobile.activePage.find('#name').val(),
-				description :  $.mobile.activePage.find('#description').val(),
-				area : area
+				name :  $.mobile.activePage.find('#name').val()
 			},
 			error: UTILITY.httpError,
 			success: function(response) {
@@ -386,6 +320,40 @@ $(function() {
 	
 });
 
+var isUpdatedRemoteControlArea;
+function OnOffRemoteAreas(){
+	isUpdatedRemoteControlArea = true;
+	var data = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
+	
+	$("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").off("change");
+	var id =  $(this).attr("id"); 
+
+	$("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").each(function( index, obj ) {
+		if($(this).attr("id") !== id){
+			$(this).prop('checked', false).flipswitch('refresh');
+		}
+	});	
+	
+	var activeArea;
+	var id =  $(this).attr("id"); 
+	if($(this).prop("checked")){
+		activeArea = id;
+	}else{
+		activeArea = null;
+	}
+	
+	$.ajax({
+		global: false,
+		type: "PUT", url: "RemoteControl/activeArea/"+data._id,
+		dataType : "json",
+		data : { activeArea : activeArea },
+		error: UTILITY.httpError
+	});	
+	
+	setTimeout(function() { $("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").unbind("change").on("change",OnOffRemoteAreas); },10);	
+	
+}	
+
 
 var socket = io.connect();
 
@@ -414,7 +382,7 @@ socket.on('433MHZ', function (device) {
 					$.mobile.changePage("#NEW-WIFI-SENSOR-PAGE");
 					
 				}else{
-					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") Ã¨ gia registrato..");	
+					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") è gia registrato..");	
 				}
 	        },
 	        error: UTILITY.httpError
@@ -423,17 +391,29 @@ socket.on('433MHZ', function (device) {
 		isActiveSearchRemoteControls = false;
 		$.ajax({
 			global: false,
-			type:'GET', url:"/RemoteControl/"+device.code,		
+			type:'GET', url:"/RemoteControl/"+device.code+"/"+device.binCode,
 			success: function(response) {
-				if(response.length === 0){
-					$('#NEW-REMOTE-CONTROL-PAGE #binCode').val(device.binCode);
-					$('#NEW-REMOTE-CONTROL-PAGE #code').val(device.code);
-					$('#NEW-REMOTE-CONTROL-PAGE #name').val("");
-					$('#NEW-REMOTE-CONTROL-PAGE #description').val("");
-					$("#NEW-REMOTE-CONTROL-PAGE").attr("data",JSON.stringify(device));
-					$.mobile.changePage("#NEW-REMOTE-CONTROL-PAGE");
+				
+				var data = response.data;
+				if(response.existing){
+					UTILITY.alertPopup("", "Telecomando: "+data.name+" ("+data.code+") è gia registrato.."); 
 				}else{
-					UTILITY.alertPopup("", "Telecomando: "+device.name+" ("+device.code+") è gia registrato..");	
+					isUpdatedRemoteControlArea = true;
+					
+					$('#EDIT-REMOTE-CONTROL-PAGE #code').html(data.code);
+					$('#EDIT-REMOTE-CONTROL-PAGE #name').val("");
+					$("#EDIT-REMOTE-CONTROL-PAGE").attr("data",JSON.stringify(data));
+					
+					data.areas = APPLICATION.areas;
+
+					$("#controlgroup-areas").empty();
+					$.each(data.areas, function (i, obj) { obj.checked = (data.activeArea === obj._id) ? true: false;});
+					$("#template-controlgroup-areas").tmpl( data.areas ).appendTo("#controlgroup-areas");
+					
+					$.mobile.changePage("#EDIT-REMOTE-CONTROL-PAGE");
+					$("#EDIT-REMOTE-CONTROL-PAGE").trigger("create");
+					$("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").unbind("change").on("change", OnOffRemoteAreas);
+					
 				}
 	        },
 	        error: UTILITY.httpError
@@ -458,6 +438,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 		url : "/Area",
 		success: function(response) {
 
+			APPLICATION.areas = response; 
 			
 			if(response.length > 0){
 				$("#fsSecurity").show();

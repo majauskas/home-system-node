@@ -420,7 +420,8 @@ app.put('/Area/isActivated/:id', function(req, res) {
 
 
 app.put('/Area/activeSensors/:id', function(req, res) {
-	Area.findByIdAndUpdate(req.params.id, {'$set':  {'activeSensors': req.body.activeSensors}}, function (err, data) {
+	var activeSensors = req.body.activeSensors || [];
+	Area.findByIdAndUpdate(req.params.id, {'$set':  {'activeSensors': activeSensors}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
@@ -492,39 +493,37 @@ app.del('/Event/:id', function(req, res) {
 
 
 
-
-//-----------WifiSensor---------------------------------------------
+//-----------RemoteControlSchema---------------------------------------------
 var RemoteControlSchema = new Schema({
 	code: Number,
 	binCode: String,	
 	name: String,
-	description: String,
+	activeArea: String,
 	isLock: {type : Boolean, 'default': null},
 	isBatteryLow: {type : Boolean, 'default': null},
-	date: Date,
-	area : {
-		_id: Schema.Types.ObjectId,
-		name: String
-	}
+	date: Date
 });
 mongoose.model('RemoteControl', RemoteControlSchema); 
 var RemoteControl = mongoose.model('RemoteControl');
 
-
-
 app.get('/RemoteControl', function(req, res) { RemoteControl.find({}).sort('-date').exec(function(err, data) { res.send(data); }); });
 
-app.get('/RemoteControl/:code', function(req, res) {
-	RemoteControl.find(req.params).sort('-date').exec(function(err, data) {
-		res.send(data);
+app.get('/RemoteControl/:code/:binCode', function(req, res) {
+
+	RemoteControl.findOne({code : req.params.code}, function (err, data) {
+		if(data){
+			res.send({data:data, existing:true });
+		}else{
+			RemoteControl.create(req.params, function (err, data) {
+				if(err){console.log(err); res.status(500).send(err); }
+				res.send({data:data, existing:false });
+			});				
+		}
 	});
 });
-app.post('/RemoteControl', function(req, res) {
-	RemoteControl.create(req.body, function (err, data) {
-		if(err){console.log(err); res.status(500).send(err); }
-		else { res.send({}); }
-	});	
-});
+
+
+
 
 app.put('/RemoteControl/:id', function(req, res) {
 	RemoteControl.update({_id : req.params.id}, req.body, function (err, data) {
@@ -533,21 +532,21 @@ app.put('/RemoteControl/:id', function(req, res) {
 	});	
 });
 
-app.del('/RemoteControl', function(req, res) {
-	RemoteControl.remove(req.body, function (err, data) {
+app.del('/RemoteControl/:id', function(req, res) {
+	RemoteControl.findByIdAndRemove(req.params.id, function (err, data) {
 		 res.send({});
-	 });
+	});
 });
 
 
 
 
-
-
-
-
-
-
+app.put('/RemoteControl/activeArea/:id', function(req, res) {
+	RemoteControl.findByIdAndUpdate(req.params.id, {'$set':  {'activeArea':  req.body.activeArea}}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
 
 //--------------------------------------------------------
 
@@ -649,9 +648,11 @@ app.post('/433mhz/:binCode', function(req, res) {
 				console.log("RemoteControl",data);
 				
 				
-				if(data.area !== null){
-					Area.findByIdAndUpdate(data.area._id, {isActivated: isActivated}, function (err, data) {
-						io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+				if(data.activeArea){
+					Area.findByIdAndUpdate(data.activeArea, {isActivated: isActivated}, function (err, data) {
+						if(data){
+							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+						}
 					});	
 				}
 				
