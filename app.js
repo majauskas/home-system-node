@@ -84,8 +84,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
-  Sound.playMp3("/home/pi/home-system-node/mp3/test.mp3", "99");
-  
   MCP23017.scan(function(data) {
 	  console.log("MCP23017: ", data);
 	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
