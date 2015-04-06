@@ -186,12 +186,11 @@ function alarmDetection(sensor, areaId) {
 	
 	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme attivato", description: sensor.name}}, function (err, data) {});
 	
-	email("Sicurezza di casa violata", sensor.name + "\n Sirena allarme attivata");
-	
 	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
 	
 	setTimeout(function() {
 		if(isAlarmDetected){
+			email("Sicurezza di casa violata", sensor.name + "\n Sirena allarme attivata");
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
 		}
 	}, 10000);

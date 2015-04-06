@@ -55,6 +55,10 @@ var UTILITY = new initutil();function initutil() {
     	$('#alert-popup').remove();
     };     
 
+    this.areYouSurePopup = function() {
+    	$('#conferma-popup').remove();
+    }; 
+    
     
     this.errorPopup = function(error) {	
     	setTimeout(function() {

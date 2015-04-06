@@ -359,6 +359,8 @@ var socket = io.connect();
 
 socket.on('SOCKET-CHANGE-ALARM-STATE', function (data) {
 	
+	UTILITY.areYouSurePopup();
+	
 	$("#"+data._id).prop('checked', data.isActivated).flipswitch('refresh');
 	
 });
@@ -382,7 +384,7 @@ socket.on('433MHZ', function (device) {
 					$.mobile.changePage("#NEW-WIFI-SENSOR-PAGE");
 					
 				}else{
-					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") è gia registrato..");	
+					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") ï¿½ gia registrato..");	
 				}
 	        },
 	        error: UTILITY.httpError
@@ -396,7 +398,7 @@ socket.on('433MHZ', function (device) {
 				
 				var data = response.data;
 				if(response.existing){
-					UTILITY.alertPopup("", "Telecomando: "+data.name+" ("+data.code+") è gia registrato.."); 
+					UTILITY.alertPopup("", "Telecomando: "+data.name+" ("+data.code+") ï¿½ gia registrato.."); 
 				}else{
 					isUpdatedRemoteControlArea = true;
 					
