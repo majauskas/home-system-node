@@ -90,7 +90,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		
 		var code = doc.code;
 		var name = (doc.name) ? doc.name : doc.code;
-		Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:name, description:"ON"}}, function (err, data) {});
+		//Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:name, description:"ON"}}, function (err, data) {});
 		PIR_SENSOR.find({}).exec(function(err, doc) {
 			if(!doc) {return;}
 			
@@ -174,9 +174,10 @@ io.sockets.on('connection', function (socket) {
 
 
 
-
+var isAlarmDetected = false;
 function alarmDetection(sensor, areaId) {
 	
+	isAlarmDetected = true;
 	
 	sensor.name = (sensor.name) ? sensor.name : sensor.code;
 	
@@ -186,6 +187,14 @@ function alarmDetection(sensor, areaId) {
 	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme attivato", description: sensor.name}}, function (err, data) {});
 	
 	email("Sicurezza di casa violata", sensor.name + "\n Sirena allarme attivata");
+	
+	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
+	
+	setTimeout(function() {
+		if(isAlarmDetected){
+			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100");
+		}
+	}, 10000);
 	
 	//TODO: activate the siren and email/sms notifications
 //	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
@@ -199,11 +208,15 @@ function alarmDetection(sensor, areaId) {
 
 function disarm(areaId) {
 	
+	isAlarmDetected = false;
+	
 	Area.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
 		io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 	});
 	
 	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato", description:""}}, function (err, data) {});
+	
+	Sound.kill();
 	
 //	gpio.open(16, "output", function(err) { // Open pin 16 for output
 //		gpio.write(16, 0, function() { // Set pin 16 high (1)
