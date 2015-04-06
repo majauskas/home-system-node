@@ -192,7 +192,7 @@ function alarmDetection(sensor, areaId) {
 	
 	setTimeout(function() {
 		if(isAlarmDetected){
-			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100");
+			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
 		}
 	}, 10000);
 	
