@@ -174,10 +174,8 @@ io.sockets.on('connection', function (socket) {
 
 
 var timerknock = null;
-//var isAlarmDetected = false;
 function alarmDetection(sensor, areaId) {
 	
-//	isAlarmDetected = true;
 	
 	sensor.name = (sensor.name) ? sensor.name : sensor.code;
 	
@@ -186,14 +184,12 @@ function alarmDetection(sensor, areaId) {
 	
 	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme attivato", description: sensor.name}}, function (err, data) {});
 	
-	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
-	
-	timerknock = setTimeout(function() {
-//		if(isAlarmDetected){
-			email("Sicurezza di casa violata", sensor.name + "\n Sirena allarme attivata");
-			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
-//		}
-	}, 10000);
+//	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
+//	
+//	timerknock = setTimeout(function() {
+//			email("Sicurezza di casa violata", sensor.name + "\n Sirena allarme attivata");
+//			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
+//	}, 10000);
 	
 	//TODO: activate the siren and email/sms notifications
 //	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
@@ -208,14 +204,13 @@ function alarmDetection(sensor, areaId) {
 function disarm(areaId) {
 	
 	
-//	if(isAlarmDetected){
 		Area.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
 			io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 		});
 		
 		Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato", description:""}}, function (err, data) {});
 		
-		Sound.kill();
+//		Sound.kill();
 		
 	//	gpio.open(16, "output", function(err) { // Open pin 16 for output
 	//		gpio.write(16, 0, function() { // Set pin 16 high (1)
@@ -223,12 +218,10 @@ function disarm(areaId) {
 	//		});
 	//	});
 	
+//	if(timerknock !== null){
+//		clearTimeout(timerknock);
 //	}
-	if(timerknock !== null){
-		clearTimeout(timerknock);
-	}
 	
-//	isAlarmDetected = false;
 }
 
 
