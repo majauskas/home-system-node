@@ -207,21 +207,24 @@ function alarmDetection(sensor, areaId) {
 
 function disarm(areaId) {
 	
+	
+	if(isAlarmDetected){
+		Area.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
+			io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+		});
+		
+		Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato", description:""}}, function (err, data) {});
+		
+		Sound.kill();
+		
+	//	gpio.open(16, "output", function(err) { // Open pin 16 for output
+	//		gpio.write(16, 0, function() { // Set pin 16 high (1)
+	//			gpio.close(16); // Close pin 16
+	//		});
+	//	});
+	
+	}
 	isAlarmDetected = false;
-	
-	Area.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
-		io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
-	});
-	
-	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato", description:""}}, function (err, data) {});
-	
-	Sound.kill();
-	
-//	gpio.open(16, "output", function(err) { // Open pin 16 for output
-//		gpio.write(16, 0, function() { // Set pin 16 high (1)
-//			gpio.close(16); // Close pin 16
-//		});
-//	});
 }
 
 
@@ -662,6 +665,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 				if(data.activeArea){
 					Area.findByIdAndUpdate(data.activeArea, {isActivated: isActivated}, function (err, data) {
 						if(data){
+							disarm(data._id);
 							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 						}
 					});	
