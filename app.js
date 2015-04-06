@@ -173,11 +173,11 @@ io.sockets.on('connection', function (socket) {
 
 
 
-
-var isAlarmDetected = false;
+var timerknock = null;
+//var isAlarmDetected = false;
 function alarmDetection(sensor, areaId) {
 	
-	isAlarmDetected = true;
+//	isAlarmDetected = true;
 	
 	sensor.name = (sensor.name) ? sensor.name : sensor.code;
 	
@@ -188,11 +188,11 @@ function alarmDetection(sensor, areaId) {
 	
 	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
 	
-	setTimeout(function() {
-		if(isAlarmDetected){
+	timerknock = setTimeout(function() {
+//		if(isAlarmDetected){
 			email("Sicurezza di casa violata", sensor.name + "\n Sirena allarme attivata");
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
-		}
+//		}
 	}, 10000);
 	
 	//TODO: activate the siren and email/sms notifications
@@ -208,7 +208,7 @@ function alarmDetection(sensor, areaId) {
 function disarm(areaId) {
 	
 	
-	if(isAlarmDetected){
+//	if(isAlarmDetected){
 		Area.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
 			io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 		});
@@ -223,8 +223,12 @@ function disarm(areaId) {
 	//		});
 	//	});
 	
+//	}
+	if(timerknock !== null){
+		clearTimeout(timerknock);
 	}
-	isAlarmDetected = false;
+	
+//	isAlarmDetected = false;
 }
 
 
