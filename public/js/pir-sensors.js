@@ -72,9 +72,7 @@ $(document).on("pagecreate","#SENSORI-PIR-PAGE", function(){
 	  loadSensoriPIR();
 	  
 		socket.on('PIRSENSOR', function (response) {
-			
-			console.log("socket PIRSENSOR", response);
-			renderListViewPirSensors(response)
+			renderListViewPirSensors(response);
 			
 		});		  
 	  

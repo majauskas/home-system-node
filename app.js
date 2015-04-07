@@ -14,38 +14,6 @@ var moment = require('moment');
 var CronJob = require('cron').CronJob;
 
 
-
-//var isActiveSearchPirSensors = false;
-
-//require('shelljs/global');
-//var child = exec('forever list', {silent:true}, {async:true});
-//child.stdout.on('data', function(data) {
-//	console.log('data:', data);
-//});
-
-
-
-//var exec = require('child_process').exec;
-//exec('forever list', {silent:true}, function(error, output) {
-//	console.log(output);
-//});
-//return;
-
-//var child = exec("forever list", {silent:true}, {async:true});
-//child.stdout.on('data', function(data) {
-//	console.log('data:', data);
-//});
-
-
-//exec("forever list", {silent:true}, {async:true});
-
-//exec('forever list', {silent:true}, function(code, output) {
-//	  console.log('Exit code:', code);
-//	  console.log('Program output:', output);
-//});
-
-
-//return;
 //var gpio = require("pi-gpio");
 
 
@@ -89,8 +57,8 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
 		
 		var code = doc.code;
-		var name = (doc.name) ? doc.name : doc.code;
-		//Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:name, description:"ON"}}, function (err, data) {});
+//		var name = (doc.name) ? doc.name : doc.code;
+//		Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:name, description:"ON"}}, function (err, data) {});
 		PIR_SENSOR.find({}).exec(function(err, doc) {
 			if(!doc) {return;}
 			
@@ -98,12 +66,12 @@ var server = app.listen(process.env.PORT || 8081, function () {
 			
 			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
 				if(area){
-					
-					doc.forEach(function(pir) {
-						if(pir.code ===  code){
-							alarmDetection(pir, area._id);
-						}					
-					});	
+					alarmDetection(doc, area._id);
+//					doc.forEach(function(pir) {
+//						if(pir.code ===  code){
+//							alarmDetection(pir, area._id);
+//						}					
+//					});	
 						
 				}
 			});				
@@ -149,47 +117,50 @@ app.get('/home-system', function(req, res) {
 var io = require('socket.io')(server);
 io.sockets.on('connection', function (socket) {
 	
-//	socket.on('getWifiSensors', function (arg1,arg2, back) {
-//		back();
-//	});	
-	
-	socket.on('disarm', disarm);	
-	
-	
-//	socket.on('getEvents', function(callback) {
-//		Event.find({},'-__v -code -binCode -device.provider').sort('-date').limit(30).exec(function(err, data) {
-//			if(err){console.log(err); callback(err); }
-//			else { callback(data); }
-//		});		
-//	});		
-
-	
-//	socket.on('isActiveSearchPirSensors', function(value) {
-//		isActiveSearchPirSensors = value;
-//	});	
+	socket.on('disarm', function (areaId) {
+		
+		Area.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
+			io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+		});	
+		
+		disarm(areaId);
+		
+	});
 	
 });
 
+//TEST
+//setInterval(function() {
+//	
+//	Area.findOne({isActivated:true, activeSensors : "GPA-1" }).exec(function(err, area) {
+//		if(area){
+//			alarmDetection({name:"PIR prescrizione", code:"GPA-1"}, area._id);
+//		}
+//	});	
+//}, 5000);
 
-
-
-var timerknock = null;
+var isAlarmActivated = false;
+var alarmTimer = null;
 function alarmDetection(sensor, areaId) {
+	if(isAlarmActivated){return;}
 	
+	isAlarmActivated = true;
+	console.log("alarmDetection ", sensor, areaId);
 	
 	sensor.name = (sensor.name) ? sensor.name : sensor.code;
 	
 	//sending to client the notification
 	io.sockets.emit("ALARM_DETECTION", sensor, areaId);
 	
-	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme attivato", description: sensor.name}}, function (err, data) {});
 	
-//	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
-//	
-//	timerknock = setTimeout(function() {
-//			email("Sicurezza di casa violata", sensor.name + "\n Sirena allarme attivata");
-//			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
-//	}, 10000);
+	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
+	alarmTimer = setTimeout(function() {
+		    if(!isAlarmActivated){return;}
+		    console.log("SOUND");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena allarme attivata", description: "Sirena"}}, function (err, data) {});
+			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
+	}, 10000);
 	
 	//TODO: activate the siren and email/sms notifications
 //	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
@@ -198,29 +169,28 @@ function alarmDetection(sensor, areaId) {
 //	    });
 //	});
 	
+	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme attivato", description: sensor.name}}, function (err, data) {});
+	
 }
 
 
 function disarm(areaId) {
+	isAlarmActivated = false;
+	console.log("disarm", areaId);
+	clearTimeout(alarmTimer);
+	Sound.kill();
 	
-	
-		Area.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
-			io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
-		});
 		
-		Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato", description:""}}, function (err, data) {});
+	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato", description:""}}, function (err, data) {});
 		
-//		Sound.kill();
 		
-	//	gpio.open(16, "output", function(err) { // Open pin 16 for output
+		
+	//	gpio.open(16, "output", function(lerr) { // Open pin 16 for output
 	//		gpio.write(16, 0, function() { // Set pin 16 high (1)
 	//			gpio.close(16); // Close pin 16
 	//		});
 	//	});
 	
-//	if(timerknock !== null){
-//		clearTimeout(timerknock);
-//	}
 	
 }
 
@@ -272,65 +242,9 @@ PirSensorSchema.methods.toJSON = function() {
 var PIR_SENSOR = mongoose.model('PIR_SENSOR', PirSensorSchema);
 
 
-
-
-
-
 app.get('/PirSensor', function(req, res) {
 	PIR_SENSOR.find({}).exec(function(err, data) { res.send(data); });
 });
-
-////curl -X POST http://10.221.6.69:8081/PirSensorTest/00000000
-//app.post('/PirSensorTest/:bytes', function(req, res) {
-//	res.send();
-//	
-//	init(function(data) {
-//		console.log(data);
-//		PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, data) {
-//		  console.log(data);
-//		});	
-//	});	
-//	
-//});
-//var lastTime = new Date();
-//var last_state = null;
-//function scan(current_state, callBack){
-//	
-//	var duration = Number(new Date() - lastTime);
-//	if( duration > 1400 && duration < 2600 && last_state !== current_state){
-//		console.log("OK",duration, current_state);	
-//		var last_array = last_state.split('');
-//		var current_array = current_state.split('');
-//		current_array.forEach(function(value, i) {
-//			
-//			if(last_array[i] !== value){
-//				var code = "0x20-GP" + ( (i<8) ? ("A"+i): ("B"+(i-8)));
-//				callBack({code: code, state : last_array[i] + value, date: new Date()});
-//			}
-//	    });	
-//	}
-//
-//	last_state = current_state;
-//	lastTime = new Date();		
-//}
-//
-//function init(callBack){
-//	
-//
-//scan("1111000000000001",callBack);
-//setTimeout(function() {
-//	scan("0111000000000000",callBack);
-//	setTimeout(function() {
-//    	scan("1111000000000001",callBack);
-//	}, 2000);	
-//}, 1000);
-//
-//}    
-//
-//var data = {code: "GPA-0", state : "01", date: new Date()};
-//PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, data) {
-//	  console.log(data);
-//});
 
 
 app.put('/PirSensor', function(req, res) {
@@ -648,11 +562,8 @@ app.post('/433mhz/:binCode', function(req, res) {
 					var state = binCode.substr(16,8);
 					if(state === "00000011"){ //OFF
 						isActivated = false;
-						Sound.playMp3("/home/pi/home-system-node/mp3/allarmeDisattivato.mp3", "95");
 					}else if(state === "11000000"){ //ON
 						isActivated = true;
-//						Sound.playMp3("mp3/remote_button_on.mp3", "80");
-						Sound.playMp3("/home/pi/home-system-node/mp3/allarmeAttivato.mp3", "95");
 					}
 				}
 				console.log("isActivated",isActivated);
@@ -662,8 +573,15 @@ app.post('/433mhz/:binCode', function(req, res) {
 				if(data.activeArea){
 					Area.findByIdAndUpdate(data.activeArea, {isActivated: isActivated}, function (err, data) {
 						if(data){
-							disarm(data._id);
+							
 							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+							
+							if(data.isActivated){
+								Sound.playMp3("/home/pi/home-system-node/mp3/allarmeAttivato.mp3", "95");
+							}else{
+								disarm(data._id);
+								Sound.playMp3("/home/pi/home-system-node/mp3/allarmeDisattivato.mp3", "95");
+							}
 						}
 					});	
 				}

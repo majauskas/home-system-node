@@ -359,7 +359,7 @@ var socket = io.connect();
 
 socket.on('SOCKET-CHANGE-ALARM-STATE', function (data) {
 	
-	UTILITY.areYouSurePopup();
+	UTILITY.hideAreYouSurePopup();
 	
 	$("#"+data._id).prop('checked', data.isActivated).flipswitch('refresh');
 	
