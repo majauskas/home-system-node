@@ -54,15 +54,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	}
 
 	
-	
-	console.log("INIT",new Date());
-	Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
-	console.log("END",new Date());
-	setTimeout(function() {
-		console.log("KILL",new Date());
-		Sound.kill();
-	}, 15000);
-	
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
@@ -158,13 +149,15 @@ function alarmDetection(sensor, areaId) {
 	io.sockets.emit("ALARM_DETECTION", sensor, areaId);
 	
 	
-	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
+//	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
+	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","10");
 	alarmTimer = setTimeout(function() {
 		    if(!isAlarmActivated){return;}
 		    console.log("SOUND");
 			email("Sound", sensor.name + "\n Sirena allarme attivata");
 			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena allarme attivata", description: "Sirena"}}, function (err, data) {});
-			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
+//			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
+			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
 	}, 10000);
 	
 	//TODO: activate the siren and email/sms notifications
