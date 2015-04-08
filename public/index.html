@@ -31,7 +31,8 @@
 	
 	<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
 	<script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>
-	<script type="text/javascript" src="js/pir-sensors.js" charset="iso-8859-1"></script>		
+	<script type="text/javascript" src="js/pir-sensors.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/wifi-sensors.js" charset="iso-8859-1"></script>		
 	
 	
 	<script type="text/javascript">
@@ -137,13 +138,11 @@
 			<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
 			<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
 					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
-						<h2><font style='white-space:normal;'>${name} - ${description}</font></h2>												
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>												
 						<p class='ui-li-aside' style='text-align: center;'>{{if (isOpen == false)}}<font style='color:green;'>Chiuso</font></br>{{/if}}{{if (isOpen == true)}}<font style='color:red; font-weight: bold;'>Aperto</font></br>{{/if}}{{if (isBatteryLow == true)}}<img  src='images/Battery-Low-24-FF0000.png'>{{/if}}</p>
 					</a></li>
 		</script>
 		</div>
-		
-		
 		
 		<div data-role="main" class="ui-content" style="text-align: center;">
 			<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a>
@@ -152,54 +151,41 @@
 </div> 				
 
 
-<div id="NEW-WIFI-SENSOR-PAGE" data-role="page">
-	<div data-role="header" data-position="fixed">
-		<a href="#SENSORI-WIFI-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
-		<h1>Nuovo Sensore</h1>
-	</div>
-	<div class="ui-content">
-        <div>
-            <label data-inline="true" for="code">Code:</label>
-			<input readonly name="code" id="code">
-			<label for="binCode">Bin Code:</label>
-			<input readonly type="text" name="binCode" id="binCode">
-			<label for="name">Nome:</label>
-			<input type="text" name="name" id="name">
-			<label for="description">Descrizione:</label>
-			<input type="text" name="description" id="description">
-        </div>
-		<div data-role="main" class="ui-content" style="text-align: center;">
-			<a id="btWiFiSensorConferma" class="ui-btn ui-icon-check ui-btn-icon-left ui-btn-inline  ui-corner-all">Conferma</a>
-		</div>
-	</div>
-</div> 	
 
 
 
 <div id="EDIT-WIFI-SENSOR-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
-		<a href="#SENSORI-WIFI-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<a id="btIndietro" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Modifica Sensore</h1>
+		<a id="btWiFiSensorConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>	
 	</div>
 	
 	<div class="ui-content">
 
-        <div>
-            <label data-inline="true" for="code">Code:</label>
-			<input readonly name="code" id="code">
-			<label for="binCode">Bin Code:</label>
-			<input readonly type="text" name="binCode" id="binCode">
-			<label for="name">Nome:</label>
-			<input type="text" name="name" id="name">
-			<label for="description">Descrizione:</label>
-			<input type="text" name="description" id="description">
-        </div>
-
-		<div data-role="main" class="ui-content" style="text-align: center;">
-			<a id="btWiFiSensorDelete" class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline ui-corner-all">Elimina</a>
-			<a id="btWiFiSensorConferma" class="ui-btn ui-icon-edit ui-btn-icon-left ui-btn-inline ui-corner-all">Conferma</a>
-		</div>
+		<fieldset>
+			<legend>Sensore Pir</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Code:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="code"></td>
+						</tr>				
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
 	</div>
+	
+	
+  	<br/><br/><br/><br/>
+	<div class="btDownContainer">
+		<a id="btWiFiSensorDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina</a>
+	</div> 		
+	
 </div> 
 
 

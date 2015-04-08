@@ -281,11 +281,29 @@ app.get('/WifiSensor', function(req, res) {
 		res.send(data);
 	});
 });
-app.get('/WifiSensor/:code', function(req, res) {
-	WifiSensor.find(req.params).sort('-date').exec(function(err, data) {
-		res.send(data);
+//app.get('/WifiSensor/:code', function(req, res) {
+//	WifiSensor.find(req.params).sort('-date').exec(function(err, data) {
+//		res.send(data);
+//	});
+//});
+
+
+app.get('/WifiSensor/:code/:binCode', function(req, res) {
+
+	WifiSensor.findOne({code : req.params.code}, function (err, data) {
+		if(data){
+			res.send({data:data, existing:true });
+		}else{
+			WifiSensor.create(req.params, function (err, data) {
+				if(err){console.log(err); res.status(500).send(err); }
+				res.send({data:data, existing:false });
+			});				
+		}
 	});
 });
+
+
+
 app.put('/WifiSensor', function(req, res) {
 	WifiSensor.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
         res.send({});

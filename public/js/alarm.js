@@ -15,32 +15,7 @@ $(function() {
 		
 	});	
 	
-	$("#NEW-WIFI-SENSOR-PAGE, #EDIT-WIFI-SENSOR-PAGE").on("click", "#btWiFiSensorConferma", function (event) {
 
-		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
-		
-		
-		$.ajax({
-			global: false,
-			type:'PUT', url:"/WifiSensor",
-			dataType : "json",
-			data : {
-				binCode :  data.binCode,
-				code :  data.code,
-				name :  $.mobile.activePage.find('#name').val(),
-				description :  $.mobile.activePage.find('#description').val(),
-				date : new Date()
-			},			
-			success: function(response) {
-
-			
-				$("#SENSORI-WIFI-PAGE").page('destroy').page();	
-				$.mobile.changePage("#SENSORI-WIFI-PAGE");
-	
-	        }
-		});		
-
-	});	
 
 	
 	$("#EDIT-WIFI-SENSOR-PAGE").on("click", "#btWiFiSensorDelete", function (event) {
@@ -155,17 +130,7 @@ $(function() {
 
 
 	
-	$("#listview-wifi-sensors").on("click", "li", function (event) {
-		
-		var data = jQuery.parseJSON($(this).attr("data"));
-		$('#EDIT-WIFI-SENSOR-PAGE #binCode').val(data.binCode);
-		$('#EDIT-WIFI-SENSOR-PAGE #code').val(data.code);	
-		$('#EDIT-WIFI-SENSOR-PAGE #name').val(data.name);
-		$('#EDIT-WIFI-SENSOR-PAGE #description').val(data.description);
-		$("#EDIT-WIFI-SENSOR-PAGE").attr("data", $(this).attr("data"));
-		
-		$.mobile.changePage("#EDIT-WIFI-SENSOR-PAGE");
-	});
+
 	
 
 	
@@ -370,27 +335,37 @@ socket.on('433MHZ', function (device) {
 	
 	if(isActiveSearchWifiSensors){
 		isActiveSearchWifiSensors = false;
+		isAddedNewWifiSensors = false;
 		
 		$.ajax({
 			global: false,
-			type:'GET', url:"/WifiSensor/"+device.code,		
+			type:'GET', url:"/WifiSensor/"+device.code+"/"+device.binCode,		
 			success: function(response) {
-				if(response.length === 0){
-					$('#NEW-WIFI-SENSOR-PAGE #binCode').val(device.binCode);
-					$('#NEW-WIFI-SENSOR-PAGE #code').val(device.code);
-					$('#NEW-WIFI-SENSOR-PAGE #name').val("");
-					$('#NEW-WIFI-SENSOR-PAGE #description').val("");
-					$("#NEW-WIFI-SENSOR-PAGE").attr("data",JSON.stringify(device));
-					$.mobile.changePage("#NEW-WIFI-SENSOR-PAGE");
-					
+
+				var data = response.data;
+				if(response.existing){
+					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") è gia registrato..");
 				}else{
-					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") ï¿½ gia registrato..");	
-				}
+					isAddedNewWifiSensors = true;
+					$('#EDIT-WIFI-SENSOR-PAGE #code').html(data.code);
+					$('#EDIT-WIFI-SENSOR-PAGE #name').val("");
+					$("#EDIT-WIFI-SENSOR-PAGE").attr("data",JSON.stringify(data));
+					$.mobile.changePage("#EDIT-WIFI-SENSOR-PAGE");
+					
+					setTimeout(function() {
+						$("#SENSORI-WIFI-PAGE").page('destroy').page();	
+					}, 1000);
+				
+					
+				}				
 	        },
 	        error: UTILITY.httpError
 		});			
+		
+		
 	} else if(isActiveSearchRemoteControls){
 		isActiveSearchRemoteControls = false;
+		isUpdatedRemoteControlArea = false;
 		$.ajax({
 			global: false,
 			type:'GET', url:"/RemoteControl/"+device.code+"/"+device.binCode,
