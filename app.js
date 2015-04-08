@@ -14,6 +14,10 @@ var moment = require('moment');
 var CronJob = require('cron').CronJob;
 
 
+
+
+
+
 //var gpio = require("pi-gpio");
 
 
@@ -48,7 +52,17 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		    }
 		}
 	}
-  
+
+	
+	
+	console.log("INIT",new Date());
+	Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
+	console.log("END",new Date());
+	setTimeout(function() {
+		console.log("KILL",new Date());
+		Sound.kill();
+	}, 15000);
+	
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
@@ -129,15 +143,6 @@ io.sockets.on('connection', function (socket) {
 	
 });
 
-//TEST
-//setInterval(function() {
-//	
-//	Area.findOne({isActivated:true, activeSensors : "GPA-1" }).exec(function(err, area) {
-//		if(area){
-//			alarmDetection({name:"PIR prescrizione", code:"GPA-1"}, area._id);
-//		}
-//	});	
-//}, 5000);
 
 var isAlarmActivated = false;
 var alarmTimer = null;
@@ -567,7 +572,6 @@ app.post('/433mhz/:binCode', function(req, res) {
 					}
 				}
 				console.log("isActivated",isActivated);
-				console.log("RemoteControl",data);
 				
 				
 				if(data.activeArea){
@@ -599,4 +603,21 @@ app.post('/433mhz/:binCode', function(req, res) {
 
 
 
+//************* TESTS ******************
+//TEST
+//setInterval(function() {
+//	
+//	Area.findOne({isActivated:true, activeSensors : "GPA-1" }).exec(function(err, area) {
+//		if(area){
+//			alarmDetection({name:"PIR prescrizione", code:"GPA-1"}, area._id);
+//		}
+//	});	
+//}, 5000);
 
+app.post('/testPir', function(req, res) {
+	Area.findOne({isActivated:true, activeSensors : "GPA-1" }).exec(function(err, area) {
+		if(area){
+			alarmDetection({name:"PIR prescrizione", code:"GPA-1"}, area._id);
+		}
+	});	
+});
