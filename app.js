@@ -156,6 +156,14 @@ function alarmDetection(sensor, areaId) {
 		    
 		    console.log("EMAIL init Sound", new Date()); 
 			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata");
 			 console.log("EMAIL end Sound", new Date()); 
 			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena allarme attivata", description: "Sirena"}}, function (err, data) {});
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
