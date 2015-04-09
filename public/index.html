@@ -51,7 +51,7 @@
 <div id="HOME-PAGE" data-role="page" class="ui-page-active pull-demo-page">
 	<div data-role="header" data-position="fixed">
 		<img style="top:5px;" src="images/security.png" width="50px" height="50px" class="ui-btn-left" />	
-		<h1>Home</h1>
+		<h1>Home<br><font style="white-space:normal; font-weight:bold; text-shadow: none; visibility: hidden; color: red">Alarme Attivato!</font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
 	<div class="ui-content">
@@ -69,8 +69,7 @@
 				</tr>
 				</script>
 					
-		</fieldset>
-		
+		</fieldset>		
 	</div>	 
 
 </div>	 
@@ -144,10 +143,13 @@
 		</script>
 		</div>
 		
-		<div data-role="main" class="ui-content" style="text-align: center;">
-			<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Sensore</a>
-		</div>
+
+	  	<br/><br/><br/><br/>
+		<div class="container-b">
+			<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Aggiungi Sensore</a>
+		</div> 	
 	</div>
+
 </div> 				
 
 
@@ -205,13 +207,13 @@
 		<ul data-role="listview" data-inset="false" id="listview-areas" class="ui-nodisc-icon"></ul>	
 		<script id="template-areas" type="text/x-jquery-tmpl">
 					<li data-icon='node' data='${target}'><a>
-						<h2>${name}<font style='white-space:normal;font-weight:normal;'> - ${description}</font></h2>												
+						<h2>{{if (name)}}${name}{{else}}${code}{{/if}}</h2>												
 					</a></li>
 		</script>
-		<div data-role="main" class="ui-content" style="text-align: center;">
-			<a id="btAddNewArea" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Nuova Zona</a>
-		</div>
 	</div>
+	<div class="container-b">
+		<a id="btAddNewArea" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Nuova Zona</a>
+	</div>	
 </div>
 
 
@@ -220,20 +222,21 @@
 	<div data-role="header" data-position="fixed">
 		<a href="#AREAS-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
 		<h1>Nuova Zona</h1>
+		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>
 	</div>
 	
 	<div class="ui-content">
-
-        <div>
-            <label data-inline="true" for="name">Nome:</label>
-			<input name="name" id="name">
-			<label for="description">Descrizione:</label>
-			<input type="text" name="description" id="description">
-        </div>
-
-		<div data-role="main" class="ui-content" style="text-align: center;">
-			<a id="btConferma" class="ui-btn ui-icon-check ui-btn-icon-left ui-btn-inline  ui-corner-all">Conferma</a>
-		</div>
+		<fieldset>
+			<legend>Zona</legend>
+				<table width="100%" style="border-collapse: collapse">				
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
 	</div>
 </div> 
 
@@ -253,12 +256,6 @@
 							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
 							<td width="60%" style="text-align: right;">
 								<input name="name" id="name">
-							</td>
-						</tr>
-						<tr>
-							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Descrizione:</td>
-							<td width="60%" style="text-align: right;">
-								<input name="description" id="description">
 							</td>
 						</tr>
 				</table>
@@ -316,7 +313,7 @@
                             <a href='#' class='ui-btn delete-btn'>Delete</a>
 					</div>
 					<a>
-						<p>{{if (device != null)}} ${device.name} - ${device.description} {{else}} ${code} - ${binCode} {{/if}}</p>					
+						<p>{{if (device != null)}} ${device.name}{{else}} ${code}{{/if}}</p>					
 						<p>${date}</p>						
 						{{if (device != null)}}
 							<p class='ui-li-aside' style='text-align: center;'>
@@ -347,11 +344,15 @@
 						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>												
 					</a></li>
 		</script>
-		<div data-role="main" class="ui-content" style="text-align: center;">
-			<a id="btSearchRemoteControls" class="ui-btn ui-icon-plus ui-btn-icon-left ui-btn-inline  ui-corner-all">Aggiungi Telecomando</a>
-		</div>	
-	</div>
+		
+	  	
 	
+		
+	</div>
+<!-- 	<br/><br/><br/><br/> -->
+		<div class="container-b">
+		<a id="btSearchRemoteControls" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Aggiungi Telecomando</a>
+	</div>	
 </div> 				
 
 

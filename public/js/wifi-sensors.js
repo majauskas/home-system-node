@@ -27,7 +27,6 @@ $(function() {
 				binCode :  data.binCode,
 				code :  data.code,
 				name :  $.mobile.activePage.find('#name').val(),
-				description :  $.mobile.activePage.find('#description').val(),
 				date : new Date()
 			},			
 			success: function(response) {

@@ -51,7 +51,7 @@ $(function() {
 	
 	
 	$("#AREAS-PAGE").on("click", "#btAddNewArea", function (event) {
-		$("#NEW-AREA-PAGE").find('#name, #description').val("");
+		$("#NEW-AREA-PAGE").find('#name').val("");
 		$("#NEW-AREA-PAGE").removeAttr("data");
 		$.mobile.changePage("#NEW-AREA-PAGE");
 	});	
@@ -65,8 +65,7 @@ $(function() {
 			url: "/Area",
 			dataType : "json",
 			data : {
-				name :  $.mobile.activePage.find('#name').val(),
-				description :  $.mobile.activePage.find('#description').val()
+				name :  $.mobile.activePage.find('#name').val()
 			},
 			error: UTILITY.httpError,
 			success: function(response) {
@@ -91,8 +90,7 @@ $(function() {
 			url: "/Area/"+data._id,
 			dataType : "json",
 			data : {
-				name :  $.mobile.activePage.find('#name').val(),
-				description :  $.mobile.activePage.find('#description').val()
+				name :  $.mobile.activePage.find('#name').val()
 			},
 			error: UTILITY.httpError,
 			success: function(response) {
@@ -138,7 +136,6 @@ $(function() {
 		
 		var data = jQuery.parseJSON($(this).attr("data"));
 		$('#EDIT-AREA-PAGE #name').val(data.name);
-		$('#EDIT-AREA-PAGE #description').val(data.description);
 		$("#EDIT-AREA-PAGE").attr("data", $(this).attr("data"));
 		
 		
@@ -399,15 +396,21 @@ socket.on('433MHZ', function (device) {
 	
 });
 
-socket.on('ALARM_DETECTION', function (device, areaId) {
-
+function AlarmDetection (device, areaId){
 	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
 		socket.emit('disarm', areaId);
 	}, null,"Atenzione");
-	
-});
+}
 
+//socket.on('ALARM_DETECTION', function (device, areaId) {
+//	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
+//		socket.emit('disarm', areaId);
+//	}, null,"Atenzione");
+//});
 
+socket.on('ALARM_DETECTION', AlarmDetection);
+
+var intervalBlink = null;
 $(document).on("pagecreate","#HOME-PAGE", function(){
  
 	$.ajax({
@@ -432,6 +435,26 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			
 			
 			$("#HOME-PAGE [data-role='flipswitch']").unbind("change").on("change", OnOffZone);
+			
+				var area = $.grep(response, function(target, i) {	
+					 return (target.alarmActivate.state);
+				})[0];	
+				if(area){
+					
+					 var obj = $("#HOME-PAGE h1 font");
+					 intervalBlink = setInterval(function() {
+			                if ($(obj).css("visibility") === "visible") {
+			                    $(obj).css('visibility', 'hidden');
+			                }
+			                else {
+			                    $(obj).css('visibility', 'visible');
+			                }
+			            }, 800);					
+					
+				}				
+			
+			
+			
 			
 			
         }
@@ -462,6 +485,8 @@ function OnOffZone(){
 	});					
 	
 	setTimeout(function() { $("#HOME-PAGE [data-role='flipswitch']").unbind("change").on("change",OnOffZone); },10);	
+	clearInterval(intervalBlink);
+	$("#HOME-PAGE h1 font").css('visibility', 'hidden');
 	
 }
 
