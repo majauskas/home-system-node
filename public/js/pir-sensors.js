@@ -63,8 +63,8 @@ function renderListViewPirSensors(response){
 	$("#template-pir-sensors").tmpl( response ).appendTo( "#listview-pir-sensors" );		
 	$("#listview-pir-sensors").listview("refresh");
 	APPLICATION.pirsensors = response;	
+	
 }
-
 
 
 

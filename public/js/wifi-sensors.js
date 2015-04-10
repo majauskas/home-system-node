@@ -1,6 +1,7 @@
 
 $(function() {
 	
+
 	$("#listview-wifi-sensors").on("click", "li", function (event) {
 		isAddedNewWifiSensors = false;
 		var data = jQuery.parseJSON($(this).attr("data"));
@@ -10,7 +11,6 @@ $(function() {
 		
 		$.mobile.changePage("#EDIT-WIFI-SENSOR-PAGE");
 	});	
-
 
 	
 	
@@ -57,7 +57,42 @@ $(function() {
 	
 });
 
+function renderListViewWiFiSensors(response){
+	
+	
+	$.each(response, function (i, obj) { obj.target = JSON.stringify(obj);});
+	$("#listview-wifi-sensors").empty();
+	$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );		
+	$("#listview-wifi-sensors").listview("refresh");
+	
+	APPLICATION.wifisensors = response;
+	
+	
+	
+	
+}
+
+function loadSensoriWiFi(callback){
+	
+	
+	var st = Date.now();
+	$.ajax({
+		type : 'GET',
+		url : "/WifiSensor",
+		success: function(response) {
+			
+			renderListViewWiFiSensors(response);
+        }
+	});		
+	
+}
 
 
-
+$(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
+	
+	loadSensoriWiFi();
+	  
+	socket.on('WIFISENSOR', renderListViewWiFiSensors);		  
+		  
+});
 

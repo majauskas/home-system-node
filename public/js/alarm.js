@@ -492,45 +492,7 @@ function OnOffZone(){
 
 
 
-function loadSensoriWiFi(callback){
 	
-	
-	var st = Date.now();
-	$.ajax({
-		type : 'GET',
-		url : "/WifiSensor",
-		success: function(response) {
-			var dur = Date.now() - st; 
-			$("#SENSORI-WIFI-PAGE h1 font").html(dur+" ms");
-			
-			$("#listview-wifi-sensors").empty();
-			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-			$("#template-wifi-sensors").tmpl( response ).appendTo( "#listview-wifi-sensors" );		
-			$("#listview-wifi-sensors").listview("refresh");
-			
-			APPLICATION.wifisensors = response;
-			
-			if(callback){ callback();}
-        }
-	});		
-	
-}
-
-
-$(document).on("pagecreate","#SENSORI-WIFI-PAGE", function(){
-
-	
-	  $(this).find('.wrapper').bind( {
-		    iscroll_onpulldown : function(event, data){
-		    	loadSensoriWiFi(function(){
-		    		data.iscrollview.refresh();
-		    	});
-		    }
-	  });
-	  
-	  loadSensoriWiFi();
-		  
-});	
 
 
 

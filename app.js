@@ -266,8 +266,13 @@ var WifiSensorSchema = new Schema({
 	isBatteryLow: {type : Boolean, 'default': null},
 	date: Date	
 });
-mongoose.model('WifiSensor', WifiSensorSchema); 
-var WifiSensor = mongoose.model('WifiSensor');
+WifiSensorSchema.methods.toJSON = function() {
+	  var obj = this.toObject();
+	  var date = moment(obj.date), formatted = date.format('DD/MM/YYYY HH:mm:ss');
+	  obj.date = formatted;
+	  return obj;
+}; 
+var WifiSensor = mongoose.model('WifiSensor', WifiSensorSchema);
 
 
 
@@ -276,11 +281,7 @@ app.get('/WifiSensor', function(req, res) {
 		res.send(data);
 	});
 });
-//app.get('/WifiSensor/:code', function(req, res) {
-//	WifiSensor.find(req.params).sort('-date').exec(function(err, data) {
-//		res.send(data);
-//	});
-//});
+
 
 
 app.get('/WifiSensor/:code/:binCode', function(req, res) {
@@ -558,8 +559,12 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		
 		
-		WifiSensor.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow}, function (err, data) {
+		WifiSensor.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow, date:new Date()}, function (err, data) {
 			if(data !== null){
+				WifiSensor.find({}).sort('-date').exec(function(err, data) {
+					io.sockets.emit("WIFISENSOR", data);
+				});
+				
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
 //				if(data.code === 4022 && data.isOpen === true){
 //					Sound.playMp3("/home/pi/home-system-node/mp3/portaCucinaAperta.mp3", "95");
