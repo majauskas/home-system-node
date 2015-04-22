@@ -36,6 +36,28 @@ $(function() {
 		});		
 
 	});	
+	
+	$("#EDIT-PIR-SENSOR-PAGE").on("click", "#btPirSensorDelete", function (event) {
+
+		UTILITY.areYouSure("Elimina il sensore?", function() {
+
+			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+			
+			$.ajax({
+				global: false,
+				type:'DELETE', url:"/PirSensor/"+data._id,
+				error: UTILITY.httpError,
+				success: function(response) {
+					$("#SENSORI-PIR-PAGE").page('destroy').page();	
+					$.mobile.changePage("#SENSORI-PIR-PAGE");
+		        }
+			});				
+			
+		});
+	});		
+	
+	
+	
 
 	
 });

@@ -42,7 +42,32 @@ $(function() {
 	
 	
 	
-	
+	$("#EDIT-WIFI-SENSOR-PAGE").on("click", "#btWiFiSensorDelete", function (event) {
+
+		UTILITY.areYouSure("Elimina il sensore?", function() {
+
+			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+			
+			$.ajax({
+				global: false,
+				type:'DELETE', url:"/WifiSensor",
+				dataType : "json",
+				data : {
+					code :  data.code
+				},			
+				success: function(response) {
+
+					$("#SENSORI-WIFI-PAGE").page('destroy').page();	
+					$("#HOME-PAGE").page('destroy').page();
+					$("#AREAS-PAGE").page('destroy').page();
+					$.mobile.changePage("#SENSORI-WIFI-PAGE");
+										
+					
+		        }
+			});				
+			
+		});
+	});		
 	
 	var isAddedNewWifiSensors = false;
 	$("#EDIT-WIFI-SENSOR-PAGE").on("click", "#btIndietro", function (event) {

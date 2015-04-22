@@ -254,7 +254,12 @@ app.put('/PirSensor', function(req, res) {
 	});	
 });
 
-
+app.del('/PirSensor/:id', function(req, res) {
+	PIR_SENSOR.remove({_id : req.params.id}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	 });
+});
 
 
 //-----------WifiSensor---------------------------------------------
