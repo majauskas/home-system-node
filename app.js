@@ -242,7 +242,7 @@ var PIR_SENSOR = mongoose.model('PIR_SENSOR', PirSensorSchema);
 
 
 app.get('/PirSensor', function(req, res) {
-	PIR_SENSOR.find({}).exec(function(err, data) { res.send(data); });
+	PIR_SENSOR.find({}).sort('-date').exec(function(err, data) { res.send(data); });
 });
 
 
