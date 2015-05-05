@@ -405,7 +405,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			
 			
 			
-			$("#HOME-PAGE [data-role='flipswitch']").unbind("change").on("change", OnOffZone);
+			$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change", OnOffZone);
 			
 				var area = $.grep(response, function(target, i) {	
 					 return (target.alarmActivate.state);
@@ -437,11 +437,11 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 
 function OnOffZone(){
 	
-	$("#HOME-PAGE [data-role='flipswitch']").off("change");
+	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").off("change");
 
 	var id =  $(this).attr("id"); 
 
-	$("#HOME-PAGE [data-role='flipswitch']").each(function( index, obj ) {
+	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").each(function( index, obj ) {
 		if($(this).attr("id") !== id){
 			$(this).prop('checked', false).flipswitch('refresh');
 		}
@@ -455,7 +455,7 @@ function OnOffZone(){
 		error: UTILITY.httpError
 	});					
 	
-	setTimeout(function() { $("#HOME-PAGE [data-role='flipswitch']").unbind("change").on("change",OnOffZone); },10);	
+	setTimeout(function() { $("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change",OnOffZone); },10);	
 	clearInterval(intervalBlink);
 	$("#HOME-PAGE h1 font").css('visibility', 'hidden');
 	
