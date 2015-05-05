@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 05-05-2015 17:20
+# Cache manifest version 05-05-2015 17:30
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -27,7 +27,6 @@ CACHE:
 
 # Additional items to cache.
 index.html
-Area
 jquery/jquery.mobile-1.4.5.min.css
 css/main.css
 jquery/jquery-2.1.1.min.js
