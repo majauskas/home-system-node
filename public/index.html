@@ -57,8 +57,7 @@
 	<div class="ui-content">
 
 		<fieldset id="fsSecurity" style="display: none">
-			<legend>Sicurezza</legend>
-		
+			<legend><table><tr><td style="color: red">Sicurezza</td><td><img style="padding-left: 10px" src="images/Armor-32.png"/></td></tr></table></legend>			
 					<table width="100%" style="border-collapse: collapse" id="controlgroup-alarm"></table>
 						<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
 				<tr>
@@ -68,16 +67,15 @@
 					</td>
 				</tr>
 				</script>
-					
-		</fieldset>	
+		</fieldset>			
 		<br>
 		<fieldset id="fsIlluminazione" style="display: none">
-			<legend style="color:yellow">Illuminazione</legend>
+			<legend><table><tr><td style="color:yellow">Illuminazione</td><td><img style="padding-left: 10px" src="images/Light-Bulb-off.png"/></td></tr></table></legend>
 				<table width="100%" style="border-collapse: collapse">
 					<tr>
 						<td width="60%" style="font-weight: bold; text-shadow: none; color: white">Cucina</td>
 						<td width="3%">
-							<img style='padding-right:20px' src="images/Light-Bulb-on.png"/>
+							<img src="images/Light-Bulb-on.png"/>
 						</td>
 						<td width="37%" style="text-align: right;">
 							<input type="check" data-role="flipswitch" checked data-theme="b">
@@ -86,7 +84,7 @@
 					<tr>
 						<td width="60%" style="font-weight: bold; text-shadow: none; color: white">Bagno Sotto</td>
 						<td width="3%">
-							<img style='padding-right:20px' src="images/Light-Bulb-off.png"/>
+							<img src="images/Light-Bulb-off.png"/>
 						</td>
 						<td width="37%" style="text-align: right;">
 							<input type="check" data-role="flipswitch" data-theme="b">
@@ -94,7 +92,15 @@
 					</tr>					
 				</table>	
 		</fieldset>	
-					
+		<br>
+		<fieldset id="fsTemperatura" style="display: none">
+			<legend><table><tr><td style="color: green">Temperatura</td><td><img style="padding-left: 10px" src="images/Temperature-32.png"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+						<input type="range" name="slider-2" id="slider-2" value="21" step=".1" min="7" max="30" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>						
 	</div>	 
 
 </div>	 

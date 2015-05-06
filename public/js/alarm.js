@@ -392,7 +392,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			APPLICATION.areas = response; 
 			
 			if(response.length > 0){
-				$("#fsSecurity, #fsIlluminazione").show();
+				$("#fsSecurity, #fsIlluminazione, #fsTemperatura").show();
 			}
 			
 			$("#controlgroup-alarm").html("");
