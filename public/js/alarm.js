@@ -392,7 +392,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			APPLICATION.areas = response; 
 			
 			if(response.length > 0){
-				$("#fsSecurity").show();
+				$("#fsSecurity, #fsIlluminazione").show();
 			}
 			
 			$("#controlgroup-alarm").html("");
@@ -425,7 +425,13 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 				}				
 			
 			
-			
+			$("#HOME-PAGE #fsIlluminazione [data-role='flipswitch']").unbind("change").on("change", function (){
+				if($(this).prop("checked")){
+					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-on.png");
+				}else{
+					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-off.png");
+				}
+			});
 			
 			
         }
@@ -460,12 +466,6 @@ function OnOffZone(){
 	$("#HOME-PAGE h1 font").css('visibility', 'hidden');
 	
 }
-
-
-
-	
-
-
 
 
 

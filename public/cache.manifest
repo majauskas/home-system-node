@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 05-05-2015 17:30
+# Cache manifest version 06-05-2015 14:31
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -54,6 +54,8 @@ images/security.png
 images/carbon_fibre.png
 images/door_close.png
 images/door_open.png
+images/Light-Bulb-on.png
+images/Light-Bulb-off.png
 jquery/images/iscroll-pull-icon@2x.png
  
 
