@@ -639,9 +639,9 @@ app.post('/433mhz/:binCode', function(req, res) {
 //}, 5000);
 
 app.post('/testPir', function(req, res) {
-	Area.findOne({isActivated:true, activeSensors : "GPA-1" }).exec(function(err, area) {
+	Area.findOne({isActivated:true, activeSensors : "0x20-GPA1" }).exec(function(err, area) {
 		if(area){
-			alarmDetection({name:"PIR prescrizione", code:"GPA-1"}, area._id);
+			alarmDetection({name:"PIR Bagno", code:"0x20-GPA1"}, area._id);
 		}
 	});	
 });
