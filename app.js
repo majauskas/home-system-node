@@ -644,4 +644,5 @@ app.post('/testPir', function(req, res) {
 			alarmDetection({name:"PIR Bagno", code:"0x20-GPA1"}, area._id);
 		}
 	});	
+	res.send();
 });
