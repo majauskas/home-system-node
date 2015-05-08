@@ -339,20 +339,21 @@
 		<ul data-role="listview" data-inset="false" id="listview-events" class="ui-nodisc-icon swipe-delete"></ul>	
 <!-- 		<li data-role="list-divider">Friday, October 8, 2010 <span class="ui-li-count">2</span></li> -->
 		<script id="template-events" type="text/x-jquery-tmpl">
-					<li data-icon='{{if (device != null)}}wifi{{else}}none{{/if}}' class="ui-nodisc-icon" id='${_id}'>
+					<li data-icon='{{if (device.isLock != null)}}remote{{else}}wifi{{/if}}' class="ui-nodisc-icon" id='${_id}'>
 					<div class='behind'>
                             <a href='#' class='ui-btn delete-btn'>Delete</a>
 					</div>
 					<a>
-						<p>{{if (device != null)}} ${device.name}{{else}} ${code}{{/if}}</p>					
+						<p>{{if (device != null)}} ${device.name}{{else}} ${code}{{/if}}</p>
+					
 						<p>${date}</p>						
 						{{if (device != null)}}
-							<p class='ui-li-aside' style='text-align: center;'>
-								{{if (device.isOpen == false)}}<font style='color:green;'>Chiudi</font></br>{{/if}}
-								{{if (device.isOpen == true)}}<font style='color:red;'>&nbsp;&nbsp;Apri&nbsp;&nbsp;&nbsp;</font></br>{{/if}}
-								{{if (device.isBatteryLow == true)}}<img  src='images/Battery-Low-24-FF0000.png'>{{/if}}
-								{{if (device.isLock == true)}}<img  src='images/Lock-24-FF0000.png'>{{/if}}
-								{{if (device.isLock == false)}}<img  src='images/Lock-Open-24-04C263.png'>{{/if}}
+							<p class='ui-li-aside'></br>
+								{{if (device.isOpen == false)}}<img src='images/door_close.png'/>{{/if}}
+								{{if (device.isOpen == true)}}<img src='images/door_open.png'/>{{/if}}
+								{{if (device.isBatteryLow == true)}}<img style='margin-left:10px' src='images/Battery-Low-24-FF0000.png'>{{/if}}
+								{{if (device.isLock == true)}}<img style='margin-left:10px' src='images/Lock-24-FF0000.png'>{{/if}}
+								{{if (device.isLock == false)}}<img style='margin-left:10px' src='images/Lock-Open-24-04C263.png'>{{/if}}
 							</p>
 						{{/if}}
 					</a></li>
