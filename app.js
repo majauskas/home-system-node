@@ -619,10 +619,11 @@ app.post('/433mhz/:binCode', function(req, res) {
 				
 				if(data.activeArea){
 					Area.findByIdAndUpdate(data.activeArea, {isActivated: isActivated}, function (err, data) {
+						console.log(data);
 						if(data){
 							
 							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
-							
+							console.log("data.isActivated",data.isActivated);
 							if(data.isActivated === true){
 								console.log("allarmeAttivato1", new Date());
 								Sound.playMp3("/home/pi/home-system-node/mp3/allarmeAttivato.mp3", "95");
@@ -639,7 +640,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 										Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3", "95");
 									}
 								});
-							}else{
+							}else if(data.isActivated === false){
 								disarm(data._id);
 								Sound.playMp3("/home/pi/home-system-node/mp3/allarmeDisattivato.mp3", "95");
 							}
