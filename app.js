@@ -364,6 +364,8 @@ app.put('/Area/isActivated/:id', function(req, res) {
 			else { 
 				res.send({});
 				
+				io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", data);	
+				
 				if(data.isActivated === true){
 					
 					var activeSensors = data.activeSensors;
@@ -380,7 +382,7 @@ app.put('/Area/isActivated/:id', function(req, res) {
 				}else if(data.isActivated === false){
 					disarm(data._id);
 				}
-				io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", data);		
+					
 			}
 		});	
 	});
