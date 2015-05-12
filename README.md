@@ -16,7 +16,11 @@ suso npm install forever -g
 
 ## Developing
 http://translate.google.com/translate_tts?tl=it&q=allarme%20%C3%A8%20stato%20disattivato
-
+http://translate.google.com/translate_tts?tl=it&q=Finestra Grande In Sala è aperta
+http://translate.google.com/translate_tts?tl=it&q=Finestra In Cucina è aperta
+http://translate.google.com/translate_tts?tl=it&q=Finestra In Cameretta è aperta
+http://translate.google.com/translate_tts?tl=it&q=Porta Ingresso è aperta
+http://translate.google.com/translate_tts?tl=it&q=Finestra In Bagno Sopra è aperta
 
 ### Tools
 

@@ -362,11 +362,25 @@ app.put('/Area/isActivated/:id', function(req, res) {
 		Area.findByIdAndUpdate(req.params.id, {isActivated: req.body.isActivated}, function (err, data) {
 			if(err){console.log(err); res.status(500).send(err); }
 			else { 
-				if(data.isActivated === false){
+				res.send({});
+				
+				if(data.isActivated === true){
+					
+					var activeSensors = data.activeSensors;
+					for ( var i = 0; i < activeSensors.length; i++) {
+						activeSensors[i] = parseInt(activeSensors[i]);
+						if(!activeSensors[i]){activeSensors[i]=0;}
+					}
+					WifiSensor.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, sensor) {
+						if(sensor){
+							io.sockets.emit("SOCKET-WARNING-MSG", sensor.name+" &#232; aperta!");
+						}
+					});	
+					
+				}else if(data.isActivated === false){
 					disarm(data._id);
 				}
-				io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", data);
-				res.send({});
+				io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", data);		
 			}
 		});	
 	});
@@ -605,8 +619,20 @@ app.post('/433mhz/:binCode', function(req, res) {
 							
 							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 							
-							if(data.isActivated){
+							if(data.isActivated === true){
+								
 								Sound.playMp3("/home/pi/home-system-node/mp3/allarmeAttivato.mp3", "95");
+								var activeSensors = data.activeSensors;
+								for ( var i = 0; i < activeSensors.length; i++) {
+									activeSensors[i] = parseInt(activeSensors[i]);
+									if(!activeSensors[i]){activeSensors[i]=0;}
+								}
+								WifiSensor.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, data) {
+									if(data){
+										console.log(data.name, data.name.replace(" ", ""));
+										Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3", "95");
+									}
+								});
 							}else{
 								disarm(data._id);
 								Sound.playMp3("/home/pi/home-system-node/mp3/allarmeDisattivato.mp3", "95");

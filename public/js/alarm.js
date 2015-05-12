@@ -298,6 +298,10 @@ socket.on('SOCKET-CHANGE-ALARM-STATE', function (data) {
 	
 });
 
+socket.on('SOCKET-WARNING-MSG', function (msg) {
+	UTILITY.alertPopup("Warning", msg);	
+});
+
 socket.on('433MHZ', function (device) {
 	
 	
