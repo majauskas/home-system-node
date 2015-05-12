@@ -155,7 +155,7 @@ function alarmDetection(sensor, areaId) {
 		    
 			email("Sound", sensor.name + "\n Sirena allarme attivata");
 			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
-//			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
+			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
 			console.log("SIRENA------------------"); 
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
 	}, 10000);
@@ -524,7 +524,7 @@ var lastBinCode;
 app.post('/433mhz/:binCode', function(req, res) {
 	
 	var binCode = req.params.binCode;
-	
+	console.log("-------------------------------- ",binCode);
 	var duration = Number(new Date() - lastTime);
 	
 	if(duration < 2200 || (duration < 1200 && lastBinCode === binCode)){
