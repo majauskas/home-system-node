@@ -624,8 +624,9 @@ app.post('/433mhz/:binCode', function(req, res) {
 							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 							
 							if(data.isActivated === true){
-								
+								console.log("allarmeAttivato1", new Date());
 								Sound.playMp3("/home/pi/home-system-node/mp3/allarmeAttivato.mp3", "95");
+								console.log("allarmeAttivato2", new Date());
 								var activeSensors = data.activeSensors;
 								for ( var i = 0; i < activeSensors.length; i++) {
 									activeSensors[i] = parseInt(activeSensors[i]);
@@ -633,7 +634,8 @@ app.post('/433mhz/:binCode', function(req, res) {
 								}
 								WifiSensor.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, data) {
 									if(data){
-										console.log(data.name, data.name.replace(" ", ""));
+										
+										console.log(data.name, "/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3");
 										Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3", "95");
 									}
 								});
