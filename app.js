@@ -601,14 +601,17 @@ app.post('/433mhz/:binCode', function(req, res) {
 //				
 			}
 		});		
-		
+		//010001001100110111000000  ON
+		//010001001100110100001100 OFF
+		//010001001100110100000011 HOME
+		//010001001100110100110000 SOS
 		RemoteControl.findOne({code : code}).exec(function(err, data) {
 			if(data !== null){
 				
 				var isActivated = null;
 				if(binCode.length === 24){ 
 					var state = binCode.substr(16,8);
-					if(state === "00000011"){ //OFF
+					if(state === "00000011" || state === "00001100"){ //OFF
 						isActivated = false;
 					}else if(state === "11000000"){ //ON
 						isActivated = true;
