@@ -573,7 +573,9 @@ app.post('/433mhz/:binCode', function(req, res) {
 		Area.findOne({isActivated:true, activeSensors : code.toString() }).exec(function(err, area) {
 			if(area){
 				WifiSensor.findOne({code:code}, function(err, sensor){
-					alarmDetection(sensor, area._id);
+					if(sensor.isOpen !== false){
+						alarmDetection(sensor, area._id);
+					}
 				});	
 			}
 		});		
