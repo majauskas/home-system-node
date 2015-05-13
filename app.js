@@ -157,7 +157,7 @@ function alarmDetection(sensor, areaId) {
 			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-q -v -l10");//repeat mp3
-//			Sound.execute("sudo /home/pi/home-system-node/utils/playmp3.sh");
+//			Sound.execute("/home/pi/home-system-node/utils/playmp3.sh");
 			//
 			console.log("SIRENA------------------"); 
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
