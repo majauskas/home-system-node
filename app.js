@@ -638,9 +638,10 @@ app.post('/433mhz/:binCode', function(req, res) {
 								}
 								WifiSensor.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, data) {
 									if(data){
-										
-										console.log(data.name, "/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3");
-										Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3", "95");
+										setTimeout(function() {
+											console.log(data.name, "/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3");
+											Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3", "95");
+										}, 4000);
 									}
 								});
 							}else if(data.isActivated === false){
