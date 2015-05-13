@@ -156,8 +156,8 @@ function alarmDetection(sensor, areaId) {
 			email("Sound", sensor.name + "\n Sirena allarme attivata");
 			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
-//			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-q -v -l10");//repeat mp3
-			Sound.execute("sudo /home/pi/home-system-node/utils/playmp3.sh");
+			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-q -v -l10");//repeat mp3
+//			Sound.execute("sudo /home/pi/home-system-node/utils/playmp3.sh");
 			//
 			console.log("SIRENA------------------"); 
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
@@ -643,8 +643,8 @@ app.post('/433mhz/:binCode', function(req, res) {
 									if(data){
 										setTimeout(function() {
 											console.log(data.name, "/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3");
-											Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3", "95");
-										}, 1500);
+											Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "").replace(" ", "").replace(" ", "")+".mp3", "95");
+										}, 3000);
 									}
 								});
 							}else if(data.isActivated === false){
