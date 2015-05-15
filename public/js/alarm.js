@@ -383,6 +383,12 @@ function AlarmDetection (device, areaId){
 //	}, null,"Atenzione");
 //});
 
+socket.emit('SOCKET-GET-CONFIGURATION', function(data){
+	console.log("SOCKET-GET-CONFIGURATION", data.audio);
+	CONFIGURATION = data;
+
+});
+
 socket.on('ALARM_DETECTION', AlarmDetection);
 
 var intervalBlink = null;
@@ -602,5 +608,14 @@ $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
   });
 	
 	loadRemoteControls();
+});
+
+$(document).on("pagecreate","#AUDIO-PAGE", function(){
+
+	$("#slider-siren-volume").val(CONFIGURATION.audio.volumeSirena);
+	$("#slider-siren-volume").slider("refresh");
+	$("#slider-voice-volume").val(CONFIGURATION.audio.volumeVoce);
+	$("#slider-voice-volume").slider("refresh");
+
 });
 

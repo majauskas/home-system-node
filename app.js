@@ -112,8 +112,8 @@ app.get('/home-system', function(req, res) {
 
 
 
-
-
+var volumeSirena = "100";
+var volumeVoce = "90";
 
 
 
@@ -130,6 +130,17 @@ io.sockets.on('connection', function (socket) {
 		disarm(areaId);
 		
 	});
+	
+	
+	socket.on('SOCKET-GET-CONFIGURATION', function (callback) {
+
+		CONFIGURATION.findOne({}).exec(function(err, data) {
+			callback(data);
+		});		
+		
+//		io.sockets.emit("SOCKET-SIREN-VOLUME", {_id:data._id, isActivated: data.isActivated});
+		
+	});	
 	
 });
 
@@ -159,7 +170,6 @@ function alarmDetection(sensor, areaId) {
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-q -v -l10");//repeat mp3
 //			Sound.execute("/home/pi/home-system-node/utils/playmp3.sh");
 			//
-			console.log("SIRENA------------------"); 
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
 	}, 10000);
 	
@@ -322,6 +332,28 @@ app.del('/WifiSensor', function(req, res) {
 		res.send({});
 	});	
 });
+
+//----------- Config ---------------------------------------------
+var ConfigurationSchema = new Schema({
+	audio: {
+		volumeSirena: {type : String, 'default': '100'},
+		volumeVoce: {type : String, 'default': '90'}
+	}
+});
+
+mongoose.model('Configuration', ConfigurationSchema); 
+var CONFIGURATION = mongoose.model('Configuration');
+CONFIGURATION.findOneAndUpdate({}, {}, {upsert : true }, function (err, doc) {
+	
+});
+
+//app.get('/Configuration', function(req, res) {
+//	CONFIGURATION.find({}).exec(function(err, data) {
+//		if(err){console.log(err); res.status(500).send(err); }
+//		else { res.send(data); }
+//	});		
+//});
+
 
 
 

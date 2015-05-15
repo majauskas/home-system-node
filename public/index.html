@@ -28,11 +28,11 @@
     <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview-pull.css"/>	
     
 
-	
+	<script type="text/javascript" src="js/cons.js" charset="iso-8859-1"></script>		
 	<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
 	<script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/pir-sensors.js" charset="iso-8859-1"></script>
-	<script type="text/javascript" src="js/wifi-sensors.js" charset="iso-8859-1"></script>		
+	<script type="text/javascript" src="js/wifi-sensors.js" charset="iso-8859-1"></script>
 	
 	
 	<script type="text/javascript">
@@ -436,18 +436,46 @@
 </div> 
 
 
+<div id="AUDIO-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Audio<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div class="ui-content">
 
+		<fieldset>
+			<legend><table><tr><td style="color: white">Sirena</td><td><img style="padding-left: 10px" src="images/Volume-Slider-32.png"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+					<input type="range" name="slider-siren-volume" id="slider-siren-volume" value="" step="1" min="0" max="100" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>	
+		<br> 
+		<fieldset>
+			<legend><table><tr><td style="color: white">Voce</td><td><img style="padding-left: 10px" src="images/Volume-Slider-32.png"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+					<input type="range" name="slider-voice-volume" id="slider-voice-volume" value="90" step="1" min="0" max="100" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>	
+	</div>
+
+</div> 	
 
 
 
 <div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
 	<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
-		<li data-icon="node"><a href="#SENSORI-PIR-PAGE">Sensori PIR</a></li>
+		<li data-icon="pir"><a href="#SENSORI-PIR-PAGE">Sensori PIR</a></li>
 		<li data-icon="wifi"><a href="#SENSORI-WIFI-PAGE">Sensori Wifi</a></li>
 	    <li data-icon="node"><a href="#AREAS-PAGE">Zone</a></li>
 	    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Telecomandi</a></li>
 	    <li data-icon="listbox"><a href="#EVENTS-PAGE">Eventi</a></li>
-	    
+	    <li data-icon="light"><a href="#ILLUMINAZIONE-PAGE">Illuminazione</a></li>
+	    <li data-icon="speaker"><a href="#AUDIO-PAGE">Audio</a></li>
 	</ul>
 </div> 
 	</body>

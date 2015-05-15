@@ -40,11 +40,13 @@ js/socket.io.js
 js/util.js	
 js/alarm.js
 js/pir-sensors.js
-js/wifi-sensors.js	
+js/wifi-sensors.js
+js/cons.js	
 jquery/images/ajax-loader.gif
 images/Wifi-02-24-1C95FF.png
+images/1c95ff-infrared-sensor-24.png
 images/Node-24-1C95FF.png
-images/Remote-Control-24-1C95FF.png
+images/1c95ff-remote-control-18.png
 images/ListBox-24-1C95FF.png
 images/Lock-24-FF0000.png
 images/Warning-Message-24-F50000.png
@@ -59,6 +61,9 @@ images/Light-Bulb-off.png
 images/Temperature-32.png
 images/Armor-32.png
 jquery/images/iscroll-pull-icon@2x.png
+jquery/Volume-Slider-32.png
+jquery/1c95ff-speaker-volume-24.png
+jquery/1c95ff-light-bulb-24.png
  
 
 
