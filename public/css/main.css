@@ -175,8 +175,11 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 .ui-icon-wifi:after {background-image: url("../images/Wifi-02-24-1C95FF.png");background-position: 3px 3px; background-size: 70%;}
 .ui-icon-usb:after {background-image: url("../images/USB-Plug-24-1C95FF.png"); background-size: 18px 18px;}
 .ui-icon-node:after {background-image: url("../images/Node-24-1C95FF.png"); background-size: 18px 18px;}
-.ui-icon-remote:after {background-image: url("../images/Remote-Control-24-1C95FF.png"); background-size: 24px 24px;}
+.ui-icon-pir:after {background-image: url("../images/1c95ff-infrared-sensor-24.png"); background-size: 18px 18px;}
+.ui-icon-remote:after {background-image: url("../images/1c95ff-remote-control-18.png"); background-size: 18px 18px;}
 .ui-icon-listbox:after {background-image: url("../images/ListBox-24-1C95FF.png"); background-size: 18px 18px;}
+.ui-icon-light:after {background-image: url("../images/1c95ff-light-bulb-24.png"); background-size: 18px 18px;}
+.ui-icon-speaker:after {background-image: url("../images/1c95ff-speaker-volume-24.png"); background-size: 18px 18px;}
 
 .ui-icon-door:after {background-image: url("../images/Door-24.png"); background-size: 18px 18px;}
 .ui-icon-window:after {background-image: url("../images/Window-24.png"); background-size: 18px 18px;}
