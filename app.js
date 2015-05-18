@@ -343,16 +343,16 @@ var ConfigurationSchema = new Schema({
 });
 mongoose.model('CONFIGURATION', ConfigurationSchema); 
 var CONFIGURATION = mongoose.model('CONFIGURATION');
-CONFIGURATION.update({_id: ""}, {}, {upsert : true }, function (err, doc) {
+CONFIGURATION.update({}, {}, {upsert : true }, function (err, doc) {
 	console.log("CONFIGURATION ", err, doc);
 });
 
-//app.get('/Configuration', function(req, res) {
-//	CONFIGURATION.find({}).exec(function(err, data) {
-//		if(err){console.log(err); res.status(500).send(err); }
-//		else { res.send(data); }
-//	});		
-//});
+app.get('/CONFIGURATION', function(req, res) {
+	CONFIGURATION.find({}).exec(function(err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send(data); }
+	});		
+});
 
 
 
