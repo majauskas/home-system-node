@@ -341,10 +341,9 @@ var ConfigurationSchema = new Schema({
 		volumeVoce: {type : String, 'default': '90'}
 	}
 });
-
 mongoose.model('CONFIGURATION', ConfigurationSchema); 
 var CONFIGURATION = mongoose.model('CONFIGURATION');
-CONFIGURATION.findOneAndUpdate({}, {}, {upsert : true }, function (err, doc) {
+CONFIGURATION.update({_id: ""}, {}, {upsert : true }, function (err, doc) {
 	console.log("CONFIGURATION ", err, doc);
 });
 
