@@ -342,10 +342,10 @@ var ConfigurationSchema = new Schema({
 	}
 });
 
-mongoose.model('Configuration', ConfigurationSchema); 
-var CONFIGURATION = mongoose.model('Configuration');
+mongoose.model('CONFIGURATION', ConfigurationSchema); 
+var CONFIGURATION = mongoose.model('CONFIGURATION');
 CONFIGURATION.findOneAndUpdate({}, {}, {upsert : true }, function (err, doc) {
-	console.log("Configuration ",err, doc);
+	console.log("CONFIGURATION ", err, doc);
 });
 
 //app.get('/Configuration', function(req, res) {
