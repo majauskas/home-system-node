@@ -13,7 +13,7 @@ app.post('/github', function(req, res) {
 	var exec = child_process.exec;
 	console.log("\n\n\n------------- UPDATING ------ ");
 	
-	exec('cd /home/pi/home-system-node/ && sudo forever stop /home/pi/home-system-node/app.js && sudo git pull origin && sudo npm install && sudo forever start -l /home/pi/logs-home-system-node.log -e /home/pi/logs-home-system-node.err /home/pi/home-system-node/app.js', function(error, output) {
+	exec('cd /home/pi/home-system-node/ && sudo forever stop /home/pi/home-system-node/app.js && sudo git pull origin && sudo npm install && sudo forever start /home/pi/home-system-node/app.js', function(error, output) {
 		console.log("\n\n"+error, output);
 	});	
 	
