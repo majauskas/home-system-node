@@ -337,15 +337,23 @@ app.del('/WifiSensor', function(req, res) {
 //----------- Config ---------------------------------------------
 var ConfigurationSchema = new Schema({
 	audio: {
-		volumeSirena: {type : String, 'default': '100'},
-		volumeVoce: {type : String, 'default': '90'}
+		volumeSirena: String,
+		volumeVoce: String
 	}
 });
 mongoose.model('CONFIGURATION', ConfigurationSchema); 
 var CONFIGURATION = mongoose.model('CONFIGURATION');
-CONFIGURATION.update({}, {}, {upsert : true }, function (err, doc) {
-	console.log("CONFIGURATION ", err, doc);
-});
+//CONFIGURATION.update({audio:null}, {}, {upsert : true }, function (err, doc) {
+//	console.log("CONFIGURATION ", err, doc);
+//});
+CONFIGURATION.find({}).exec(function(err, data) {
+	if(!data){
+		CONFIGURATION.create({audio:{volumeSirena:"100", volumeVoce:"90"}}, function (err, data) {
+			console.log("CONFIGURATION create", err, data);
+		});	
+	}
+	
+});	
 
 app.get('/CONFIGURATION', function(req, res) {
 	CONFIGURATION.find({}).exec(function(err, data) {
