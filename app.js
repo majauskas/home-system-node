@@ -111,11 +111,8 @@ app.get('/home-system', function(req, res) {
 });
 
 
-
-var volumeSirena = "100";
-var volumeVoce = "90";
-
-
+var _volumeSirena = "100";
+var _volumeVoce = "90";
 
 // Web Socket Connection
 var io = require('socket.io')(server);
@@ -136,6 +133,10 @@ io.sockets.on('connection', function (socket) {
 
 		CONFIGURATION.findOne({}).exec(function(err, data) {
 			console.log("CONFIGURATION findOne ",err, data);
+			if(!data){
+				_volumeSirena = data.audio.volumeSirena;
+				_volumeVoce = data.audio.volumeVoce;
+			}
 			callback(data);
 		});		
 		
@@ -160,7 +161,7 @@ function alarmDetection(sensor, areaId) {
 	io.sockets.emit("ALARM_DETECTION", sensor, areaId);
 	
 	
-	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","95");
+	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3", _volumeVoce);
 //	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","10");
 	alarmTimer = setTimeout(function() {
 		    if(!isAlarmActivated){return;}
@@ -168,7 +169,7 @@ function alarmDetection(sensor, areaId) {
 			email("Sound", sensor.name + "\n Sirena allarme attivata");
 			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
-			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-q -v -l10");//repeat mp3
+			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3", _volumeSirena ,"-q -v -l10");//repeat mp3
 //			Sound.execute("/home/pi/home-system-node/utils/playmp3.sh");
 			//
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
@@ -343,25 +344,22 @@ var ConfigurationSchema = new Schema({
 });
 mongoose.model('CONFIGURATION', ConfigurationSchema); 
 var CONFIGURATION = mongoose.model('CONFIGURATION');
-//CONFIGURATION.update({audio:null}, {}, {upsert : true }, function (err, doc) {
-//	console.log("CONFIGURATION ", err, doc);
-//});
 CONFIGURATION.findOne({}).exec(function(err, data) {
 	console.log("CONFIGURATION findOne", err, data);
 	if(!data){
-		CONFIGURATION.create({audio:{volumeSirena:"100", volumeVoce:"90"}}, function (err, data) {
+		CONFIGURATION.create({audio:{volumeSirena: _volumeSirena, volumeVoce: _volumeVoce}}, function (err, data) {
 			console.log("CONFIGURATION create", err, data);
 		});	
 	}
 	
 });	
 
-app.get('/CONFIGURATION', function(req, res) {
-	CONFIGURATION.find({}).exec(function(err, data) {
-		if(err){console.log(err); res.status(500).send(err); }
-		else { res.send(data); }
-	});		
-});
+//app.get('/CONFIGURATION', function(req, res) {
+//	CONFIGURATION.find({}).exec(function(err, data) {
+//		if(err){console.log(err); res.status(500).send(err); }
+//		else { res.send(data); }
+//	});		
+//});
 
 
 
@@ -673,7 +671,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 							console.log("data.isActivated",data.isActivated);
 							if(data.isActivated === true){
 								console.log("allarmeAttivato1", new Date());
-								Sound.playMp3("/home/pi/home-system-node/mp3/car_lock.mp3", "95");
+								Sound.playMp3("/home/pi/home-system-node/mp3/car_lock.mp3", _volumeVoce);
 								console.log("allarmeAttivato2", new Date());
 								var activeSensors = data.activeSensors;
 								for ( var i = 0; i < activeSensors.length; i++) {
@@ -684,13 +682,13 @@ app.post('/433mhz/:binCode', function(req, res) {
 									if(data){
 										setTimeout(function() {
 											console.log(data.name, "/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3");
-											Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "").replace(" ", "").replace(" ", "")+".mp3", "95");
+											Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "").replace(" ", "").replace(" ", "")+".mp3", _volumeVoce);
 										}, 3000);
 									}
 								});
 							}else if(data.isActivated === false){
 								disarm(data._id);
-								Sound.playMp3("/home/pi/home-system-node/mp3/dtmf_8.mp3", "95", "-l2");//allarmeDisattivato.mp3
+								Sound.playMp3("/home/pi/home-system-node/mp3/dtmf_8.mp3", _volumeVoce, "-l2");//allarmeDisattivato.mp3
 								
 							}
 						}
