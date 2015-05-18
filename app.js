@@ -135,6 +135,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('SOCKET-GET-CONFIGURATION', function (callback) {
 
 		CONFIGURATION.findOne({}).exec(function(err, data) {
+			console.log("CONFIGURATION.findOne ",err, data);
 			callback(data);
 		});		
 		
@@ -344,7 +345,7 @@ var ConfigurationSchema = new Schema({
 mongoose.model('Configuration', ConfigurationSchema); 
 var CONFIGURATION = mongoose.model('Configuration');
 CONFIGURATION.findOneAndUpdate({}, {}, {upsert : true }, function (err, doc) {
-	
+	console.log("Configuration ",err, doc);
 });
 
 //app.get('/Configuration', function(req, res) {
