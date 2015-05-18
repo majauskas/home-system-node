@@ -346,8 +346,8 @@ var CONFIGURATION = mongoose.model('CONFIGURATION');
 //CONFIGURATION.update({audio:null}, {}, {upsert : true }, function (err, doc) {
 //	console.log("CONFIGURATION ", err, doc);
 //});
-CONFIGURATION.find({}).exec(function(err, data) {
-	console.log("CONFIGURATION find", err, data);
+CONFIGURATION.findOne({}).exec(function(err, data) {
+	console.log("CONFIGURATION findOne", err, data);
 	if(!data){
 		CONFIGURATION.create({audio:{volumeSirena:"100", volumeVoce:"90"}}, function (err, data) {
 			console.log("CONFIGURATION create", err, data);
