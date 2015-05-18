@@ -135,7 +135,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('SOCKET-GET-CONFIGURATION', function (callback) {
 
 		CONFIGURATION.findOne({}).exec(function(err, data) {
-			console.log("CONFIGURATION.findOne ",err, data);
+			console.log("CONFIGURATION findOne ",err, data);
 			callback(data);
 		});		
 		
