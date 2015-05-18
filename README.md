@@ -14,6 +14,8 @@ sudo adduser $USER gpio
 
 suso npm install forever -g
 
+sudo forever start -o /home/pi/logs-home-system-node.txt -e /home/pi/logs-home-system-node.txt /home/pi/home-system-node/updater.js
+
 ## Developing
 http://translate.google.com/translate_tts?tl=it&q=allarme%20%C3%A8%20stato%20disattivato
 http://translate.google.com/translate_tts?tl=it&q=Finestra Grande In Sala è aperta
