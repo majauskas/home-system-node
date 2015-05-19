@@ -13,7 +13,8 @@ var Sound = require('./lib/Sound.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
 var child_process = require('child_process');
-var spawn = require('child_process').spawn;
+var child_process = require('child_process');
+var exec = child_process.exec;
 var arp = null; try { arp = require('arp-a'); } catch (e) {}
 
 //var gpio = require("pi-gpio");
@@ -751,9 +752,15 @@ app.post('/433mhz/:binCode', function(req, res) {
 //	} catch (e) {}
 //}, 10000);
 
-//setInterval(function() {
+setInterval(function() {
 //	if(spawn === null){return;}
-//	try {
+	try {
+		
+        exec("sudo nmap -sP -PE -PA  192.168.0.*", function(err, stdout,stderr) {
+        	console.log(err, stdout,stderr); 
+      
+       });
+        
 //		var ping = spawn("sudo nmap -sP -PE -PA 192.168.0.*");
 //		
 //		var buffer = '';
@@ -769,9 +776,11 @@ app.post('/433mhz/:binCode', function(req, res) {
 //		arp.stderr.on('data', function (data) {
 //			errstream += data;
 //		});
-//		
-//	} catch (e) {}
-//}, 10000);
+		
+	} catch (e) {
+		console.error("ERROR", e);
+	}
+}, 10000);
 
 
 //************* TESTS ******************
