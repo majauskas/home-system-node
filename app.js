@@ -12,10 +12,23 @@ var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
+var arp = require('arp-a');
 
 
+arp.table(function(err, entry) {
+	  if (!!err) return console.log('arp: ' + err.message);
+	  if (!entry) return;
 
+	  tbl.ipaddrs[entry.ip] = entry.mac;
+	  if (!tbl.ifnames[entry.ifname]) tbl.ifnames[entry.ifname] = {};
+	  tbl.ifnames[entry.ifname][entry.mac] = entry.ip;
+	});
 
+	arp.ifTable(function(err, entry) {
+	  if (err) return console.log('arp: ' + err.message);
+
+	  if (!!entry) console.log(entry);
+	});
 
 
 //var gpio = require("pi-gpio");
