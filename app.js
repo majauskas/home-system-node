@@ -365,6 +365,7 @@ CONFIGURATION.findOne({}).exec(function(err, data) {
 var LAN_DEVICE = mongoose.model('LAN_DEVICE', new Schema({
 	ip: String,
 	mac: String,
+	name: String,
 	exists: {type : Boolean, 'default': true}
 })); 
 //var LAN_DEVICE = mongoose.model('LAN_DEVICE');
@@ -757,12 +758,36 @@ setInterval(function() {
 	try {
 		
         exec("sudo nmap -sP -PE -PA 192.168.0.* | grep 'MAC' | awk '{print $3,$4}'", function(err, stdout,stderr) {
-//        	console.log(stdout);
         	if(stdout){
-//        		var device = stdout.split('\n');
-        		stdout.split('\n').forEach(function(device) {
-        			if(device){
-        				console.log(device.split(' '));
+        		stdout.split('\n').forEach(function(target) {
+        			if(target){
+        				var entry = target.split(' ');
+        				console.log(entry);
+        				LAN_DEVICE.find({}).exec(function(err, data) {
+    					
+	    					console.log("LAN_DEVICE find", err, data);
+	    					if(data){
+	    						data.forEach(function(device) {
+	    							console.log("forEach ", device);
+	    							var exists = false;
+	    							if(device.mac ===  entry[0]){
+	    								exists = true;
+	    							}	
+	    							
+	    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, {'$set':  {'exists': exists}}, function (err, doc) {
+	    								console.log("findOneAndUpdate", err, doc);
+	    							});								
+	    						});	
+	    						
+	    						
+	    
+	    					}else{
+	    						LAN_DEVICE.findOneAndUpdate({mac : entry[0]}, {mac:entry[0],name:entry[1]}, {upsert : true }, function (err, data) {
+	    							console.log("findOneAndUpdate upsert", err, data);
+	    						});
+	    					}
+    					
+    				});	        				
         			}
         			
         		});
@@ -770,21 +795,7 @@ setInterval(function() {
       
        });
         
-//		var ping = spawn("sudo nmap -sP -PE -PA 192.168.0.*");
-//		
-//		var buffer = '';
-//		var errstream = '';
-//		ping.on('close', function (code) {
-//			console.log("close", code);
-//			console.log("buffer", buffer);
-//			console.log("errstream", errstream);
-//		});
-//		arp.stdout.on('data', function (data) {
-//			buffer += data;
-//		});
-//		arp.stderr.on('data', function (data) {
-//			errstream += data;
-//		});
+
 		
 	} catch (e) {
 		console.error("ERROR", e);
