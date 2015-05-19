@@ -757,11 +757,14 @@ setInterval(function() {
 	try {
 		
         exec("sudo nmap -sP -PE -PA 192.168.0.* | grep 'MAC' | awk '{print $3,$4}'", function(err, stdout,stderr) {
-        	console.log(stdout);
+//        	console.log(stdout);
         	if(stdout){
 //        		var device = stdout.split('\n');
         		stdout.split('\n').forEach(function(device) {
-        			console.log(device, device.split(' '));
+        			if(device){
+        				console.log(device.split(' '));
+        			}
+        			
         		});
         	}
       
