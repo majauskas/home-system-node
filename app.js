@@ -16,20 +16,22 @@ var arp = require('arp-a')
 , tbl = { ipaddrs: {}, ifnames : {} }
 ;
 
-
+console.log('init date ',new Date());
 arp.table(function(err, entry) {
-	  if (!!err) return console.log('arp: ' + err.message);
-	  if (!entry) return;
-
-	  tbl.ipaddrs[entry.ip] = entry.mac;
-	  if (!tbl.ifnames[entry.ifname]) tbl.ifnames[entry.ifname] = {};
-	  tbl.ifnames[entry.ifname][entry.mac] = entry.ip;
-	});
+	console.log('table: ',new Date(),err, entry);
+//	  if (!!err) return console.log('arp: ' + err.message);
+//	  if (!entry) return;
+//
+//	  tbl.ipaddrs[entry.ip] = entry.mac;
+//	  if (!tbl.ifnames[entry.ifname]) tbl.ifnames[entry.ifname] = {};
+//	  tbl.ifnames[entry.ifname][entry.mac] = entry.ip;
+});
 
 	arp.ifTable(function(err, entry) {
-	  if (err) return console.log('arp: ' + err.message);
-
-	  if (!!entry) console.log(entry);
+		console.log('ifTable: ',new Date(),err, entry);
+//	  if (err) return console.log('arp: ' + err.message);
+//
+//	  if (!!entry) console.log(entry);
 	});
 
 
