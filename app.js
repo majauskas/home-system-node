@@ -12,20 +12,7 @@ var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
-
-setInterval(function() {
-	try {
-		require('arp-a').table(function(err, entry) {
-			if(entry){
-				console.log(entry);
-			}
-		});			
-	} catch (e) {}
-}, 3000);
-
-
-
-
+var arp = null; try { arp = require('arp-a'); } catch (e) {}
 
 //var gpio = require("pi-gpio");
 
@@ -713,6 +700,22 @@ app.post('/433mhz/:binCode', function(req, res) {
 	res.send();
 	
 });
+
+
+
+
+
+setInterval(function() {
+	if(arp === null){return;}
+	try {
+		arp.table(function(err, entry) {
+			if(entry){
+				console.log(entry);
+			}
+		});			
+	} catch (e) {}
+}, 10000);
+
 
 
 
