@@ -751,27 +751,27 @@ app.post('/433mhz/:binCode', function(req, res) {
 //	} catch (e) {}
 //}, 10000);
 
-setInterval(function() {
-	if(spawn === null){return;}
-	try {
-		var ping = spawn("sudo nmap -sP -PE -PA 192.168.0.*");
-		
-		var buffer = '';
-		var errstream = '';
-		ping.on('close', function (code) {
-			console.log("close", code);
-			console.log("buffer", buffer);
-			console.log("errstream", errstream);
-		});
-		arp.stdout.on('data', function (data) {
-			buffer += data;
-		});
-		arp.stderr.on('data', function (data) {
-			errstream += data;
-		});
-		
-	} catch (e) {}
-}, 10000);
+//setInterval(function() {
+//	if(spawn === null){return;}
+//	try {
+//		var ping = spawn("sudo nmap -sP -PE -PA 192.168.0.*");
+//		
+//		var buffer = '';
+//		var errstream = '';
+//		ping.on('close', function (code) {
+//			console.log("close", code);
+//			console.log("buffer", buffer);
+//			console.log("errstream", errstream);
+//		});
+//		arp.stdout.on('data', function (data) {
+//			buffer += data;
+//		});
+//		arp.stderr.on('data', function (data) {
+//			errstream += data;
+//		});
+//		
+//	} catch (e) {}
+//}, 10000);
 
 
 //************* TESTS ******************
