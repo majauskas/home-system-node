@@ -12,7 +12,9 @@ var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
-var arp = require('arp-a');
+var arp = require('arp-a')
+, tbl = { ipaddrs: {}, ifnames : {} }
+;
 
 
 arp.table(function(err, entry) {
