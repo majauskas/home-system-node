@@ -756,8 +756,14 @@ setInterval(function() {
 //	if(spawn === null){return;}
 	try {
 		
-        exec("sudo nmap -sP -PE -PA  192.168.0.*", function(err, stdout,stderr) {
-        	console.log(err, stdout,stderr); 
+        exec("sudo nmap -sP -PE -PA 192.168.0.* | grep 'MAC' | awk '{print $3,$4}'", function(err, stdout,stderr) {
+        	console.log(stdout);
+        	if(stdout){
+//        		var device = stdout.split('\n');
+        		stdout.split('\n').forEach(function(device) {
+        			console.log(device, device.split(' '));
+        		});
+        	}
       
        });
         
