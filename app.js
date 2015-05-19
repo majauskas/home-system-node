@@ -12,6 +12,8 @@ var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
+var child_process = require('child_process');
+var spawn = require('child_process').spawn;
 var arp = null; try { arp = require('arp-a'); } catch (e) {}
 
 //var gpio = require("pi-gpio");
@@ -331,7 +333,7 @@ app.del('/WifiSensor', function(req, res) {
 	});	
 });
 
-//----------- Config ---------------------------------------------
+//----------- CONFIGURATION ---------------------------------------------
 var ConfigurationSchema = new Schema({
 	audio: {
 		volumeSirena: String,
@@ -357,6 +359,14 @@ CONFIGURATION.findOne({}).exec(function(err, data) {
 //	});		
 //});
 
+
+//----------- LAN_DEVICE ---------------------------------------------
+var LAN_DEVICE = mongoose.model('LAN_DEVICE', new Schema({
+	ip: String,
+	mac: String,
+	exists: {type : Boolean, 'default': true}
+})); 
+//var LAN_DEVICE = mongoose.model('LAN_DEVICE');
 
 
 
@@ -705,18 +715,63 @@ app.post('/433mhz/:binCode', function(req, res) {
 
 
 
+//setInterval(function() {
+//	if(arp === null){return;}
+//	try {
+//		arp.table(function(err, entry) {
+//			if(entry){
+//				console.log(entry);
+//				LAN_DEVICE.find({}).exec(function(err, data) {
+//					
+//					console.log("LAN_DEVICE find", err, data);
+//					if(data){
+//						data.forEach(function(device) {
+//							console.log("forEach ", device);
+//							var exists = false;
+//							if(device.mac ===  entry.mac){
+//								exists = true;
+//							}	
+//							
+//							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, {'$set':  {'exists': exists}}, function (err, doc) {
+//								console.log("findOneAndUpdate", err, doc);
+//							});								
+//						});	
+//						
+//						
+//
+//					}else{
+//						LAN_DEVICE.findOneAndUpdate({mac : entry.mac}, entry, {upsert : true }, function (err, data) {
+//							console.log("findOneAndUpdate upsert", err, data);
+//						});
+//					}
+//					
+//				});					
+//			}
+//		});			
+//	} catch (e) {}
+//}, 10000);
+
 setInterval(function() {
-	if(arp === null){return;}
+	if(spawn === null){return;}
 	try {
-		arp.table(function(err, entry) {
-			if(entry){
-				console.log(entry);
-			}
-		});			
+		var ping = spawn("sudo nmap -sP -PE -PA 192.168.0.*");
+		
+		var buffer = '';
+		var errstream = '';
+		ping.on('close', function (code) {
+			console.log("close", code);
+			console.log("buffer", buffer);
+			console.log("errstream", errstream);
+		});
+		arp.stdout.on('data', function (data) {
+			buffer += data;
+		});
+		arp.stderr.on('data', function (data) {
+			errstream += data;
+		});
+		
 	} catch (e) {}
 }, 10000);
-
-
 
 
 //************* TESTS ******************
