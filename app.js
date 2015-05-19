@@ -13,9 +13,17 @@ var Sound = require('./lib/Sound.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
 
-require('arp-a').table(function(err, entry) {
-	console.log(err, entry);
-});
+setInterval(function() {
+	try {
+		require('arp-a').table(function(err, entry) {
+			if(entry){
+				console.log(entry);
+			}
+		});			
+	} catch (e) {}
+}, 3000);
+
+
 
 
 
