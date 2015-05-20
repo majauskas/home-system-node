@@ -760,13 +760,13 @@ setInterval(function() {
     								    if (!error && response.statusCode == 200) {
     								        console.log("body: ", body);
     								        console.log("response: ", response);
-    								        var arr = body.split('|');
-    								        if(arr.length>0){
-        								        var manufacturer = arr[1];
-        								        console.log("manufacturer: ", manufacturer);
-        								        console.log("manufacturer: ", manufacturer.trim());
-        								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
-    								        }
+//    								        var arr = body.split('|');
+//    								        if(arr.length>0){
+//        								        var manufacturer = arr[1];
+//        								        console.log("manufacturer: ", manufacturer);
+//        								        console.log("manufacturer: ", manufacturer.trim());
+//        								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
+//    								        }
 
     								    }
     							    });    								
