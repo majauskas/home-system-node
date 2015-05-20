@@ -734,15 +734,12 @@ setInterval(function() {
         				var entry = target.split(' ');
         				var mac = entry[0];
         				var name = entry[1].replace("(", "").replace(")", "");
-        				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], name:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data,o) {
-        					console.log("LAN_DEVICE.findOneAndUpdate ", err, data, o);
-        				});
+        				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], name:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
         			}
         		});
         		
         		setTimeout(function() {
 
-//    				console.log(entry);
     				LAN_DEVICE.find({}).exec(function(err, data) {
     					
     					var macs = "";
@@ -750,29 +747,27 @@ setInterval(function() {
     						macs += target.split(' ')[0]; 
     					});
         				
-//    					console.log("LAN_DEVICE find", err, data);
     					if(data && data.length > 0){
     						data.forEach(function(device) {
-//    							console.log("forEach ", device);
-//    							var exists = false;
-    							var obj = {exists: false};
     							if(macs.indexOf(device.mac) >= 0){
     								obj.exists = true;
     								obj.lastLogin = new Date();
     							}	
-    							
     							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
-    							
     							if(!device.manufacturer){
     								var macaddress = device.mac;
     								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
     								    if (!error && response.statusCode == 200) {
     								        console.log("body: ", body);
     								        console.log("response: ", response);
-    								        var manufacturer = body.split('|')[0];
-    								        console.log("manufacturer: ", manufacturer);
-    								        console.log("manufacturer: ", manufacturer.trim());
-    								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
+    								        var arr = body.split('|');
+    								        if(arr.length>0){
+        								        var manufacturer = arr[1];
+        								        console.log("manufacturer: ", manufacturer);
+        								        console.log("manufacturer: ", manufacturer.trim());
+        								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
+    								        }
+
     								    }
     							    });    								
     							}
