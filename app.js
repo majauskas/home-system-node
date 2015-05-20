@@ -740,19 +740,24 @@ setInterval(function() {
         		setTimeout(function() {
 
     				LAN_DEVICE.find({}).exec(function(err, data) {
-    					
+    					console.log("data",data);
+    					console.log("entries",entries);
     					var macs = "";
     					entries.forEach(function(target) {
     						macs += target.split(' ')[0]; 
     					});
         				
     					if(data && data.length > 0){
+    						
     						data.forEach(function(device) {
+    							console.log("forEach device",device);
     							if(macs.indexOf(device.mac) >= 0){
     								obj.exists = true;
     								obj.lastLogin = new Date();
     							}	
-    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
+    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {
+    								console.log("findOneAndUpdate",err, doc);
+    							});	
 //    							if(!device.manufacturer){
 //    								var macaddress = device.mac;
 //    								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
