@@ -138,7 +138,6 @@ io.sockets.on('connection', function (socket) {
 	
 });
 
-return;
 var isAlarmActivated = false;
 var alarmTimer = null;
 function alarmDetection(sensor, areaId) {
