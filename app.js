@@ -358,6 +358,7 @@ var LanDeviceschema = new Schema({
 	ip: String,
 	mac: String,
 	name: String,
+	nmapname: String,
 	manufacturer: String,
 	exists: {type : Boolean, 'default': true},
 	lastLogin: Date
@@ -764,7 +765,7 @@ setInterval(function() {
         				var entry = target.split(' ');
         				var mac = entry[0];
         				var name = entry[1].replace("(", "").replace(")", "");
-        				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], name:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
+        				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], nmapname:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
         			}
         		});
         		
