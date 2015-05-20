@@ -740,7 +740,9 @@ setInterval(function() {
         				var entry = target.split(' ');
         				var mac = entry[0];
         				var name = entry[1].replace("(", "").replace(")", "");
-        				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], name:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
+        				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], name:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data,o) {
+        					console.log("LAN_DEVICE.findOneAndUpdate ", err, data, o);
+        				});
         			}
         		});
         		
