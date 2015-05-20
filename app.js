@@ -354,14 +354,29 @@ CONFIGURATION.findOne({}).exec(function(err, data) {
 
 
 //----------- LAN_DEVICE ---------------------------------------------
-var LAN_DEVICE = mongoose.model('LAN_DEVICE', new Schema({
+var LanDeviceschema = new Schema({
 	ip: String,
 	mac: String,
 	name: String,
 	manufacturer: String,
 	exists: {type : Boolean, 'default': true},
 	lastLogin: Date
-})); 
+});
+
+LanDeviceschema.methods.toJSON = function() {
+	  var obj = this.toObject();
+	  var lastLogin = moment(obj.lastLogin), formatted = lastLogin.format('DD/MM/YYYY HH:mm:ss');
+	  obj.lastLogin = formatted;
+	  return obj;
+}; 
+
+var LAN_DEVICE = mongoose.model('LAN_DEVICE', LanDeviceschema); 
+
+
+
+
+
+
 app.get('/LAN_DEVICE', function(req, res) {
 	LAN_DEVICE.find({}).exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
@@ -726,7 +741,6 @@ setInterval(function() {
 	try {
         exec("sudo nmap -sP -PE -PA 192.168.0.* | grep 'MAC' | awk '{print $3,$4}'", function(err, stdout,stderr) {
         	if(stdout){
-        		console.log(stdout);
         		var entries = stdout.split('\n');
         		entries.forEach(function(target) {
         			if(target){

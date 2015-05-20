@@ -23,6 +23,8 @@ RemoteControl
 
 PirSensor
 
+LAN_DEVICE
+
 CACHE:
 
 # Additional items to cache.
@@ -42,6 +44,7 @@ js/alarm.js
 js/pir-sensors.js
 js/wifi-sensors.js
 js/cons.js	
+js/lan-devices.js
 jquery/images/ajax-loader.gif
 images/Wifi-02-24-1C95FF.png
 images/1c95ff-infrared-sensor-24.png

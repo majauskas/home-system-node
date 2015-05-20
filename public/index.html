@@ -33,6 +33,7 @@
 	<script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/pir-sensors.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/wifi-sensors.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/lan-devices.js" charset="iso-8859-1"></script>
 	
 	
 	<script type="text/javascript">
@@ -465,6 +466,31 @@
 
 </div> 	
 
+
+<div id="LAN-DEVICE-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Dispositivi<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div class="ui-content">
+
+		<fieldset id="fsLanDevices">
+			<legend><table><tr><td style="color: red">Dispositivi Collegati</td><td><img style="padding-left: 10px" src="images/Armor-32.png"/></td></tr></table></legend>			
+					<table width="100%" style="border-collapse: collapse" id="controlgroup-lan"></table>
+						<script id="template-controlgroup-lan" type="text/x-jquery-tmpl">
+				<tr>
+					<td width="60%" style="font-weight: bold; text-shadow: none; color: white">${name}</td>
+					<td width="40%" style="text-align: right;">
+						<input type="check" data-role="flipswitch" id="${_id}" {{if (isActivated === true)}}checked{{/if}}  data-theme="b">
+					</td>
+				</tr>
+				</script>
+		</fieldset>			
+		<br>
+	</div>
+
+</div> 
 
 
 <div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
