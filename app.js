@@ -12,7 +12,7 @@ var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
-var child_process = require('child_process');
+var request = require('request');
 var child_process = require('child_process');
 var exec = child_process.exec;
 var arp = null; try { arp = require('arp-a'); } catch (e) {}
@@ -20,14 +20,7 @@ var arp = null; try { arp = require('arp-a'); } catch (e) {}
 //var gpio = require("pi-gpio");
 
 
-//var request = require('request');
-//request({'url':'http://www.google.com',
-//        'proxy':'http://miajausk:li8d1toy@10.211.1.100:8080'}, function (error, response, body) {
-//    if (!error && response.statusCode == 200) {
-//        console.log(body);
-//    }
-//});
-//return;
+
 
 
 
@@ -366,6 +359,7 @@ var LAN_DEVICE = mongoose.model('LAN_DEVICE', new Schema({
 	ip: String,
 	mac: String,
 	name: String,
+	manufacturer: String,
 	exists: {type : Boolean, 'default': true},
 	lastLogin: Date
 })); 
@@ -767,7 +761,24 @@ setInterval(function() {
     								obj.lastLogin = new Date();
     							}	
     							
-    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});								
+    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
+    							
+    							if(!device.manufacturer){
+    								
+    							}
+    							
+    							
+    							request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+device.mac}, function (error, response, body) {
+								    if (!error && response.statusCode == 200) {
+								        console.log("response: ", body);
+								    }
+							    });
+//    							request({'url':'http://www.google.com',
+//    							        'proxy':'http://miajausk:li8d1toy@10.211.1.100:8080'}, function (error, response, body) {
+//    							    if (!error && response.statusCode == 200) {
+//    							        console.log(body);
+//    							    }
+//    							});
     						});	
     						
     						
