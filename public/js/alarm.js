@@ -610,12 +610,3 @@ $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
 	loadRemoteControls();
 });
 
-$(document).on("pagecreate","#AUDIO-PAGE", function(){
-
-	$("#slider-siren-volume").val(CONFIGURATION.audio.volumeSirena);
-	$("#slider-siren-volume").slider("refresh");
-	$("#slider-voice-volume").val(CONFIGURATION.audio.volumeVoce);
-	$("#slider-voice-volume").slider("refresh");
-
-});
-
