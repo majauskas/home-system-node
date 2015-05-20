@@ -367,7 +367,7 @@ var LAN_DEVICE = mongoose.model('LAN_DEVICE', new Schema({
 	mac: String,
 	name: String,
 	exists: {type : Boolean, 'default': true},
-	date: Date
+	lastLogin: Date
 })); 
 app.get('/LAN_DEVICE', function(req, res) {
 	LAN_DEVICE.find({}).exec(function(err, data) {
@@ -769,31 +769,33 @@ setInterval(function() {
         		stdout.split('\n').forEach(function(target) {
         			if(target){
         				var entry = target.split(' ');
-        				var mac = entry[0];
-        				var name = entry[1].replace("(", "").replace(")", "");
-        				console.log(entry);
+//        				console.log(entry);
         				LAN_DEVICE.find({}).exec(function(err, data) {
-    					
-	    					console.log("LAN_DEVICE find", err, data);
+        					var mac = entry[0];
+            				var name = entry[1].replace("(", "").replace(")", "");
+//	    					console.log("LAN_DEVICE find", err, data);
 	    					if(data && data.length > 0){
 	    						data.forEach(function(device) {
-	    							console.log("forEach ", device);
-	    							var exists = false;
+//	    							console.log("forEach ", device);
+//	    							var exists = false;
+	    							var obj = {exists: false, name: name};
 	    							if(device.mac ===  mac){
-	    								exists = true;
+	    								obj.exists = true;
+	    								obj.lastLogin = new Date();
 	    							}	
 	    							
-	    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, {'exists': exists, name:name, date:new Date()}, function (err, doc) {
-	    								console.log("findOneAndUpdate", err, doc);
+	    							
+	    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {
+//	    								console.log("findOneAndUpdate", err, doc);
 	    							});								
 	    						});	
 	    						
 	    						
 	    
 	    					}else{
-	    						console.log("LAN_DEVICE findOneAndUpdate entry", entry);
-	    						LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, name:name, date:new Date()}, {upsert : true }, function (err, data) {
-	    							console.log("findOneAndUpdate upsert", err, data);
+//	    						console.log("LAN_DEVICE findOneAndUpdate entry", entry);
+	    						LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, name:name, lastLogin:new Date()}, {upsert : true }, function (err, data) {
+//	    							console.log("findOneAndUpdate upsert", err, data);
 	    						});
 	    					}
     					
