@@ -122,7 +122,6 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	socket.on('SOCKET-GET-CONFIGURATION', function (callback) {
-
 		CONFIGURATION.findOne({}).exec(function(err, data) {
 			if(!data){
 				_volumeSirena = data.audio.volumeSirena;
@@ -130,12 +129,9 @@ io.sockets.on('connection', function (socket) {
 			}
 			callback(data);
 		});		
-		
-//		io.sockets.emit("SOCKET-SIREN-VOLUME", {_id:data._id, isActivated: data.isActivated});
-		
 	});	
 	
-	socket.on('SOCKET-CHANGE-SIREN-VOLUME', function (volumeSirena) {
+	socket.on('SOCKET-CHANGE-SIREN-VOLUME', function (value) {
 		_volumeSirena = value;
 		CONFIGURATION.findOneAndUpdate({}, { 'audio.volumeSirena' : value}, function (err, doc) {});
 	});	
