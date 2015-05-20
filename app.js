@@ -783,7 +783,7 @@ setInterval(function() {
 	    								exists = true;
 	    							}	
 	    							
-	    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, {'exists': exists, date:new Date()}, function (err, doc) {
+	    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, {'exists': exists, name:name, date:new Date()}, function (err, doc) {
 	    								console.log("findOneAndUpdate", err, doc);
 	    							});								
 	    						});	
