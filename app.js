@@ -771,7 +771,7 @@ setInterval(function() {
         		
         		setTimeout(function() {
 
-    				LAN_DEVICE.find({}).sort('-date name').exec(function(err, data) {
+    				LAN_DEVICE.find({}).exec(function(err, data) {
     					io.sockets.emit("SOCKET-LAN-DEVICES", data);
     					var macs = "";
     					entries.forEach(function(target) {

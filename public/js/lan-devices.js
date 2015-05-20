@@ -7,6 +7,7 @@ $(function() {
 		$('#EDIT-LAN-DEVICE-PAGE #mac').html(data.mac);	
 		$('#EDIT-LAN-DEVICE-PAGE #manufacturer').html(data.manufacturer);	
 		$('#EDIT-LAN-DEVICE-PAGE #name').val(data.name);
+		$('#EDIT-LAN-DEVICE-PAGE #nmapname').val(data.nmapname);
 		$("#EDIT-LAN-DEVICE-PAGE").attr("data", $(this).attr("data"));
 		
 		$.mobile.changePage("#EDIT-LAN-DEVICE-PAGE");
