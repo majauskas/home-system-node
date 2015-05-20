@@ -724,8 +724,8 @@ app.post('/433mhz/:binCode', function(req, res) {
 setInterval(function() {
 	
 	try {
-		
         exec("sudo nmap -sP -PE -PA 192.168.0.* | grep 'MAC' | awk '{print $3,$4}'", function(err, stdout,stderr) {
+        	console.log(err, stdout,stderr);
         	if(stdout){
         		var entries = stdout.split('\n');
         		entries.forEach(function(target) {
@@ -737,51 +737,51 @@ setInterval(function() {
         			}
         		});
         		
-        		setTimeout(function() {
-
-    				LAN_DEVICE.find({}).exec(function(err, data) {
-    					
-    					var macs = "";
-    					entries.forEach(function(target) {
-    						macs += target.split(' ')[0]; 
-    					});
-        				
-    					if(data && data.length > 0){
-    						data.forEach(function(device) {
-    							if(macs.indexOf(device.mac) >= 0){
-    								obj.exists = true;
-    								obj.lastLogin = new Date();
-    							}	
-    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
-//    							if(!device.manufacturer){
-//    								var macaddress = device.mac;
-//    								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
-//    								    if (!error && response.statusCode == 200) {
-//    								        console.log("body: ", body);
-//    								        console.log("response: ", response);
-////    								        var arr = body.split('|');
-////    								        if(arr.length>0){
-////        								        var manufacturer = arr[1];
-////        								        console.log("manufacturer: ", manufacturer);
-////        								        console.log("manufacturer: ", manufacturer.trim());
-////        								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
-////    								        }
+//        		setTimeout(function() {
 //
-//    								    }
-//    							    });    								
-//    							}
-    							
-    							
-    							
-    						});	
-    						
-    						
-    
-    					}
-					
-				});	         			
-        			
-        		}, 100);
+//    				LAN_DEVICE.find({}).exec(function(err, data) {
+//    					
+//    					var macs = "";
+//    					entries.forEach(function(target) {
+//    						macs += target.split(' ')[0]; 
+//    					});
+//        				
+//    					if(data && data.length > 0){
+//    						data.forEach(function(device) {
+//    							if(macs.indexOf(device.mac) >= 0){
+//    								obj.exists = true;
+//    								obj.lastLogin = new Date();
+//    							}	
+//    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
+////    							if(!device.manufacturer){
+////    								var macaddress = device.mac;
+////    								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
+////    								    if (!error && response.statusCode == 200) {
+////    								        console.log("body: ", body);
+////    								        console.log("response: ", response);
+//////    								        var arr = body.split('|');
+//////    								        if(arr.length>0){
+//////        								        var manufacturer = arr[1];
+//////        								        console.log("manufacturer: ", manufacturer);
+//////        								        console.log("manufacturer: ", manufacturer.trim());
+//////        								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
+//////    								        }
+////
+////    								    }
+////    							    });    								
+////    							}
+//    							
+//    							
+//    							
+//    						});	
+//    						
+//    						
+//    
+//    					}
+//					
+//				});	         			
+//        			
+//        		}, 100);
         		
         		
         		
