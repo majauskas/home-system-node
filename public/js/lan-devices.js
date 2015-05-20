@@ -103,6 +103,7 @@ $(document).on("pagecreate","#LAN-DEVICE-PAGE", function(){
 	
 //	var st = Date.now();
 	$.ajax({
+		global: false,
 		type : 'GET',
 		url : "/LAN_DEVICE",
 		success: function(response) {
@@ -113,13 +114,6 @@ $(document).on("pagecreate","#LAN-DEVICE-PAGE", function(){
 			$("#listview-lan-devices").listview("refresh");
 			
 			
-			
-			$("#controlgroup-lan").empty();
-//			$.each(data.pirsensors, function (i, obj) { obj.checked = data.activeSensors.contains(obj.code); });
-			$("#template-controlgroup-lan").tmpl( response ).appendTo("#controlgroup-lan");
-//			$("#listview-areas").listview("refresh");
-//			$.mobile.changePage("#EDIT-AREA-PAGE");
-//			$("#LAN-DEVICE-PAGE").trigger("create");			
 			
         }
 	});	
