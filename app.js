@@ -725,8 +725,8 @@ setInterval(function() {
 	
 	try {
         exec("sudo nmap -sP -PE -PA 192.168.0.* | grep 'MAC' | awk '{print $3,$4}'", function(err, stdout,stderr) {
-        	console.log(err, stdout,stderr);
         	if(stdout){
+        		console.log(stdout);
         		var entries = stdout.split('\n');
         		entries.forEach(function(target) {
         			if(target){
