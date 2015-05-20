@@ -754,23 +754,23 @@ setInterval(function() {
     								obj.lastLogin = new Date();
     							}	
     							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
-    							if(!device.manufacturer){
-    								var macaddress = device.mac;
-    								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
-    								    if (!error && response.statusCode == 200) {
-    								        console.log("body: ", body);
-    								        console.log("response: ", response);
-//    								        var arr = body.split('|');
-//    								        if(arr.length>0){
-//        								        var manufacturer = arr[1];
-//        								        console.log("manufacturer: ", manufacturer);
-//        								        console.log("manufacturer: ", manufacturer.trim());
-//        								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
-//    								        }
-
-    								    }
-    							    });    								
-    							}
+//    							if(!device.manufacturer){
+//    								var macaddress = device.mac;
+//    								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
+//    								    if (!error && response.statusCode == 200) {
+//    								        console.log("body: ", body);
+//    								        console.log("response: ", response);
+////    								        var arr = body.split('|');
+////    								        if(arr.length>0){
+////        								        var manufacturer = arr[1];
+////        								        console.log("manufacturer: ", manufacturer);
+////        								        console.log("manufacturer: ", manufacturer.trim());
+////        								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
+////    								        }
+//
+//    								    }
+//    							    });    								
+//    							}
     							
     							
     							
@@ -796,7 +796,7 @@ setInterval(function() {
 
 		
 	} catch (e) {
-		console.error("ERROR", e);
+		console.log("ERROR", e);
 	}
 }, 10000);
 
