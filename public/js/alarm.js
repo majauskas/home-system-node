@@ -383,12 +383,6 @@ function AlarmDetection (device, areaId){
 //	}, null,"Atenzione");
 //});
 
-socket.emit('SOCKET-GET-CONFIGURATION', function(data){
-	console.log("SOCKET-GET-CONFIGURATION", data.audio);
-	CONFIGURATION = data;
-
-});
-
 socket.on('ALARM_DETECTION', AlarmDetection);
 
 var intervalBlink = null;

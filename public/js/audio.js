@@ -1,12 +1,17 @@
 
+
+socket.emit('SOCKET-GET-CONFIGURATION', function(data){
+	console.log("SOCKET-GET-CONFIGURATION", data.audio);
+	CONFIGURATION = data;
+});
+
+
 $(function() {
-	$("#slider-siren-volume").change(function() {
-		  var slider_value = $(this).val();
-		  console.log(slider_value);
+	$("#AUDIO-PAGE").on("slidestop", "#slider-siren-volume", function (event) {
+		  socket.emit('SOCKET-CHANGE-SIREN-VOLUME', $(this).val());
 	});
-	$("#slider-voice-volume").change(function() {
-		  var slider_value = $(this).val();
-		  console.log(slider_value);
+	$("#AUDIO-PAGE").on("slidestop", "#slider-voice-volume", function (event) {
+		socket.emit('SOCKET-CHANGE-VOICE-VOLUME', $(this).val());
 	});
 	
 });
@@ -18,6 +23,7 @@ $(function() {
 
 $(document).on("pagecreate","#AUDIO-PAGE", function(){
 
+	
 	$("#slider-siren-volume").val(CONFIGURATION.audio.volumeSirena);
 	$("#slider-siren-volume").slider("refresh");
 	$("#slider-voice-volume").val(CONFIGURATION.audio.volumeVoce);

@@ -124,7 +124,6 @@ io.sockets.on('connection', function (socket) {
 	socket.on('SOCKET-GET-CONFIGURATION', function (callback) {
 
 		CONFIGURATION.findOne({}).exec(function(err, data) {
-			console.log("CONFIGURATION findOne ",err, data);
 			if(!data){
 				_volumeSirena = data.audio.volumeSirena;
 				_volumeVoce = data.audio.volumeVoce;
@@ -135,6 +134,17 @@ io.sockets.on('connection', function (socket) {
 //		io.sockets.emit("SOCKET-SIREN-VOLUME", {_id:data._id, isActivated: data.isActivated});
 		
 	});	
+	
+	socket.on('SOCKET-CHANGE-SIREN-VOLUME', function (volumeSirena) {
+		_volumeSirena = value;
+		CONFIGURATION.findOneAndUpdate({}, { 'audio.volumeSirena' : value}, function (err, doc) {});
+	});	
+
+	socket.on('SOCKET-CHANGE-VOICE-VOLUME', function (value) {
+		_volumeVoce = value;
+		CONFIGURATION.findOneAndUpdate({}, { 'audio.volumeVoce' : value}, function (err, doc) {});
+	});
+	
 	
 });
 
@@ -370,13 +380,7 @@ LanDeviceschema.methods.toJSON = function() {
 	  obj.lastLogin = formatted;
 	  return obj;
 }; 
-
 var LAN_DEVICE = mongoose.model('LAN_DEVICE', LanDeviceschema); 
-
-
-
-
-
 
 app.get('/LAN_DEVICE', function(req, res) {
 	LAN_DEVICE.find({}).sort('-lastLogin name').exec(function(err, data) {
@@ -392,20 +396,7 @@ app.put('/LAN_DEVICE', function(req, res) {
 app.del('/LAN_DEVICE', function(req, res) {
 	LAN_DEVICE.remove({mac : req.body.mac}, function (err, data) {
 		res.send({});
-	 });	
-//	WifiSensor.findOne(req.body, function(err, data){
-//		data.remove();
-//		Area.update({}, {'$pull':  { wifisensors : {_id: data._id} }}, {multi: true}, function (err, data) {
-//			if(err){console.log(err);}
-//		});			
-//		res.send({});
-//	});	
-});
-app.get('/LAN_DEVICE_DEL', function(req, res) {
-	LAN_DEVICE.remove({}, function (err, data) {
-		if(err){console.log(err); res.status(500).send(err); }
-		else { res.send({}); }
-	 });	
+	 });		
 });
 
 
@@ -809,7 +800,7 @@ setInterval(function() {
        });
 		
 	} catch (e) {
-		console.log("ERROR", e);
+		console.log("ERROR LAN_DEVICE NMAP", e);
 	}
 }, 10000);
 
