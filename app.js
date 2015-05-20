@@ -744,9 +744,12 @@ setInterval(function() {
     					console.log("entries",entries);
     					var macs = "";
     					entries.forEach(function(target) {
-    						macs += target.split(' ')[0]; 
+    						if(target){
+    							macs += target.split(' ')[0]; 
+    						}
+    						
     					});
-        				
+    					console.log("macs",macs);
     					if(data && data.length > 0){
     						
     						data.forEach(function(device) {
