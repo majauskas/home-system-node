@@ -54,10 +54,13 @@ $(function() {
 					$.mobile.changePage("#LAN-DEVICE-PAGE");
 		        }
 			});				
-			
 		});
 	});		
 	
+	
+	$("#EDIT-LAN-DEVICE-PAGE").on("click", "#btIndietro", function (event) {
+		$.mobile.changePage("#LAN-DEVICE-PAGE");		
+	});		
 	
 });
 
@@ -75,10 +78,13 @@ $(document).on("pagecreate","#LAN-DEVICE-PAGE", function(){
 		global: false,
 		type : 'GET',
 		url : "/LAN_DEVICE",
-		success: renderListViewLanDevices
+		success: function(response){
+			renderListViewLanDevices(response);
+			socket.on('SOCKET-LAN-DEVICES', renderListViewLanDevices);	
+		}
 	});	
 	
-	socket.on('SOCKET-LAN-DEVICES', renderListViewLanDevices);	
+	
 	  
 });
 
