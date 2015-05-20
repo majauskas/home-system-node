@@ -766,7 +766,7 @@ setInterval(function() {
         				LAN_DEVICE.find({}).exec(function(err, data) {
     					
 	    					console.log("LAN_DEVICE find", err, data);
-	    					if(data){
+	    					if(data && data.length > 0){
 	    						data.forEach(function(device) {
 	    							console.log("forEach ", device);
 	    							var exists = false;
@@ -782,6 +782,7 @@ setInterval(function() {
 	    						
 	    
 	    					}else{
+	    						console.log("LAN_DEVICE findOneAndUpdate entry", entry);
 	    						LAN_DEVICE.findOneAndUpdate({mac : entry[0]}, {mac:entry[0],name:entry[1]}, {upsert : true }, function (err, data) {
 	    							console.log("findOneAndUpdate upsert", err, data);
 	    						});
