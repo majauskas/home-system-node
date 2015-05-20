@@ -366,9 +366,16 @@ var LAN_DEVICE = mongoose.model('LAN_DEVICE', new Schema({
 	ip: String,
 	mac: String,
 	name: String,
-	exists: {type : Boolean, 'default': true}
+	exists: {type : Boolean, 'default': true},
+	date: Date
 })); 
-//var LAN_DEVICE = mongoose.model('LAN_DEVICE');
+app.get('/LAN_DEVICE', function(req, res) {
+	LAN_DEVICE.find({}).exec(function(err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send(data); }
+	});		
+});
+
 
 
 
@@ -754,7 +761,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 //}, 10000);
 
 setInterval(function() {
-//	if(spawn === null){return;}
+	
 	try {
 		
         exec("sudo nmap -sP -PE -PA 192.168.0.* | grep 'MAC' | awk '{print $3,$4}'", function(err, stdout,stderr) {
@@ -762,6 +769,8 @@ setInterval(function() {
         		stdout.split('\n').forEach(function(target) {
         			if(target){
         				var entry = target.split(' ');
+        				var mac = entry[0];
+        				var name = entry[1].replace("(", "").replace(")", "");
         				console.log(entry);
         				LAN_DEVICE.find({}).exec(function(err, data) {
     					
@@ -770,11 +779,11 @@ setInterval(function() {
 	    						data.forEach(function(device) {
 	    							console.log("forEach ", device);
 	    							var exists = false;
-	    							if(device.mac ===  entry[0]){
+	    							if(device.mac ===  mac){
 	    								exists = true;
 	    							}	
 	    							
-	    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, {'$set':  {'exists': exists}}, function (err, doc) {
+	    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, {'exists': exists, date:new Date()}, function (err, doc) {
 	    								console.log("findOneAndUpdate", err, doc);
 	    							});								
 	    						});	
@@ -783,7 +792,7 @@ setInterval(function() {
 	    
 	    					}else{
 	    						console.log("LAN_DEVICE findOneAndUpdate entry", entry);
-	    						LAN_DEVICE.findOneAndUpdate({mac : entry[0]}, {mac:entry[0],name:entry[1]}, {upsert : true }, function (err, data) {
+	    						LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, name:name, date:new Date()}, {upsert : true }, function (err, data) {
 	    							console.log("findOneAndUpdate upsert", err, data);
 	    						});
 	    					}
