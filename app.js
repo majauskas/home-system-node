@@ -764,21 +764,21 @@ setInterval(function() {
     							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
     							
     							if(!device.manufacturer){
-    								
+    								var macaddress = device.mac;
+    								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
+    								    if (!error && response.statusCode == 200) {
+    								        console.log("body: ", body);
+    								        console.log("response: ", response);
+    								        var manufacturer = body.split('|')[0];
+    								        console.log("manufacturer: ", manufacturer);
+    								        console.log("manufacturer: ", manufacturer.trim());
+    								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer.trim()}, function (err, doc) {});
+    								    }
+    							    });    								
     							}
     							
     							
-    							request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+device.mac}, function (error, response, body) {
-								    if (!error && response.statusCode == 200) {
-								        console.log("response: ", body);
-								    }
-							    });
-//    							request({'url':'http://www.google.com',
-//    							        'proxy':'http://miajausk:li8d1toy@10.211.1.100:8080'}, function (error, response, body) {
-//    							    if (!error && response.statusCode == 200) {
-//    							        console.log(body);
-//    							    }
-//    							});
+    							
     						});	
     						
     						
