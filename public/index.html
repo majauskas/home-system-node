@@ -479,7 +479,7 @@
 					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${manufacturer}{{/if}}</font></h2>
 						<p>${mac}</p>												
-						<p class='ui-li-aside'>${mac}</p>
+						<p class='ui-li-aside'>{{if (exists)}}Conesso{{else}}Disconesso{{/if}}</p>
 						<p>${lastLogin}</p>
 					</a></li>
 			</script>
