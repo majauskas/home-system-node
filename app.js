@@ -383,6 +383,23 @@ app.get('/LAN_DEVICE', function(req, res) {
 		else { res.send(data); }
 	});		
 });
+app.put('/LAN_DEVICE', function(req, res) {
+	LAN_DEVICE.update({mac : req.body.mac}, req.body, function (err, data) {
+        res.send({});
+	});	
+});
+app.del('/LAN_DEVICE', function(req, res) {
+	LAN_DEVICE.remove({mac : req.body.mac}, function (err, data) {
+		res.send({});
+	 });	
+//	WifiSensor.findOne(req.body, function(err, data){
+//		data.remove();
+//		Area.update({}, {'$pull':  { wifisensors : {_id: data._id} }}, {multi: true}, function (err, data) {
+//			if(err){console.log(err);}
+//		});			
+//		res.send({});
+//	});	
+});
 app.get('/LAN_DEVICE_DEL', function(req, res) {
 	LAN_DEVICE.remove({}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
@@ -754,6 +771,7 @@ setInterval(function() {
         		setTimeout(function() {
 
     				LAN_DEVICE.find({}).exec(function(err, data) {
+    					io.sockets.emit("SOCKET-LAN-DEVICES", data);
     					var macs = "";
     					entries.forEach(function(target) {
     						if(target){
