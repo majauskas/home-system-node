@@ -379,7 +379,7 @@ var LAN_DEVICE = mongoose.model('LAN_DEVICE', LanDeviceschema);
 
 
 app.get('/LAN_DEVICE', function(req, res) {
-	LAN_DEVICE.find({}).exec(function(err, data) {
+	LAN_DEVICE.find({}).sort('-lastLogin name').exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
 	});		
@@ -771,7 +771,7 @@ setInterval(function() {
         		
         		setTimeout(function() {
 
-    				LAN_DEVICE.find({}).exec(function(err, data) {
+    				LAN_DEVICE.find({}).sort('-lastLogin name').exec(function(err, data) {
     					io.sockets.emit("SOCKET-LAN-DEVICES", data);
     					var macs = "";
     					entries.forEach(function(target) {
