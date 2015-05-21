@@ -70,7 +70,10 @@ function renderListViewLanDevices(response){
 	$.each(response, function (i, obj) { 
 		obj.target = JSON.stringify(obj);
 		try {
-			if(response[i+1] && response[i+1].exists && obj.exists === false){
+			console.log("response[i+1]", response[i+1]);
+			console.log("response[i+1].exists", response[i+1].exists);
+			console.log("obj.exists", obj.exists);
+			if(response[i+1] && response[i+1].exists === false && obj.exists === true){
 				obj.divider = true;
 			}			
 		} catch (e) {
@@ -78,9 +81,14 @@ function renderListViewLanDevices(response){
 		}
 
 	});
+	
+	console.log("response", response);
+	
 	$("#listview-lan-devices").empty();
 	$("#template-lan-devices").tmpl( response ).appendTo( "#listview-lan-devices" );		
 	$("#listview-lan-devices").listview("refresh");
+	
+	
 }
 
 $(document).on("pagecreate","#LAN-DEVICE-PAGE", function(){
