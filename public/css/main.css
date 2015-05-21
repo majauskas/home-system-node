@@ -181,7 +181,7 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 .ui-icon-light:after {background-image: url("../images/1c95ff-light-bulb-24.png"); background-size: 18px 18px;}
 .ui-icon-speaker:after {background-image: url("../images/1c95ff-speaker-volume-24.png"); background-size: 18px 18px;}
 .ui-icon-network:after {background-image: url("../images/1c95ff-network-01-24.png"); background-size: 18px 18px;}
-.ui-icon-wifino:after {background-image: url("../images/wifino_24.png"); background-size: 18px 18px;}
+.ui-icon-wifino:after {background-image: url("../images/wifino_24.png"); background-size: 24px 24px;}
 .ui-icon-wifisi:after {background-image: url("../images/wifisi_24.png"); background-size: 24px 24px;}
 
 
