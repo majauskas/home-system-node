@@ -339,7 +339,6 @@
           <span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span>
         </div>	
 		<ul data-role="listview" data-inset="false" id="listview-events" class="ui-nodisc-icon swipe-delete"></ul>	
-<!-- 		<li data-role="list-divider">Friday, October 8, 2010 <span class="ui-li-count">2</span></li> -->
 		<script id="template-events" type="text/x-jquery-tmpl">
 					<li data-icon='{{if (device.isLock != null)}}remote{{else}}wifi{{/if}}' class="ui-nodisc-icon" id='${_id}'>
 					<div class='behind'>
@@ -482,6 +481,7 @@
 						<p class='ui-li-aside'>${mac}</p>
 						<p>${lastLogin}</p>
 					</a></li>
+					{{if (divider)}}<li data-role="list-divider">Disconessi</li>{{/if}}
 			</script>
 				
 		<br>

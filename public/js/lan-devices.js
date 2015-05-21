@@ -67,7 +67,17 @@ $(function() {
 
 
 function renderListViewLanDevices(response){
-	$.each(response, function (i, obj) { obj.target = JSON.stringify(obj);});
+	$.each(response, function (i, obj) { 
+		obj.target = JSON.stringify(obj);
+		try {
+			if(response[i+1] && response[i+1].exists && obj.exists === false){
+				obj.divider = true;
+			}			
+		} catch (e) {
+			console.log(e);
+		}
+
+	});
 	$("#listview-lan-devices").empty();
 	$("#template-lan-devices").tmpl( response ).appendTo( "#listview-lan-devices" );		
 	$("#listview-lan-devices").listview("refresh");
