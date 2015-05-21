@@ -117,7 +117,7 @@
 			
 			<ul data-role="listview" data-inset="false" id="listview-pir-sensors"></ul>	
 			<script id="template-pir-sensors" type="text/x-jquery-tmpl">
-					<li data-icon='node' data='${target}' class="ui-nodisc-icon"><a>
+					<li data-icon='pir' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>											
 						<p class='ui-li-aside' style='text-align: center;'>{{if (state === 01 && name )}}<font style='color:red; font-weight: bold;'>ON</font></br>{{/if}}</p>
 						<p>${date}</p>
@@ -477,9 +477,8 @@
 	<div class="ui-content">
 			<ul data-role="listview" data-inset="false" id="listview-lan-devices"></ul>	
 			<script id="template-lan-devices" type="text/x-jquery-tmpl">
-					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
+					<li data-icon='{{if (exists)}}wifisi{{else}}wifino{{/if}}' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${manufacturer}{{/if}}</font></h2>
-						<p><font style='color:{{if (exists)}}green;'>Conesso{{else}}red;'>Disconesso{{/if}}</font></p>												
 						<p class='ui-li-aside'>${mac}</p>
 						<p>${lastLogin}</p>
 					</a></li>
