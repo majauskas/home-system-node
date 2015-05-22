@@ -25,7 +25,9 @@
 	<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
 	<script type="text/javascript" src="js/socket.io.js"></script> 
 	
-	<script type="text/javascript" src="jquery/jquery-clockpicker.min.js"></script>	
+<!-- 	<script type="text/javascript" src="jquery/jquery-clockpicker.min.js"></script>	 -->
+<script type="text/javascript" src="jquery/jquery-clockpicker.js"></script>	
+	
 	
 	<script type="text/javascript" src="jquery/jquery.mobile.iscroll.js"></script>
     <script type="text/javascript" src="jquery/jquery.mobile.iscrollview.js"></script>
@@ -47,11 +49,6 @@
 				$("body>[data-role='panel']").panel().trigger( "create" );
 				
 
-				var input = $('#single-input').clockpicker({
-					placement: 'left',
-					autoclose: true,
-					'default': 'now'
-				});	
 				
 				$('.clockpicker').clockpicker({
 					placement: 'left',
@@ -97,17 +94,12 @@
 			<legend><table><tr><td style="color:yellow">Illuminazione</td><td><img style="padding-left: 10px" src="images/Light-Bulb-off.png"/></td></tr></table></legend>
 				<table width="100%" style="border-collapse: collapse">
 					<tr>
-						<td width="60%" style="font-weight: bold; text-shadow: none; color: white">Orario</td>
-						<td width="20%">
-							<div class="input-group clockpicker">
-							    <input type="text" class="form-control" value="09:30" readonly="true">
-							    <span class="input-group-addon">
-							        <span class="glyphicon glyphicon-time"></span>
-							    </span>
-							</div>
+						<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Orario</td>
+						<td width="30%">
+							<input  class="clockpicker" readonly="true">
 						</td>
-						<td width="20%" style="text-align: right;">
-							<input id="single-input" readonly="true">
+						<td width="30%" style="text-align: right;">
+							<input class="clockpicker" readonly="true">
 						</td>
 					</tr>
 				</table>	
