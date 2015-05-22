@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html> -->
 
 <!-- <html> -->
-<html manifest="cache.manifest" type="text/cache-manifest">
+<!DOCTYPE html manifest="cache.manifest" type="text/cache-manifest">
 <head> 
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	
@@ -12,15 +12,20 @@
 	<link  rel="apple-touch-startup-image" href="images/security.png"/>		
 
 	<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
-	
-	<link rel="stylesheet" href="css/main.css" />
 
+
+	
+		
+	<link rel="stylesheet" href="css/main.css" />
+	
+<link rel="stylesheet" type="text/css" href="css/plugin/jquery-clockpicker.min.css">
 
 	<script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
 	<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
 	<script type="text/javascript" src="js/socket.io.js"></script> 
 	
+	<script type="text/javascript" src="jquery/jquery-clockpicker.min.js"></script>	
 	
 	<script type="text/javascript" src="jquery/jquery.mobile.iscroll.js"></script>
     <script type="text/javascript" src="jquery/jquery.mobile.iscrollview.js"></script>
@@ -40,7 +45,23 @@
 	<script type="text/javascript">
 			$(function() {
 				$("body>[data-role='panel']").panel().trigger( "create" );
+				
+
+				var input = $('#single-input').clockpicker({
+					placement: 'left',
+					autoclose: true,
+					'default': 'now'
+				});	
+				
+				$('.clockpicker').clockpicker({
+					placement: 'left',
+					autoclose: true,
+					'default': 'now'
+				});
+				
 			});
+			
+		
 	</script>
 
 
@@ -71,6 +92,28 @@
 				</script>
 		</fieldset>			
 		<br>
+
+		<fieldset id="fsIlluminazione" style="display: none">
+			<legend><table><tr><td style="color:yellow">Illuminazione</td><td><img style="padding-left: 10px" src="images/Light-Bulb-off.png"/></td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse">
+					<tr>
+						<td width="60%" style="font-weight: bold; text-shadow: none; color: white">Orario</td>
+						<td width="20%">
+							<div class="input-group clockpicker">
+							    <input type="text" class="form-control" value="09:30" readonly="true">
+							    <span class="input-group-addon">
+							        <span class="glyphicon glyphicon-time"></span>
+							    </span>
+							</div>
+						</td>
+						<td width="20%" style="text-align: right;">
+							<input id="single-input" readonly="true">
+						</td>
+					</tr>
+				</table>	
+		</fieldset>	
+		<br> 
+				
 		<fieldset id="fsIlluminazione" style="display: none">
 			<legend><table><tr><td style="color:yellow">Illuminazione</td><td><img style="padding-left: 10px" src="images/Light-Bulb-off.png"/></td></tr></table></legend>
 				<table width="100%" style="border-collapse: collapse">
@@ -80,8 +123,7 @@
 							<img src="images/Light-Bulb-on.png"/>
 						</td>
 						<td width="37%" style="text-align: right;">
-<!-- 							<input type="check" data-role="flipswitch" checked data-theme="b"> -->
-<input type="date">
+							<input type="check" data-role="flipswitch" checked data-theme="b">
 						</td>
 					</tr>
 					<tr>
