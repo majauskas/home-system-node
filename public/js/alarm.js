@@ -144,9 +144,48 @@ $(function() {
 			
 		});
 		
+
+		
+		var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
+		data.schedulers = (data.schedulers) || [{}];
+		$("#EDIT-AREA-PAGE").attr("data", $(this).attr("data"));
+
+
+//		var response = [{nome:""}];
+//		$("#scheduler-area").empty();
+		$.each(data.schedulers, function (i, obj) { obj.id = i; obj.target = JSON.stringify(obj); });
+		$("#template-scheduler-area").tmpl( data.schedulers ).appendTo( "#scheduler-area" );		
+//		$("#listview-areas").listview("refresh");
+
+		$("#EDIT-AREA-PAGE").trigger("create");		
+		
+		
+		
+////		minde
+//		$("#EDIT-AREA-PAGE .cmbScheduler").unbind("change").on("change", function (){
+//
+//		});	
+//		
+//		function onChangeScheduler(){
+//			console.log($(this).val());
+//
+//			var response = [{nome:""}];
+////			$("#scheduler-area").empty();
+////			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+//			$("#template-scheduler-area").tmpl( response ).appendTo( "#scheduler-area" );		
+////			$("#listview-areas").listview("refresh");
+//		
+//			$("#HOME-PAGE").trigger("create");
+//			
+////	    	$("#HOME-PAGE").page();
+//			
+//			
+////			var val = $("#"+idcbProvincia+" option:selected").val();			
+//		}
+		
+		
 		
 	});	
-	
 	
 	
 	
@@ -388,6 +427,7 @@ socket.on('ALARM_DETECTION', AlarmDetection);
 var intervalBlink = null;
 $(document).on("pagecreate","#HOME-PAGE", function(){
  
+	
 	$.ajax({
 		type : 'GET',
 		url : "/Area",
@@ -604,3 +644,55 @@ $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
 	loadRemoteControls();
 });
 
+
+$(document).on("change","#EDIT-AREA-PAGE .cmbScheduler", function(){
+	
+	var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
+
+	var parent =  $(this).parent().parent().parent().parent();
+	var value = $(this).val();
+	var from = parent.find('.inFrom').val();
+	var to = parent.find('.inTo').val();
+	
+//	minde
+	console.log(from, to, value);
+	var id = $(this).attr("id");
+//	var isOn = false;
+//	if(value !== "Off"){
+//		isOn = true;
+//	}
+//	data.schedulers.push(id+"|"+isOn+"|00 25 06 * * 1-5");
+	
+	data.schedulers.push({id:id, cron:"00 25 06 * * "+value});
+	
+//	00 25 06 * * 1-5
+	
+	
+	
+//	var response = [{nome:""}];
+////	$("#scheduler-area").empty();
+////	$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+//	$("#template-scheduler-area").tmpl( response ).appendTo( "#scheduler-area" );		
+////	$("#listview-areas").listview("refresh");
+//
+//	$("#EDIT-AREA-PAGE").trigger("create");
+});	
+
+
+
+
+
+//var code =  $(this).attr("code"); 
+//if($(this).prop("checked")){
+//	data.activeSensors.push(code);
+//}else{
+//	data.activeSensors.splice(data.activeSensors.indexOf(code), 1);
+//}
+//
+//$.ajax({
+//	global: false,
+//	type: "PUT", url: "Area/activeSensors/"+data._id,
+//	dataType : "json",
+//	data : { activeSensors : data.activeSensors },
+//	error: UTILITY.httpError
+//});	

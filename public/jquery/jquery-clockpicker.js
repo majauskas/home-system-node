@@ -64,10 +64,11 @@
 		diameter = dialRadius * 2,
 		duration = transitionSupported ? 350 : 1;
 
+	//minde
 	// Popover template
 	var tpl = [
 		'<div class="popover clockpicker-popover">',
-			'<div class="arrow"></div>',
+//			'<div class="arrow"></div>',
 			'<div class="popover-title">',
 				'<span class="clockpicker-span-hours text-primary"></span>',
 				' : ',
@@ -80,8 +81,8 @@
 					'<div class="clockpicker-dial clockpicker-hours"></div>',
 					'<div class="clockpicker-dial clockpicker-minutes clockpicker-dial-out"></div>',
 				'</div>',
-				'<span class="clockpicker-am-pm-block">',
-				'</span>',
+//				'<span class="clockpicker-am-pm-block">',
+//				'</span>',
 			'</div>',
 		'</div>'
 	].join('');
@@ -385,38 +386,44 @@
 
 		popover.show();
 //minde
-		// Place the popover
-		switch (placement) {
-			case 'bottom':
-				styles.top = offset.top + height;
-				break;
-			case 'right':
-				styles.left = offset.left + width;
-				break;
-			case 'top':
-				styles.top = offset.top - popover.outerHeight();
-				break;
-			case 'left':
-				styles.left = offset.left - popover.outerWidth();
-				break;
-		}
+//		// Place the popover
+//		switch (placement) {
+//			case 'bottom':
+//				styles.top = offset.top + height;
+//				break;
+//			case 'right':
+//				styles.left = offset.left + width;
+//				break;
+//			case 'top':
+//				styles.top = offset.top - popover.outerHeight();
+//				break;
+//			case 'left':
+//				styles.left = offset.left - popover.outerWidth();
+//				break;
+//		}
 
+		styles.top = ($win.outerHeight() - popover.outerHeight()) / 2;
+		styles.left = ($win.outerWidth() - popover.outerWidth()) / 2;
+//		styles.top = ($doc.outerHeight() - popover.outerHeight()) / 2;
+//		styles.left = ($doc.outerWidth() - popover.outerWidth()) / 2;
+		
+		
 		// Align the popover arrow
-		switch (align) {
-			case 'left':
-				styles.left = offset.left;
-				break;
-			case 'right':
-				styles.left = offset.left + width - popover.outerWidth();
-				break;
-			case 'top':
-				styles.top = offset.top;
-				break;
-			case 'bottom':
-				styles.top = offset.top + height - popover.outerHeight();
-				break;
-		}
-
+//		switch (align) {
+//			case 'left':
+//				styles.left = offset.left;
+//				break;
+//			case 'right':
+//				styles.left = offset.left + width - popover.outerWidth();
+//				break;
+//			case 'top':
+//				styles.top = offset.top;
+//				break;
+//			case 'bottom':
+//				styles.top = offset.top + height - popover.outerHeight();
+//				break;
+//		}
+//console.log(styles);
 		popover.css(styles);
 	};
 

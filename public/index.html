@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
 
 
+
 	
 		
 	<link rel="stylesheet" href="css/main.css" />
@@ -22,6 +23,7 @@
 
 	<script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
+	
 	<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
 	<script type="text/javascript" src="js/socket.io.js"></script> 
 	
@@ -48,13 +50,18 @@
 			$(function() {
 				$("body>[data-role='panel']").panel().trigger( "create" );
 				
-
+// 				$( "#one" )
+// 			    .attr( "min",
+// 			        $.datepicker.formatDate( "yy-mm-dd", new Date() ) )
+// 			    .on( "change", function() {
+// // 			        $( "#two" ).attr( "min", this.value );    
+// 			    });
 				
-				$('.clockpicker').clockpicker({
-					placement: 'left',
-					autoclose: true,
-					'default': 'now'
-				});
+// 				$('.clockpicker').clockpicker({
+// 					autoclose: true,
+// 					'default': 'now'
+// 				});
+
 				
 			});
 			
@@ -74,10 +81,10 @@
 		<h1>Home<br><font style="white-space:normal; font-weight:bold; text-shadow: none; visibility: hidden; color: red">Alarme Attivato!</font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	<div class="ui-content">
+	<div class="ui-content" style="padding: 5px">
 
 		<fieldset id="fsSecurity" style="display: none">
-			<legend><table><tr><td style="color: red">Sicurezza</td><td><img style="padding-left: 10px" src="images/Armor-32.png"/></td></tr></table></legend>			
+			<legend><table><tr><td><img src="images/Armor-32.png"/></td><td style="color: red">&nbsp;Sicurezza</td></tr></table></legend>			
 					<table width="100%" style="border-collapse: collapse" id="controlgroup-alarm"></table>
 						<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
 				<tr>
@@ -90,24 +97,11 @@
 		</fieldset>			
 		<br>
 
+
+<!-- 							<input type="datetime-local" id="to"> -->
+<!-- 							<input class="clockpicker" readonly="true"> -->				
 		<fieldset id="fsIlluminazione" style="display: none">
-			<legend><table><tr><td style="color:yellow">Illuminazione</td><td><img style="padding-left: 10px" src="images/Light-Bulb-off.png"/></td></tr></table></legend>
-				<table width="100%" style="border-collapse: collapse">
-					<tr>
-						<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Orario</td>
-						<td width="30%">
-							<input  class="clockpicker" readonly="true">
-						</td>
-						<td width="30%" style="text-align: right;">
-							<input class="clockpicker" readonly="true">
-						</td>
-					</tr>
-				</table>	
-		</fieldset>	
-		<br> 
-				
-		<fieldset id="fsIlluminazione" style="display: none">
-			<legend><table><tr><td style="color:yellow">Illuminazione</td><td><img style="padding-left: 10px" src="images/Light-Bulb-off.png"/></td></tr></table></legend>
+			<legend><table><tr><td><img src="images/Light-Bulb-off.png"/></td><td style="color:yellow">&nbsp;Illuminazione</td></tr></table></legend>
 				<table width="100%" style="border-collapse: collapse">
 					<tr>
 						<td width="60%" style="font-weight: bold; text-shadow: none; color: white">Cucina</td>
@@ -131,7 +125,7 @@
 		</fieldset>	
 		<br> 
 		<fieldset id="fsTemperatura" style="display: none">
-			<legend><table><tr><td style="color: green">Temperatura</td><td><img style="padding-left: 10px" src="images/Temperature-32.png"/></td></tr></table></legend>
+			<legend><table><tr><td><img src="images/Temperature-32.png"/></td><td style="color: green">&nbsp;Temperatura</td></tr></table></legend>
 			<table width="100%" style="border-collapse: collapse">
 				<tr>
 						<input type="range" name="slider-2" id="slider-2" value="21" step=".1" min="7" max="30" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
@@ -353,6 +347,50 @@
 						</tr>
 				</script>
 		</fieldset>
+		<br>
+		<fieldset>
+			<legend><table><tr><td><img src="images/Clock-01-24.png"/></td><td style="color:yellow">&nbsp;Programazione</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse" id="scheduler-area">
+<!-- 					<tr> -->
+<!-- 						<td width="20%"> -->
+<!-- 							<input data-mini="true" type="time" class="inFrom"> -->
+<!-- 						</td> -->
+<!-- 						<td width="20%"> -->
+<!-- 							<input data-mini="true" type="time" class="inTo"> -->
+<!-- 						</td> -->
+<!-- 						<td width="60%" style="text-align: left;"> -->
+<!-- 								<select data-mini="true" class="cmbScheduler"> -->
+<!-- 									<option value=""></option> -->
+<!-- 									<option value="1-7">Tutti Giorni</option> -->
+<!-- 									<option value="1-5">Lun - Ven</option> -->
+<!-- 									<option value="6-7">Sab - Dom</option> -->
+<!-- 									<option value="Off">Off</option> -->
+<!-- 								</select> -->
+<!-- 						</td>	 -->
+<!-- 					</tr> -->
+					<script id="template-scheduler-area" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="20%">
+								<input data-mini="true" type="time" class="inFrom">
+							</td>
+							<td width="20%">
+								<input data-mini="true" type="time" class="inTo">
+							</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" class="cmbScheduler" id="${id}">
+										<option value=""></option>
+										<option value="1-7">Tutti Giorni</option>
+										<option value="1-5">Lun - Ven</option>
+										<option value="6-7">Sab - Dom</option>
+										<option value="Off">Off</option>
+										<option value="delete">Rimuovi</option>											
+									</select>
+							</td>	
+						</tr>
+					</script>					
+				</table>	
+		</fieldset>	
+		 		
 	</div>
 
   	<br/><br/><br/><br/>

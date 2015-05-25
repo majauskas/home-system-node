@@ -76,7 +76,7 @@ label {
   border-style: none;
 }
 
-fieldset { border: 1px solid #ABABAB !important; padding: 10px !important; border-radius: 10px; }
+fieldset { border: 1px solid #ABABAB !important; padding: 10px !important; border-radius: 10px;}
 legend { padding: 0.2em 1em !important; text-shadow: none; color: red; }
 
 table.alternate_color tr:nth-of-type(even) {

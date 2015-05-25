@@ -407,7 +407,8 @@ var AreaSchema = new Schema({
 			name: String
 		}
 	},
-	isActivated: {type : Boolean, 'default': false},
+	isActivated: {type : Boolean, 'default': false},	
+	schedulers: [],
 	date: {type : Date, 'default': Date.now()}	
 	
 });
@@ -463,14 +464,21 @@ app.put('/Area/isActivated/:id', function(req, res) {
 	});
 });
 
+app.put('/Area/schedulers/:id', function(req, res) {
+	var schedulers = req.body.schedulers || [];
+	Area.findByIdAndUpdate(req.params.id, {'$set':  {'schedulers': schedulers}}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
 
+	
 app.put('/Area/activeSensors/:id', function(req, res) {
 	var activeSensors = req.body.activeSensors || [];
 	Area.findByIdAndUpdate(req.params.id, {'$set':  {'activeSensors': activeSensors}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
-	
 });
 
 
