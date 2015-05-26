@@ -329,7 +329,6 @@ var ConfigurationSchema = new Schema({
 mongoose.model('CONFIGURATION', ConfigurationSchema); 
 var CONFIGURATION = mongoose.model('CONFIGURATION');
 CONFIGURATION.findOne({}).exec(function(err, data) {
-	console.log("CONFIGURATION findOne", err, data);
 	if(!data){
 		CONFIGURATION.create({audio:{volumeSirena: _volumeSirena, volumeVoce: _volumeVoce}}, function (err, data) {
 			console.log("CONFIGURATION create", err, data);
@@ -834,11 +833,9 @@ function checkJobs() {
 				
 				var cronOnAllarm = "00 "+from[1]+" "+from[0]+" * * " + daysOfWeek;
 				var cronOffAllarm = "00 "+to[1]+" "+to[0]+" * * " + daysOfWeek;
+				console.log("Cron Job Allarm ON at " + cronOnAllarm + " and OFF at " + cronOffAllarm);
 				
-				console.log("cronOnAllarm on " +cronOnAllarm);
-				console.log("cronOffAllarm on " +cronOffAllarm);
-				
-				var cronJobFrom = new CronJob(cronOnAllarm, function(){
+				var cronJobFrom = new CronJob(cronOnAllarm, function(){ss
 						console.log('job cronOnAllarm init at ', new Date(), this.areaId);
 						Area.findByIdAndUpdate(this.areaId, {isActivated: true}, function (err, data) {
 							console.log(data);
