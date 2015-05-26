@@ -78,20 +78,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	  });	 
   });
   
-  
-
-  
-//  new CronJob('00 25 06 * * 1-5', function(){
-//      console.log('job init at ', new Date());
-//      Sound.playMp3("/home/pi/Bailando.mp3","75");
-//  },null, true);
-//  
-//  new CronJob('00 00 09 * * 6-7', function(){
-//      console.log('job init at ', new Date());
-//      Sound.playMp3("/home/pi/Bailando.mp3","75");
-//  },null, true);  
-    
-  
   email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
 
@@ -101,6 +87,7 @@ app.get('/home-system', function(req, res) {
         res.end(data);
     });
 });
+
 
 
 var _volumeSirena = "100";
@@ -469,6 +456,8 @@ app.put('/Area/schedulers/:id', function(req, res) {
 	Area.findByIdAndUpdate(req.params.id, {'$set':  {'schedulers': schedulers}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
+		
+		checkJobs();
 	});	
 });
 
@@ -807,6 +796,77 @@ setInterval(function() {
 		console.log("ERROR LAN_DEVICE NMAP", e);
 	}
 }, 10000);
+
+
+
+
+
+
+
+
+
+var cronAllJobs = [];
+
+checkJobs();
+
+function checkJobs() {
+
+	
+	cronAllJobs.forEach(function(jobs) {
+		jobs.jobFrom.stop();
+		jobs.jobTo.stop();
+	});	
+	cronAllJobs = [];	
+	
+	
+	Area.find({}).exec(function(err, areas) {
+		if(err){console.log(err); return;}
+		
+		areas.forEach(function(area) {
+			area.schedulers.forEach(function(scheduler) {
+				var id = scheduler.id;
+				var from = scheduler.from.split(":");
+				var to = scheduler.to.split(":");
+				var daysOfWeek = scheduler.daysOfWeek;
+				if(daysOfWeek === "Off"){
+					return;
+				}
+				
+				var cronOnAllarm = "00 "+from[1]+" "+from[0]+" * * " + daysOfWeek;
+				var cronOffAllarm = "00 "+to[1]+" "+to[0]+" * * " + daysOfWeek;
+				
+				console.log("cronOnAllarm on " +cronOnAllarm);
+				console.log("cronOffAllarm on " +cronOffAllarm);
+				
+				var cronJobFrom = new CronJob(cronOnAllarm, function(){
+						console.log('job cronOnAllarm init at ', new Date(), this.areaId);
+						Area.findByIdAndUpdate(this.areaId, {isActivated: true}, function (err, data) {
+							console.log(data);
+							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+						});
+				},null, true, null, {'areaId':area._id});
+				
+				var cronJobTo = new CronJob(cronOffAllarm, function(){
+					console.log('job cronOffAllarm init at ', new Date(), this.areaId);
+					
+					Area.findByIdAndUpdate(this.areaId, {isActivated: false}, function (err, data) {
+						console.log(data);
+						io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+					});
+			
+				},null, true, null, {'areaId':area._id});			
+						
+				cronAllJobs.push({id:area._id+"_"+id, jobFrom: cronJobFrom, jobTo: cronJobTo});
+				
+			});	
+			
+		});		
+		
+		
+	});		
+}
+
+
 
 
 //************* TESTS ******************

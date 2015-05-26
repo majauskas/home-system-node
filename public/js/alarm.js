@@ -148,9 +148,11 @@ $(function() {
 		
 		var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
 		
-		if(data.schedulers.length === 0){
-			data.schedulers.push({id:0, daysOfWeek:"", from:"", to:""});
-		}
+//		if(data.schedulers.length === 0){
+//			data.schedulers.push({id:0, daysOfWeek:"", from:"", to:""});
+//		}
+		
+		data.schedulers.push({id:data.schedulers.length, daysOfWeek:"", from:"", to:""});
 		
 //		data.schedulers = (data.schedulers) || [{id:0, daysOfWeek:"", from:"", to:""}];
 //		console.log(JSON.stringify(data.schedulers));
@@ -635,6 +637,10 @@ $(document).on("change","#EDIT-AREA-PAGE .cmbScheduler", function(){
 		});	
 		$("#EDIT-AREA-PAGE").trigger("create");
 		
+		data.schedulers = $.grep(data.schedulers, function(obj, i) {
+			 return (obj.to !== "");
+		});
+		
 		$.ajax({
 			global: false,
 			type: "PUT", url: "Area/schedulers/"+data._id,
@@ -661,9 +667,7 @@ $(document).on("change","#EDIT-AREA-PAGE .cmbScheduler", function(){
 			data.schedulers = $.grep(data.schedulers, function(obj, i) {
 				 return (parseInt(obj.id) !== id);
 			});
-			console.log(JSON.stringify(data.schedulers));
 			$.each(data.schedulers, function (i, obj) { obj.id = i; });
-			console.log(JSON.stringify(data.schedulers));
 			
 			renderscheduler(data);
 		});
