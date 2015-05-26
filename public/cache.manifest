@@ -38,6 +38,8 @@ jquery/jquery.mobile.iscroll.js
 jquery/jquery.mobile.iscrollview-pull.css
 jquery/jquery.mobile.iscrollview.css
 jquery/jquery.mobile.iscrollview.js
+jquery/jquery-ui-1.10.3.custom.min.js
+jquery/ui.datepicker-it.js
 js/socket.io.js 
 js/util.js	
 js/alarm.js

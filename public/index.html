@@ -23,6 +23,9 @@
 
 	<script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
+<!-- 	<script type="text/javascript" src="jquery/jquery-ui-1.10.3.custom.min.js"></script> -->
+<!-- 	<script type="text/javascript" src="jquery/jquery-ui-datepicker.min.js"></script> -->
+
 	
 	<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
 	<script type="text/javascript" src="js/socket.io.js"></script> 
@@ -35,7 +38,10 @@
     <script type="text/javascript" src="jquery/jquery.mobile.iscrollview.js"></script>
     <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview.css"/>
     <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview-pull.css"/>	
-    
+
+
+	
+		    
 
 	<script type="text/javascript" src="js/cons.js" charset="iso-8859-1"></script>		
 	<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
@@ -61,7 +67,6 @@
 // 					autoclose: true,
 // 					'default': 'now'
 // 				});
-
 				
 			});
 			
@@ -350,34 +355,17 @@
 		<br>
 		<fieldset>
 			<legend><table><tr><td><img src="images/Clock-01-24.png"/></td><td style="color:yellow">&nbsp;Programazione</td></tr></table></legend>
-				<table width="100%" style="border-collapse: collapse" id="scheduler-area">
-<!-- 					<tr> -->
-<!-- 						<td width="20%"> -->
-<!-- 							<input data-mini="true" type="time" class="inFrom"> -->
-<!-- 						</td> -->
-<!-- 						<td width="20%"> -->
-<!-- 							<input data-mini="true" type="time" class="inTo"> -->
-<!-- 						</td> -->
-<!-- 						<td width="60%" style="text-align: left;"> -->
-<!-- 								<select data-mini="true" class="cmbScheduler"> -->
-<!-- 									<option value=""></option> -->
-<!-- 									<option value="1-7">Tutti Giorni</option> -->
-<!-- 									<option value="1-5">Lun - Ven</option> -->
-<!-- 									<option value="6-7">Sab - Dom</option> -->
-<!-- 									<option value="Off">Off</option> -->
-<!-- 								</select> -->
-<!-- 						</td>	 -->
-<!-- 					</tr> -->
+				<table width="100%" style="border-collapse: collapse" id="scheduler-area"></table>
 					<script id="template-scheduler-area" type="text/x-jquery-tmpl">
 						<tr>
 							<td width="20%">
-								<input data-mini="true" type="time" class="inFrom">
+								<input data-mini="true" type="time" class="inFrom" value="${from}">
 							</td>
 							<td width="20%">
-								<input data-mini="true" type="time" class="inTo">
+								<input data-mini="true" type="time" class="inTo" value="${to}">
 							</td>
 							<td width="60%" style="text-align: left;">
-									<select data-mini="true" class="cmbScheduler" id="${id}">
+									<select data-mini="true" class="cmbScheduler" index="${id}" id="cmbScheduler${id}">
 										<option value=""></option>
 										<option value="1-7">Tutti Giorni</option>
 										<option value="1-5">Lun - Ven</option>
@@ -388,7 +376,7 @@
 							</td>	
 						</tr>
 					</script>					
-				</table>	
+					
 		</fieldset>	
 		 		
 	</div>

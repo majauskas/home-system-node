@@ -147,49 +147,26 @@ $(function() {
 
 		
 		var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
-		data.schedulers = (data.schedulers) || [{}];
-		$("#EDIT-AREA-PAGE").attr("data", $(this).attr("data"));
-
-
-//		var response = [{nome:""}];
-//		$("#scheduler-area").empty();
-		$.each(data.schedulers, function (i, obj) { obj.id = i; obj.target = JSON.stringify(obj); });
+		
+		if(data.schedulers.length === 0){
+			data.schedulers.push({id:0, daysOfWeek:"", from:"", to:""});
+		}
+		
+//		data.schedulers = (data.schedulers) || [{id:0, daysOfWeek:"", from:"", to:""}];
+//		console.log(JSON.stringify(data.schedulers));
+		
+		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
+		$("#scheduler-area").empty();
 		$("#template-scheduler-area").tmpl( data.schedulers ).appendTo( "#scheduler-area" );		
-//		$("#listview-areas").listview("refresh");
-
+		$.each(data.schedulers, function (i, obj) { 
+			$("#cmbScheduler"+obj.id+" option[value='"+obj.daysOfWeek+"']").attr("selected", "selected");
+		});			
 		$("#EDIT-AREA-PAGE").trigger("create");		
-		
-		
-		
-////		minde
-//		$("#EDIT-AREA-PAGE .cmbScheduler").unbind("change").on("change", function (){
-//
-//		});	
-//		
-//		function onChangeScheduler(){
-//			console.log($(this).val());
-//
-//			var response = [{nome:""}];
-////			$("#scheduler-area").empty();
-////			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-//			$("#template-scheduler-area").tmpl( response ).appendTo( "#scheduler-area" );		
-////			$("#listview-areas").listview("refresh");
-//		
-//			$("#HOME-PAGE").trigger("create");
-//			
-////	    	$("#HOME-PAGE").page();
-//			
-//			
-////			var val = $("#"+idcbProvincia+" option:selected").val();			
-//		}
-		
-		
 		
 	});	
 	
 	
-	
-	
+
 	
 	
 	
@@ -646,53 +623,60 @@ $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
 
 
 $(document).on("change","#EDIT-AREA-PAGE .cmbScheduler", function(){
+
+	
+	function renderscheduler(data){
+		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
+		$("#scheduler-area").empty();
+		$("#template-scheduler-area").tmpl( data.schedulers ).appendTo( "#scheduler-area" );		
+
+		$.each(data.schedulers, function (i, obj) { 
+			$("#cmbScheduler"+obj.id+" option[value='"+obj.daysOfWeek+"']").attr("selected", "selected");
+		});	
+		$("#EDIT-AREA-PAGE").trigger("create");
+		
+		$.ajax({
+			global: false,
+			type: "PUT", url: "Area/schedulers/"+data._id,
+			dataType : "json",
+			data : { schedulers : data.schedulers },
+			error: UTILITY.httpError
+		});		
+		
+	}	
+	
+	
 	
 	var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
 
 	var parent =  $(this).parent().parent().parent().parent();
-	var value = $(this).val();
+	var daysOfWeek = $(this).val();
 	var from = parent.find('.inFrom').val();
 	var to = parent.find('.inTo').val();
+	var id = parseInt($(this).attr("index"));
+
 	
-//	minde
-	console.log(from, to, value);
-	var id = $(this).attr("id");
-//	var isOn = false;
-//	if(value !== "Off"){
-//		isOn = true;
-//	}
-//	data.schedulers.push(id+"|"+isOn+"|00 25 06 * * 1-5");
+	if(daysOfWeek === "delete"){
+		UTILITY.areYouSure("Elimina la schedulazione?", function() {
+			data.schedulers = $.grep(data.schedulers, function(obj, i) {
+				 return (parseInt(obj.id) !== id);
+			});
+			console.log(JSON.stringify(data.schedulers));
+			$.each(data.schedulers, function (i, obj) { obj.id = i; });
+			console.log(JSON.stringify(data.schedulers));
+			
+			renderscheduler(data);
+		});
+		return;
+	}
 	
-	data.schedulers.push({id:id, cron:"00 25 06 * * "+value});
+	data.schedulers[id] = {id:id, daysOfWeek:daysOfWeek, from:from, to:to};
+	if(!data.schedulers[id+1]){
+		data.schedulers.push({id:id+1, daysOfWeek:"", from:"", to:""});
+	}
 	
-//	00 25 06 * * 1-5
+	renderscheduler(data);
+
 	
-	
-	
-//	var response = [{nome:""}];
-////	$("#scheduler-area").empty();
-////	$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-//	$("#template-scheduler-area").tmpl( response ).appendTo( "#scheduler-area" );		
-////	$("#listview-areas").listview("refresh");
-//
-//	$("#EDIT-AREA-PAGE").trigger("create");
 });	
 
-
-
-
-
-//var code =  $(this).attr("code"); 
-//if($(this).prop("checked")){
-//	data.activeSensors.push(code);
-//}else{
-//	data.activeSensors.splice(data.activeSensors.indexOf(code), 1);
-//}
-//
-//$.ajax({
-//	global: false,
-//	type: "PUT", url: "Area/activeSensors/"+data._id,
-//	dataType : "json",
-//	data : { activeSensors : data.activeSensors },
-//	error: UTILITY.httpError
-//});	
