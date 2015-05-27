@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 22-05-2015 14:16
+# Cache manifest version 27-05-2015 10:16
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -38,8 +38,6 @@ jquery/jquery.mobile.iscroll.js
 jquery/jquery.mobile.iscrollview-pull.css
 jquery/jquery.mobile.iscrollview.css
 jquery/jquery.mobile.iscrollview.js
-jquery/jquery-ui-1.10.3.custom.min.js
-jquery/ui.datepicker-it.js
 js/socket.io.js 
 js/util.js	
 js/alarm.js
