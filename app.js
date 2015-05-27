@@ -823,6 +823,8 @@ function checkJobs() {
 		
 		areas.forEach(function(area) {
 			area.schedulers.forEach(function(scheduler) {
+				
+
 				var id = scheduler.id;
 				var from = scheduler.from.split(":");
 				var to = scheduler.to.split(":");
@@ -835,7 +837,7 @@ function checkJobs() {
 				var cronOffAllarm = "00 "+to[1]+" "+to[0]+" * * " + daysOfWeek;
 				console.log("Cron Job Allarm ON at " + cronOnAllarm + " and OFF at " + cronOffAllarm);
 				
-				var cronJobFrom = new CronJob(cronOnAllarm, function(){ss
+				var cronJobFrom = new CronJob(cronOnAllarm, function(){
 						console.log('job cronOnAllarm init at ', new Date(), this.areaId);
 						Area.findByIdAndUpdate(this.areaId, {isActivated: true}, function (err, data) {
 							console.log(data);

@@ -5,7 +5,6 @@ CACHE MANIFEST
 # the cache manifest is no longer byte-for-byte identical.
 
 
-
 NETWORK:
 
 # All URLs that start with the following lines are whitelisted.
@@ -47,6 +46,7 @@ js/cons.js
 js/lan-devices.js
 js/audio.js
 jquery/images/ajax-loader.gif
+favicon.ico
 images/Wifi-02-24-1C95FF.png
 images/1c95ff-infrared-sensor-24.png
 images/Node-24-1C95FF.png
