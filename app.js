@@ -804,8 +804,15 @@ setInterval(function() {
 
 
 
-var cronAllJobs = [];
 
+
+
+
+
+
+
+
+var cronAllJobs = [];
 checkJobs();
 
 function checkJobs() {
@@ -835,24 +842,20 @@ function checkJobs() {
 				
 				var cronOnAllarm = "00 "+from[1]+" "+from[0]+" * * " + daysOfWeek;
 				var cronOffAllarm = "00 "+to[1]+" "+to[0]+" * * " + daysOfWeek;
-				console.log("Cron Job Allarm ON at " + cronOnAllarm + " and OFF at " + cronOffAllarm);
+				console.log(this.areaId, "Cron Job Allarm ON at " + cronOnAllarm + " and OFF at " + cronOffAllarm);
 				
 				var cronJobFrom = new CronJob(cronOnAllarm, function(){
 						console.log('job cronOnAllarm init at ', new Date(), this.areaId);
 						Area.findByIdAndUpdate(this.areaId, {isActivated: true}, function (err, data) {
-							console.log(data);
 							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 						});
 				},null, true, null, {'areaId':area._id});
 				
 				var cronJobTo = new CronJob(cronOffAllarm, function(){
 					console.log('job cronOffAllarm init at ', new Date(), this.areaId);
-					
 					Area.findByIdAndUpdate(this.areaId, {isActivated: false}, function (err, data) {
-						console.log(data);
 						io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 					});
-			
 				},null, true, null, {'areaId':area._id});			
 						
 				cronAllJobs.push({id:area._id+"_"+id, jobFrom: cronJobFrom, jobTo: cronJobTo});

@@ -631,8 +631,6 @@ $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
 $(document).on("change","#EDIT-AREA-PAGE .inFrom, .inTo", function(){
 
 	var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
-
-//	$('#select-choice-tipocertificato option:selected').val()
 	
 	var parent =  $(this).parent().parent().parent();
 	var daysOfWeek = parent.find('.cmbScheduler option:selected').val();
@@ -641,17 +639,12 @@ $(document).on("change","#EDIT-AREA-PAGE .inFrom, .inTo", function(){
 	var id = parseInt($(this).attr("index"));
 	
 	if(daysOfWeek && from && to){
-		console.log(daysOfWeek, from, to, id );
 		data.schedulers[id] = {id:id, daysOfWeek:daysOfWeek, from:from, to:to};
-		
 		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
-		
 	}
-	
 });
 
 $(document).on("change","#EDIT-AREA-PAGE .cmbScheduler", function(){
-
 	
 	function renderscheduler(data){
 		
@@ -664,17 +657,17 @@ $(document).on("change","#EDIT-AREA-PAGE .cmbScheduler", function(){
 		});	
 		$("#EDIT-AREA-PAGE").trigger("create");
 		
-//		data.schedulers = $.grep(data.schedulers, function(obj, i) {
-//			 return (obj.to !== "");
-//		});
-//		
-//		$.ajax({
-//			global: false,
-//			type: "PUT", url: "Area/schedulers/"+data._id,
-//			dataType : "json",
-//			data : { schedulers : data.schedulers },
-//			error: UTILITY.httpError
-//		});		
+		data.schedulers = $.grep(data.schedulers, function(obj, i) {
+			 return (obj.to !== "");
+		});
+		
+		$.ajax({
+			global: false,
+			type: "PUT", url: "Area/schedulers/"+data._id,
+			dataType : "json",
+			data : { schedulers : data.schedulers },
+			error: UTILITY.httpError
+		});		
 		
 	}	
 	
