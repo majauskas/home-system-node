@@ -1,7 +1,6 @@
 
 
 socket.emit('SOCKET-GET-CONFIGURATION', function(data){
-	console.log("SOCKET-GET-CONFIGURATION", data.audio);
 	CONFIGURATION = data;
 });
 
