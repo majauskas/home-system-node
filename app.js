@@ -196,7 +196,7 @@ function disarm(areaId) {
 
 
 if(os.hostname().toLowerCase() === "minde-pc" || os.hostname().toLowerCase() === "raspberrypi"){
-	mongoose.connect('mongodb://192.168.0.21/home-system');
+	mongoose.connect('mongodb://localhost/home-system');
 }else{
 	mongoose.connect('mongodb://10.221.160.78/home-system');
 } 
