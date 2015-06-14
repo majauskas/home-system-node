@@ -92,7 +92,7 @@ app.get('/home-system', function(req, res) {
 
 
 var _volumeSirena = "100";
-var _volumeVoce = "90";
+var _volumeVoce = "100";
 
 // Web Socket Connection
 var io = require('socket.io')(server);
@@ -203,7 +203,6 @@ if(os.hostname().toLowerCase() === "minde-pc" || os.hostname().toLowerCase() ===
 }else{
 	mongoose.connect('mongodb://10.221.160.78/home-system');
 } 
- 
 
 mongoose.connection.on("connected", function(ref) {
   console.log("Connected to DB!");
@@ -336,15 +335,17 @@ CONFIGURATION.findOne({}).exec(function(err, data) {
 		CONFIGURATION.create({audio:{volumeSirena: _volumeSirena, volumeVoce: _volumeVoce}}, function (err, data) {
 			console.log("CONFIGURATION create", err, data);
 		});	
+	}else{
+		_volumeSirena = data.audio.volumeSirena;
+		_volumeVoce = data.audio.volumeVoce;
 	}
-	
 });	
 
-//app.get('/CONFIGURATION', function(req, res) {
-//	CONFIGURATION.find({}).exec(function(err, data) {
-//		if(err){console.log(err); res.status(500).send(err); }
-//		else { res.send(data); }
-//	});		
+//CONFIGURATION.findOne({}).exec(function(err, data) {
+//	if(!data){
+//		_volumeSirena = data.audio.volumeSirena;
+//		_volumeVoce = data.audio.volumeVoce;
+//	}
 //});
 
 
