@@ -712,10 +712,10 @@ app.post('/433mhz/:binCode', function(req, res) {
 								}
 								WifiSensor.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, data) {
 									if(data){
-										setTimeout(function() {
+										setTimeout(function(data) {
 											console.log(data.name, "/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3");
 											Sound.playMp3("/home/pi/home-system-node/mp3/"+data.name.replace(" ", "").replace(" ", "").replace(" ", "")+".mp3", _volumeVoce);
-										}, 3000);
+										}, 1500, data);
 									}
 								});
 							}else if(data.isActivated === false){
