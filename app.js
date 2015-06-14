@@ -10,6 +10,7 @@ var os = require('os');
 var email = require('./lib/email.js');
 var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
+var Siren = require('./lib/Siren.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
 var request = require('request');
@@ -154,6 +155,7 @@ function alarmDetection(sensor, areaId) {
 			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3", _volumeSirena ,"-q -v -l10");//repeat mp3
+			Siren.on();
 //			Sound.execute("/home/pi/home-system-node/utils/playmp3.sh");
 			//
 //			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
@@ -177,6 +179,7 @@ function disarm(areaId) {
 	console.log("DISARM", areaId, new Date());
 	clearTimeout(alarmTimer);
 	Sound.kill();
+	Siren.off();
 	
 	Area.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': false, 'alarmActivate.sensor.name': null }}, function (err, data) {});	
 	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato"}}, function (err, data) {});
