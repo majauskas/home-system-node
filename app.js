@@ -134,6 +134,7 @@ io.sockets.on('connection', function (socket) {
 
 var isAlarmActivated = false;
 var alarmTimer = null;
+var avvisoAllarmeTimer = null;
 function alarmDetection(sensor, areaId) {
 	if(isAlarmActivated){return;}
 	
@@ -146,20 +147,21 @@ function alarmDetection(sensor, areaId) {
 	io.sockets.emit("ALARM_DETECTION", sensor, areaId);
 	
 	
-	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3", _volumeVoce);
-//	Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3","10");
+	
+	avvisoAllarmeTimer = setTimeout(function() {
+	    if(!isAlarmActivated){return;}
+	    
+	    Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3", _volumeVoce);
+	}, 5000);
+	
 	alarmTimer = setTimeout(function() {
 		    if(!isAlarmActivated){return;}
 		    
 			email("Sound", sensor.name + "\n Sirena allarme attivata");
 			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
-//			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","100","-Z");//repeat mp3
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3", _volumeSirena ,"-q -v -l10");//repeat mp3
 			Siren.on();
-//			Sound.execute("/home/pi/home-system-node/utils/playmp3.sh");
-			//
-//			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3","10","-Z");//repeat mp3
-	}, 10000);
+	}, 15000);
 	
 	//TODO: activate the siren and email/sms notifications
 //	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
@@ -178,6 +180,7 @@ function disarm(areaId) {
 	isAlarmActivated = false;
 	console.log("DISARM", areaId, new Date());
 	clearTimeout(alarmTimer);
+	clearTimeout(avvisoAllarmeTimer);
 	Sound.kill();
 	Siren.off();
 	
