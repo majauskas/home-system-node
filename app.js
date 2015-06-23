@@ -667,16 +667,9 @@ app.post('/433mhz/:binCode', function(req, res) {
 				});
 				
 				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
-//				if(data.code === 4022 && data.isOpen === true){
-//					Sound.playMp3("/home/pi/home-system-node/mp3/portaCucinaAperta.mp3", "95");
-//				}
-//				if(data.code === 4029 && data.isOpen === true){
-//					Sound.playMp3("/home/pi/home-system-node/mp3/portaBagnoAperta.mp3", "95");
-//				}
-//				if(data.code === 32533){
-//					Sound.playMp3("/home/pi/home-system-node/mp3/portaIngressoAperta.mp3", "95");
-//				}
-//				
+				if(isBatteryLow){ //send email notification of battery low
+					email("Battery of sensor '"+ data.name + "' is low", "");
+				}
 			}
 		});		
 		//010001001100110111000000  ON
