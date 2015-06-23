@@ -56,7 +56,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		
 		var code = doc.code;
 //		var name = (doc.name) ? doc.name : doc.code;
-		PIR_SENSOR.find({}).exec(function(err, doc) {
+		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
 			if(!doc) {return;}
 			
 			io.sockets.emit("PIRSENSOR", doc);
