@@ -46,6 +46,7 @@ js/wifi-sensors.js
 js/cons.js	
 js/lan-devices.js
 js/audio.js
+js/alarm-auto-on-off.js
 jquery/images/ajax-loader.gif
 images/Wifi-02-24-1C95FF.png
 images/1c95ff-infrared-sensor-24.png

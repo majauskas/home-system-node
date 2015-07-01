@@ -48,6 +48,7 @@
 	<script type="text/javascript" src="js/wifi-sensors.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/lan-devices.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/audio.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/alarm-auto-on-off.js" charset="iso-8859-1"></script>
 	
 	
 	<script type="text/javascript">
@@ -376,6 +377,7 @@
 					</script>					
 					
 		</fieldset>	
+
 		 		
 	</div>
 
@@ -577,6 +579,20 @@
 						</tr>
 				</table>
 		</fieldset>
+		<br>
+		<fieldset>
+			<legend><table><tr><td><img src="images/Clock-01-24.png"/></td><td style="color:yellow">&nbsp;Auto On/Off</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse" id="autoonoff-area"></table>
+				<script id="template-autoonoff-area" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">${name}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" id="autoonoff${_id}" {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>			
+		
 	</div>
   	<br/><br/><br/><br/>
 	<div class="btDownContainer">

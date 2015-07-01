@@ -402,6 +402,7 @@ var AreaSchema = new Schema({
 	},
 	isActivated: {type : Boolean, 'default': false},	
 	schedulers: [],
+	autoOnOff: [],
 	date: {type : Date, 'default': Date.now()}	
 	
 });

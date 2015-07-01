@@ -66,7 +66,6 @@ $(function() {
 			error: UTILITY.httpError,
 			success: function(response) {
 
-//				minde
 				data.schedulers = $.grep(data.schedulers, function(obj, i) {
 					 return (obj.to !== "");
 				});
@@ -163,11 +162,14 @@ $(function() {
 		data.schedulers.push({id:data.schedulers.length, daysOfWeek:"", from:"", to:""});
 		
 		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
-		$("#scheduler-area").empty();
+		$("#scheduler-area, #autoonoff-area").empty();
+		
 		$("#template-scheduler-area").tmpl( data.schedulers ).appendTo( "#scheduler-area" );		
 		$.each(data.schedulers, function (i, obj) { 
 			$("#cmbScheduler"+obj.id+" option[value='"+obj.daysOfWeek+"']").attr("selected", "selected");
-		});			
+		});	
+
+		
 		$("#EDIT-AREA-PAGE").trigger("create");		
 		
 	});	
