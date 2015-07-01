@@ -15,8 +15,9 @@ $(function() {
 
 		$("#autoonoff-area").empty();
 		$.each(areas, function (i, obj) { obj.checked = (areas.activeArea === obj._id) ? true: false;});
-		$("#template-autoonoff-area").tmpl( data.areas ).appendTo("#autoonoff-area");		
+		$("#template-autoonoff-area").tmpl( areas ).appendTo("#autoonoff-area");		
 		
+		$("#EDIT-AREA-PAGE").trigger("create");	
 		
 		$.mobile.changePage("#EDIT-LAN-DEVICE-PAGE");
 	});	
