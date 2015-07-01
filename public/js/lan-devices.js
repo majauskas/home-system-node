@@ -14,10 +14,38 @@ $(function() {
 		var areas  = APPLICATION.areas;
 
 		$("#autoonoff-area").empty();
-		$.each(areas, function (i, obj) { obj.checked = (areas.activeArea === obj._id) ? true: false;});
+		$.each(areas, function (i, obj) { obj.checked = obj.autoOnOff.lanDevices.contains(data.mac) });
 		$("#template-autoonoff-area").tmpl( areas ).appendTo("#autoonoff-area");		
 		
-		$("#EDIT-AREA-PAGE").trigger("create");	
+		$("#EDIT-LAN-DEVICE-PAGE").trigger("create");	
+		
+		
+		$("#EDIT-LAN-DEVICE-PAGE [data-role='flipswitch']").unbind("change").on("change", function (){
+			
+			
+			var id =  $(this).attr("id"); 
+			
+			var area = $.grep(areas, function(target, i) {	
+				 return (target._id === id);
+			})[0]
+			
+			if($(this).prop("checked")){
+				area.autoOnOff.lanDevices.push(data.mac);
+			}else{
+				area.autoOnOff.lanDevices.splice(areas.autoOnOff.lanDevices.indexOf(data.mac), 1);
+			}
+			
+			$.ajax({
+				global: false,
+				type: "PUT", url: "Area/autoOnOff/"+id,
+				dataType : "json",
+				data : { autoOnOff : area.autoOnOff },
+				error: UTILITY.httpError
+			});					
+			
+			
+		});		
+		
 		
 		$.mobile.changePage("#EDIT-LAN-DEVICE-PAGE");
 	});	

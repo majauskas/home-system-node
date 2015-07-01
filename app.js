@@ -402,7 +402,10 @@ var AreaSchema = new Schema({
 	},
 	isActivated: {type : Boolean, 'default': false},	
 	schedulers: [],
-	autoOnOff: [],
+	autoOnOff: {
+		scheduler : String,
+		lanDevices : []
+	},
 	date: {type : Date, 'default': Date.now()}	
 	
 });
@@ -477,6 +480,14 @@ app.put('/Area/activeSensors/:id', function(req, res) {
 	});	
 });
 
+
+app.put('/Area/autoOnOff/:id', function(req, res) {
+	var lanDevices = req.body.autoOnOff.lanDevices || [];
+	Area.findByIdAndUpdate(req.params.id, {'$set':  {'autoOnOff.lanDevices': lanDevices}}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
 
 
 app.get('/Area', function(req, res) {
