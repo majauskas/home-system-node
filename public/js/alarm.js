@@ -192,7 +192,6 @@ $(function() {
 	
 	$("#EDIT-REMOTE-CONTROL-PAGE").on("click", "#btIndietro", function (event) {
 
-		console.log("isUpdatedRemoteControlArea: ",isUpdatedRemoteControlArea);
 		if(isUpdatedRemoteControlArea){
 			$("#REMOTE-CONTROL-PAGE").page('destroy').page();
 		}
@@ -412,7 +411,7 @@ socket.on('ALARM_DETECTION', AlarmDetection);
 
 var intervalBlink = null;
 $(document).on("pagecreate","#HOME-PAGE", function(){
- 
+
 	
 	$.ajax({
 		type : 'GET',
@@ -432,7 +431,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
         	$("#SENSORI-WIFI-PAGE").page();	
         	$("#SENSORI-PIR-PAGE").page();	
         	$("#AREAS-PAGE").page();
-			
+
 			
 			
 			$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change", OnOffZone);
@@ -503,42 +502,30 @@ function OnOffZone(){
 
 
 
-function loadAreas(callback){
-
-	var st = Date.now();
-	$.ajax({
-		type : 'GET',
-		url : "/Area",
-		success: function(response) {
-			
-			var dur = Date.now() - st; 
-			$("#AREAS-PAGE h1 font").html(dur+" ms");
-			
-			$("#listview-areas").empty();
-			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
-			$("#template-areas").tmpl( response ).appendTo( "#listview-areas" );		
-			$("#listview-areas").listview("refresh");
-			
-			APPLICATION.areas = response;
-        }
-	});	
+function renderAreasPage(response){
+	
+	$("#listview-areas").empty();
+	$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+	$("#template-areas").tmpl( response ).appendTo( "#listview-areas" );		
+	$("#listview-areas").listview("refresh");
 	
 }
 
 $(document).on("pagecreate","#AREAS-PAGE", function(){
-
-	  $(this).find('.wrapper').bind( {
-		    iscroll_onpulldown : function(event, data){
-		    	loadAreas(function(){
-		    		data.iscrollview.refresh();
-		    	});
-		    }
-	  });
 	
-	loadAreas();
+	if($.mobile.activePage.attr("id") === "EDIT-AREA-PAGE"){
+
+		$.ajax({
+			type : 'GET',
+			url : "/Area",
+			success: renderAreasPage
+		});
+		
+	}else{
+		renderAreasPage(APPLICATION.areas);
+	}
 });	
-
-
+	
 
 
 function loadEvents(callback){
