@@ -12,6 +12,7 @@
 	<link  rel="apple-touch-startup-image" href="images/security.png"/>		
 
 	<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
+	
 
 
 
@@ -49,6 +50,7 @@
 	<script type="text/javascript" src="js/lan-devices.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/audio.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/alarm-auto-on-off.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/zone.js" charset="iso-8859-1"></script>
 	
 	
 	<script type="text/javascript">
@@ -376,10 +378,26 @@
 					</script>					
 					
 		</fieldset>	
+		<br>
 
-		 		
+		<fieldset>
+			<legend><table><tr><td><img src="images/Clock-01-24.png"/></td><td style="color:yellow">&nbsp;Auto On/Off</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse" id="auto-on-off-area"></table>
+					<script id="template-auto-on-off-area" type="text/x-jquery-tmpl">
+						<tr>
+							<td style="text-align: left;">
+									<select data-mini="true" class="cmbAutoOnOff" index="${id}" id="cmbAutoOnOff${id}">
+										<option value=""></option>
+										<option value="delete" style="color:red; font-weight: bold;">Rimuovi</option>
+										<optgroup label="&nbsp;">
+									</select>
+							</td>	
+						</tr>
+					</script>					
+					
+		</fieldset>			
+		
 	</div>
-
   	<br/><br/><br/><br/>
 	<div class="btDownContainer">
 		<a id="btDeleteArea" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina</a>
