@@ -403,7 +403,8 @@ var AreaSchema = new Schema({
 	isActivated: {type : Boolean, 'default': false},	
 	schedulers: [],
 	auto_on_off: {
-		scheduler : String,
+//		isActivated: {type : Boolean, 'default': false},
+		schedulers: [],
 		lan_devices : []
 	},
 	date: {type : Date, 'default': Date.now()}	
@@ -482,8 +483,8 @@ app.put('/Area/activeSensors/:id', function(req, res) {
 
 
 app.put('/Area/autoOnOff/:id', function(req, res) {
-	var lan_devices = req.body.auto_on_off.lan_devices || [];
-	Area.findByIdAndUpdate(req.params.id, {'$set':  {'auto_on_off.lan_devices': lan_devices}}, function (err, data) {
+	var auto_on_off = req.body.auto_on_off || {};
+	Area.findByIdAndUpdate(req.params.id, {'$set':  {'auto_on_off': auto_on_off}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
@@ -784,6 +785,62 @@ setInterval(function() {
     								obj.lastLogin = new Date();
     							}	
     							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
+    							
+    							//------------ Auto On/Off ----------
+    							
+    							
+    							
+    							Area.find({'auto_on_off.lan_devices': {'$ne': null }}).exec(function(err, data) {
+    								data.forEach(function(area) {
+    									if(area.auto_on_off.lan_devices.length > 0){
+    										var lan_devices = [];
+    										area.auto_on_off.lan_devices.forEach(function(obj) {
+    											lan_devices.push(obj.mac);
+    										});
+    										
+//    										var d = new Date();
+//    										console.log(new Date(d.getTime() + 10*1000)); //unit second
+//    										console.log(new Date(d.getTime() - 10*1000));
+    										
+    										if(!area.isActivated){
+    											LAN_DEVICE.find({exists:false, mac: { $in : lan_devices }}).sort('-lastLogin').exec(function(err, devices) {
+    												
+    												if(devices.length === lan_devices.length){
+    													var lastLogin = devices[0].lastLogin
+    													var d = new Date(lastLogin.getTime() + 120*1000);
+    													if(new Date() > d){
+    														Area.findByIdAndUpdate(area._id, {isActivated: true}, function (err, data) {
+    															console.log("Allarme attivato", "Auto ON allarme zona: "+area.name+" by "+devices[0].name);
+    															io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+    															email("Allarme attivato", "Auto ON allarme zona: "+area.name+" by "+devices[0].name);
+    															Event.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto ON allarme zona: "+area.name}}, function (err, data) {});
+    														});	
+    													}
+    												}					
+    												
+    											});	
+    										}else{
+    											LAN_DEVICE.find({exists:true, mac: { $in : lan_devices }}).exec(function(err, devices) {
+    												if(devices.length > 0){
+    													Area.findByIdAndUpdate(area._id, {isActivated: false}, function (err, data) {
+    														console.log("Allarme disattivato", "Auto OFF allarme zona: "+area.name+" by "+devices[0].name);
+    														io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+    														email("Allarme disattivato", "Auto OFF allarme zona: "+area.name+" by "+devices[0].name);
+    														Event.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto OFF allarme zona: "+area.name}}, function (err, data) {});
+    													});
+    												}
+    											});	
+    										}
+    										
+    									}
+    									
+    								});
+    								
+    								
+    							});   							
+    							
+    							//-----------------------------------
+    							
     							if(!device.manufacturer){
     								var macaddress = device.mac;
     								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
@@ -796,6 +853,7 @@ setInterval(function() {
     								    }
     							    });    								
     							}
+    							
     						});	
     					}
 				});	         			
@@ -806,13 +864,7 @@ setInterval(function() {
 	} catch (e) {
 		console.log("ERROR LAN_DEVICE NMAP", e);
 	}
-}, 10000);
-
-
-
-
-
-
+}, 5000);
 
 
 

@@ -78,7 +78,12 @@ $(function() {
 			type : 'GET',
 			url : "/LAN_DEVICE",
 			success: function(response){
-				APPLICATION.lan_devices = response;
+				
+				
+				APPLICATION.lan_devices = $.grep(response, function(obj, i) {
+					 return (obj.name !== undefined);
+				});				
+				
 				
 				$.each(data.auto_on_off.lan_devices, function (i, target) { 
 					
@@ -142,8 +147,6 @@ $(document).on("change","#EDIT-AREA-PAGE .cmbAutoOnOff", function(){
 		data.auto_on_off.lan_devices = $.grep(data.auto_on_off.lan_devices, function(obj, i) {
 			 return (obj.mac !== "");
 		});
-		
-		
 		
 		$.ajax({
 			global: false,
