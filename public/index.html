@@ -382,6 +382,26 @@
 
 		<fieldset>
 			<legend><table><tr><td><img src="images/Clock-01-24.png"/></td><td style="color:yellow">&nbsp;Auto On/Off</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse">
+					<tr>
+							<td width="20%">
+								<input data-mini="true" type="time" id="inFromAutoOnOff" >
+							</td>
+							<td width="20%">
+								<input data-mini="true" type="time" id="inToAutoOnOff">
+							</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" id="cmbSchedulerAutoOnOff">
+										<option value=""></option>
+										<option value="1-7">Tutti Giorni</option>
+										<option value="1-5">Lun - Ven</option>
+										<option value="6-7">Sab - Dom</option>
+										<option value="Off" style="color:red;">Off</option>
+									</select>
+							</td>	
+						</tr>				
+				</table>
+				
 				<table width="100%" style="border-collapse: collapse" id="auto-on-off-area"></table>
 					<script id="template-auto-on-off-area" type="text/x-jquery-tmpl">
 						<tr>

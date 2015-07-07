@@ -51,61 +51,7 @@ $(function() {
 
 	
 	
-	$("#EDIT-AREA-PAGE").on("click", "#btConferma", function (event) {
 
-		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
-		
-		$.ajax({
-			global: false,
-			type: "PUT", 
-			url: "/Area/"+data._id,
-			dataType : "json",
-			data : {
-				name :  $.mobile.activePage.find('#name').val()
-			},
-			error: UTILITY.httpError,
-			success: function(response) {
-
-				data.schedulers = $.grep(data.schedulers, function(obj, i) {
-					 return (obj.to !== "");
-				});
-				$.ajax({
-					global: false,
-					type: "PUT", url: "Area/schedulers/"+data._id,
-					dataType : "json",
-					data : { schedulers : data.schedulers },
-					error: UTILITY.httpError
-				});					
-				
-				$("#AREAS-PAGE").page('destroy').page();
-				$("#HOME-PAGE").page('destroy').page();
-				$.mobile.changePage("#AREAS-PAGE");
-	        }
-		});				
-	
-	});	
-
-	$("#EDIT-AREA-PAGE").on("click", "#btDeleteArea", function (event) {
-
-		UTILITY.areYouSure("Elimina la zona?", function() {
-			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
-			
-			$.ajax({
-				global: false,
-				type: "DELETE", 
-				url: "/Area/"+data._id,
-				error: UTILITY.httpError,
-				success: function(response) {
-
-					$("#AREAS-PAGE").page('destroy').page();
-					$("#HOME-PAGE").page('destroy').page();
-					$.mobile.changePage("#AREAS-PAGE");
-		        }
-			});	
-		});
-		
-
-	});
 	
 
 
@@ -551,21 +497,7 @@ $(document).on("pagecreate","#REMOTE-CONTROL-PAGE", function(){
 	loadRemoteControls();
 });
 
-$(document).on("change","#EDIT-AREA-PAGE .inFrom, .inTo", function(){
 
-	var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
-	
-	var parent =  $(this).parent().parent().parent();
-	var daysOfWeek = parent.find('.cmbScheduler option:selected').val();
-	var from = parent.find('.inFrom').val();
-	var to = parent.find('.inTo').val();
-	var id = parseInt($(this).attr("index"));
-	
-	if(daysOfWeek && from && to){
-		data.schedulers[id] = {id:id, daysOfWeek:daysOfWeek, from:from, to:to};
-		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
-	}
-});
 
 
 

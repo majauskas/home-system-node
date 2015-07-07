@@ -49,8 +49,7 @@ $(function() {
 		var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
 		
 		data.schedulers.push({id:data.schedulers.length, daysOfWeek:"", from:"", to:""});
-		
-//		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
+		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
 		$("#scheduler-area").empty();
 		
 		$("#template-scheduler-area").tmpl( data.schedulers ).appendTo( "#scheduler-area" );		
@@ -62,13 +61,29 @@ $(function() {
 		
 		
 		//-------------------------- auto On/Off --------------------------------------
+
+		
+		
 		
 		data.auto_on_off = data.auto_on_off || {};
+		data.auto_on_off.scheduler = data.auto_on_off.scheduler || {daysOfWeek:"", from:"", to:""};
 		data.auto_on_off.lan_devices = data.auto_on_off.lan_devices || [];
 		data.auto_on_off.lan_devices.push({id:data.auto_on_off.lan_devices.length, mac:""});
 		
 		$("#auto-on-off-area").empty();
 		$("#template-auto-on-off-area").tmpl( data.auto_on_off.lan_devices ).appendTo( "#auto-on-off-area" );
+		
+		
+//		var daysOfWeek = $('#EDIT-AREA-PAGE #cmbSchedulerAutoOnOff option:selected').val();
+		$('#EDIT-AREA-PAGE #inFromAutoOnOff').val(data.auto_on_off.scheduler.from);
+		$('#EDIT-AREA-PAGE #inToAutoOnOff').val(data.auto_on_off.scheduler.to);
+
+		
+		$("#EDIT-AREA-PAGE #cmbSchedulerAutoOnOff option[value='"+data.auto_on_off.scheduler.daysOfWeek+"']").attr("selected", "selected");
+		$("#EDIT-AREA-PAGE #cmbSchedulerAutoOnOff").selectmenu('refresh');		
+		
+		
+		
 		$("#EDIT-AREA-PAGE").trigger("create");	
 		
 		
@@ -114,8 +129,173 @@ $(function() {
 		
 	});	
 	
+
+	
+	
+	$("#EDIT-AREA-PAGE").on("click", "#btConferma", function (event) {
+
+		var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+		
+		$.ajax({
+			global: false,
+			type: "PUT", 
+			url: "/Area/"+data._id,
+			dataType : "json",
+			data : {
+				name :  $.mobile.activePage.find('#name').val()
+			},
+			error: UTILITY.httpError,
+			success: function(response) {
+
+				data.schedulers = $.grep(data.schedulers, function(obj, i) {
+					 return (obj.to !== "");
+				});
+				
+				$.ajax({
+					global: false,
+					type: "PUT", url: "Area/schedulers/"+data._id,
+					dataType : "json",
+					data : { schedulers : data.schedulers },
+					error: UTILITY.httpError
+				});	
+				
+				data.auto_on_off.lan_devices = $.grep(data.auto_on_off.lan_devices, function(obj, i) { return (obj.mac !== "");});
+			
+				$.ajax({
+					global: false,
+					type: "PUT", url: "Area/autoOnOff/"+data._id,
+					dataType : "json",
+					data : { auto_on_off : data.auto_on_off },
+					error: UTILITY.httpError
+				});					
+				
+				$("#AREAS-PAGE").page('destroy').page();
+				$("#HOME-PAGE").page('destroy').page();
+				$.mobile.changePage("#AREAS-PAGE");
+	        }
+		});				
+	
+	});	
+
+	$("#EDIT-AREA-PAGE").on("click", "#btDeleteArea", function (event) {
+
+		UTILITY.areYouSure("Elimina la zona?", function() {
+			var data = jQuery.parseJSON($.mobile.activePage.attr("data"));
+			
+			$.ajax({
+				global: false,
+				type: "DELETE", 
+				url: "/Area/"+data._id,
+				error: UTILITY.httpError,
+				success: function(response) {
+
+					$("#AREAS-PAGE").page('destroy').page();
+					$("#HOME-PAGE").page('destroy').page();
+					$.mobile.changePage("#AREAS-PAGE");
+		        }
+			});	
+		});
+		
+
+	});	
+	
+	
 	
 });
+
+$(document).on("change","#EDIT-AREA-PAGE .inFrom, .inTo", function(){
+
+	var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
+	
+	var parent =  $(this).parent().parent().parent();
+	var daysOfWeek = parent.find('.cmbScheduler option:selected').val();
+	var from = parent.find('.inFrom').val();
+	var to = parent.find('.inTo').val();
+	var id = parseInt($(this).attr("index"));
+	
+	if(daysOfWeek && from && to){
+		data.schedulers[id] = {id:id, daysOfWeek:daysOfWeek, from:from, to:to};
+		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
+	}
+});
+
+
+$(document).on("change","#EDIT-AREA-PAGE .cmbScheduler", function(){
+	
+	function renderscheduler(data){
+		
+		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
+		$("#scheduler-area").empty();
+		$("#template-scheduler-area").tmpl( data.schedulers ).appendTo( "#scheduler-area" );		
+
+		$.each(data.schedulers, function (i, obj) { 
+			$("#cmbScheduler"+obj.id+" option[value='"+obj.daysOfWeek+"']").attr("selected", "selected");
+		});	
+		$("#EDIT-AREA-PAGE").trigger("create");
+		
+		data.schedulers = $.grep(data.schedulers, function(obj, i) {
+			 return (obj.to !== "");
+		});
+		
+		$.ajax({
+			global: false,
+			type: "PUT", url: "Area/schedulers/"+data._id,
+			dataType : "json",
+			data : { schedulers : data.schedulers },
+			error: UTILITY.httpError
+		});		
+		
+	}	
+	
+	
+	
+	var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
+
+	var parent =  $(this).parent().parent().parent().parent();
+	var daysOfWeek = $(this).val();
+	var from = parent.find('.inFrom').val();
+	var to = parent.find('.inTo').val();
+	var id = parseInt($(this).attr("index"));
+
+	
+	if(daysOfWeek === "delete"){
+		UTILITY.areYouSure("Elimina la schedulazione?", function() {
+			data.schedulers = $.grep(data.schedulers, function(obj, i) {
+				 return (parseInt(obj.id) !== id);
+			});
+			$.each(data.schedulers, function (i, obj) { obj.id = i; });
+			
+			renderscheduler(data);
+		});
+		return;
+	}
+	
+	data.schedulers[id] = {id:id, daysOfWeek:daysOfWeek, from:from, to:to};
+	if(!data.schedulers[id+1]){
+		data.schedulers.push({id:id+1, daysOfWeek:"", from:"", to:""});
+	}
+	
+	renderscheduler(data);
+
+	
+});	
+
+
+
+
+$(document).on("change","#EDIT-AREA-PAGE #inFromAutoOnOff, #inToAutoOnOff, #cmbSchedulerAutoOnOff", function(){
+
+	var data = jQuery.parseJSON($("#EDIT-AREA-PAGE").attr("data"));
+	
+	var daysOfWeek = $('#EDIT-AREA-PAGE #cmbSchedulerAutoOnOff option:selected').val();
+	var from =  $('#EDIT-AREA-PAGE #inFromAutoOnOff').val();
+	var to =  $('#EDIT-AREA-PAGE #inToAutoOnOff').val();
+	if(daysOfWeek && from && to){
+		data.auto_on_off.scheduler = {daysOfWeek:daysOfWeek, from:from, to:to};
+		$("#EDIT-AREA-PAGE").attr("data", JSON.stringify(data));
+	}
+});
+
 
 
 $(document).on("change","#EDIT-AREA-PAGE .cmbAutoOnOff", function(){
@@ -144,9 +324,7 @@ $(document).on("change","#EDIT-AREA-PAGE .cmbAutoOnOff", function(){
 //		});	
 //		
 		
-		data.auto_on_off.lan_devices = $.grep(data.auto_on_off.lan_devices, function(obj, i) {
-			 return (obj.mac !== "");
-		});
+		data.auto_on_off.lan_devices = $.grep(data.auto_on_off.lan_devices, function(obj, i) { return (obj.mac !== "");});
 		
 		$.ajax({
 			global: false,

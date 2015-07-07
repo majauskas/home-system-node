@@ -404,7 +404,7 @@ var AreaSchema = new Schema({
 	schedulers: [],
 	auto_on_off: {
 //		isActivated: {type : Boolean, 'default': false},
-		schedulers: [],
+		scheduler: {},
 		lan_devices : []
 	},
 	date: {type : Date, 'default': Date.now()}	
@@ -468,7 +468,7 @@ app.put('/Area/schedulers/:id', function(req, res) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 		
-		checkJobs();
+//		checkJobs();
 	});	
 });
 
@@ -487,6 +487,8 @@ app.put('/Area/autoOnOff/:id', function(req, res) {
 	Area.findByIdAndUpdate(req.params.id, {'$set':  {'auto_on_off': auto_on_off}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
+		
+		checkJobs();
 	});	
 });
 
@@ -786,60 +788,6 @@ setInterval(function() {
     							}	
     							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
     							
-    							//------------ Auto On/Off ----------
-    							
-    							
-    							
-    							Area.find({'auto_on_off.lan_devices': {'$ne': null }}).exec(function(err, data) {
-    								data.forEach(function(area) {
-    									if(area.auto_on_off.lan_devices.length > 0){
-    										var lan_devices = [];
-    										area.auto_on_off.lan_devices.forEach(function(obj) {
-    											lan_devices.push(obj.mac);
-    										});
-    										
-//    										var d = new Date();
-//    										console.log(new Date(d.getTime() + 10*1000)); //unit second
-//    										console.log(new Date(d.getTime() - 10*1000));
-    										
-    										if(!area.isActivated){
-    											LAN_DEVICE.find({exists:false, mac: { $in : lan_devices }}).sort('-lastLogin').exec(function(err, devices) {
-    												
-    												if(devices.length === lan_devices.length){
-    													var lastLogin = devices[0].lastLogin
-    													var d = new Date(lastLogin.getTime() + 120*1000);
-    													if(new Date() > d){
-    														Area.findByIdAndUpdate(area._id, {isActivated: true}, function (err, data) {
-    															console.log("Allarme attivato", "Auto ON allarme zona: "+area.name+" by "+devices[0].name);
-    															io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
-    															email("Allarme attivato", "Auto ON allarme zona: "+area.name+" by "+devices[0].name);
-    															Event.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto ON allarme zona: "+area.name}}, function (err, data) {});
-    														});	
-    													}
-    												}					
-    												
-    											});	
-    										}else{
-    											LAN_DEVICE.find({exists:true, mac: { $in : lan_devices }}).exec(function(err, devices) {
-    												if(devices.length > 0){
-    													Area.findByIdAndUpdate(area._id, {isActivated: false}, function (err, data) {
-    														console.log("Allarme disattivato", "Auto OFF allarme zona: "+area.name+" by "+devices[0].name);
-    														io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
-    														email("Allarme disattivato", "Auto OFF allarme zona: "+area.name+" by "+devices[0].name);
-    														Event.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto OFF allarme zona: "+area.name}}, function (err, data) {});
-    													});
-    												}
-    											});	
-    										}
-    										
-    									}
-    									
-    								});
-    								
-    								
-    							});   							
-    							
-    							//-----------------------------------
     							
     							if(!device.manufacturer){
     								var macaddress = device.mac;
@@ -868,13 +816,70 @@ setInterval(function() {
 
 
 
+var intervalAutoOnOff;
 
+function startAutoOnOff() {
+	console.log("startAutoOnOff");	
+	intervalAutoOnOff = setInterval(function() {
+	
+		//------------ Auto On/Off ----------
+		
+		
+		
+		Area.find({'auto_on_off.lan_devices': {'$ne': null }}).exec(function(err, data) {
+			data.forEach(function(area) {
+				if(area.auto_on_off.lan_devices.length > 0){
+					var lan_devices = [];
+					area.auto_on_off.lan_devices.forEach(function(obj) {
+						lan_devices.push(obj.mac);
+					});
+					
+	//				var d = new Date();
+	//				console.log(new Date(d.getTime() + 10*1000)); //unit second
+	//				console.log(new Date(d.getTime() - 10*1000));
+					
+					if(!area.isActivated){
+						
+						LAN_DEVICE.find({exists:false, mac: { $in : lan_devices }}).sort('-lastLogin').exec(function(err, devices) {
+							
+							if(devices.length === lan_devices.length){
+								var lastLogin = devices[0].lastLogin
+								var d = new Date(lastLogin.getTime() + 120*1000);
+								if(new Date() > d){
+									Area.findByIdAndUpdate(area._id, {isActivated: true}, function (err, data) {
+										console.log("Allarme attivato", "Auto ON allarme zona: "+area.name+" by "+devices[0].name);
+										io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+										email("Allarme attivato", "Auto ON allarme zona: "+area.name+" by "+devices[0].name);
+										Event.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto ON allarme zona: "+area.name}}, function (err, data) {});
+									});	
+								}
+							}					
+							
+						});	
+					}else{
+						
+						LAN_DEVICE.find({exists:true, mac: { $in : lan_devices }}).exec(function(err, devices) {
+							if(devices.length > 0){
+								Area.findByIdAndUpdate(area._id, {isActivated: false}, function (err, data) {
+									console.log("Allarme disattivato", "Auto OFF allarme zona: "+area.name+" by "+devices[0].name);
+									io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
+									email("Allarme disattivato", "Auto OFF allarme zona: "+area.name+" by "+devices[0].name);
+									Event.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto OFF allarme zona: "+area.name}}, function (err, data) {});
+								});
+							}
+						});	
+					}
+					
+				}
+				
+			});
+			
+			
+		}); 
+	
+	}, 2000);
 
-
-
-
-
-
+}
 
 var cronAllJobs = [];
 checkJobs();
@@ -893,6 +898,7 @@ function checkJobs() {
 		if(err){console.log(err); return;}
 		
 		areas.forEach(function(area) {
+			
 			area.schedulers.forEach(function(scheduler) {
 				
 
@@ -925,6 +931,77 @@ function checkJobs() {
 				cronAllJobs.push({id:area._id+"_"+id, jobFrom: cronJobFrom, jobTo: cronJobTo});
 				
 			});	
+			
+			
+			if(area.auto_on_off && area.auto_on_off.scheduler){
+				
+				
+				var scheduler = area.auto_on_off.scheduler;
+				console.log("scheduler",scheduler);
+				var from = scheduler.from.split(":");
+				var to = scheduler.to.split(":");
+				var daysOfWeek = scheduler.daysOfWeek;
+				if(daysOfWeek === "Off"){ 
+					
+					if(intervalAutoOnOff) {
+						console.log("OFF intervalAutoOnOff");
+						clearInterval(intervalAutoOnOff);
+					}
+					return; 
+				}
+				
+				var cronOn = "00 "+from[1]+" "+from[0]+" * * " + daysOfWeek;
+				var cronOff = "00 "+to[1]+" "+to[0]+" * * " + daysOfWeek;
+				console.log(area.name, "Cron auto on/off Job ON at: " + cronOn + " and OFF at: " + cronOff);		
+				
+				var sysdate = new Date();
+				
+				var startDate = new Date();
+				startDate.setHours(from[0],from[1],0);
+				
+				var endDate = new Date();
+				endDate.setHours(to[0],to[1],0);
+//console.log(startDate);
+//console.log(endDate);	
+//console.log(sysdate);	
+				
+				
+				
+				
+				var cronJobFrom = new CronJob(cronOn, function(){
+					console.log('job auto on/off init at: ', new Date(), this.name);
+					startAutoOnOff();
+				},null, true, null, {'name':area.name});
+
+				var isInDay = cronJobFrom.cronTime.dayOfWeek[sysdate.getDay()];
+				if(startDate < sysdate && sysdate < endDate && isInDay === true){
+					startAutoOnOff();
+				}else{
+					if(intervalAutoOnOff) {
+						console.log("OFF intervalAutoOnOff");
+						clearInterval(intervalAutoOnOff);
+					}
+				}
+				
+				
+				
+				var cronJobTo = new CronJob(cronOff, function(){
+					console.log('job auto on/off end at: ', new Date(), this.name);
+					if(intervalAutoOnOff) {clearInterval(intervalAutoOnOff);}
+				},null, true, null, {'name':area.name});				
+				
+				
+				cronAllJobs.push({jobFrom: cronJobFrom, jobTo: cronJobTo});
+				
+				
+			}
+			
+//			area.auto_on_off = area.auto_on_off || {};
+//			area.auto_on_off.scheduler = area.auto_on_off.scheduler || {};
+//			
+		
+			
+			
 			
 		});		
 		
