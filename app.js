@@ -767,7 +767,6 @@ setInterval(function() {
 	    exec("sudo ip neighbor show dev wlan0 | grep REACHABLE | awk '{print $1,$3}'", function(err, stdout,stderr) {
 	    	if(stdout){
 	    		var entries = stdout.split('\n');
-	    		console.log("reachable devices",entries);
 	    		entries.forEach(function(target) {
 	    			if(target){
 	    				var entry = target.split(' ');
