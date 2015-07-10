@@ -771,14 +771,13 @@ setInterval(function() {
 	    	if(stdout){
 	    		
 	    		var entries = stdout.split('#');
-	    		console.log(entries);
+//	    		console.log(entries);
 	    		
 	    		for (var int = 0; int < entries.length; int++) {
 					var ip = entries[int++];
 					var mac = entries[int];
-					
 					if(ip && mac){
-						console.log("ip:",ip,"mac:",mac);
+//						console.log("ip:",ip,"mac:",mac);
 						LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
 					}
 					
@@ -841,7 +840,7 @@ setInterval(function() {
 	} catch (e) {
 		console.log("ERROR LAN_DEVICE NMAP", e);
 	}
-}, 2000);
+}, 1000);
 
 
 //setInterval(function() {
