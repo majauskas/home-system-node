@@ -759,9 +759,11 @@ app.post('/433mhz/:binCode', function(req, res) {
 
 //ip -s -s neigh flush all
 //
-
+var semaforoNmap = true;
 setInterval(function() {
 
+	if(!semaforoNmap){return;}
+	semaforoNmap = false;
 	try {
 //	    exec("sudo ip neighbor show dev wlan0 | grep REACHABLE | awk '{print $1,$3}'", function(err, stdout,stderr) {
 		exec("sudo nmap -sP -n -PE -PA -T5 -e wlan0 192.168.0.2-24 --exclude "+host+" | grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}|([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | tr '\n' '#'", function(err, stdout,stderr) {
@@ -774,8 +776,9 @@ setInterval(function() {
 	    		for (var int = 0; int < entries.length; int++) {
 					var ip = entries[int++];
 					var mac = entries[int];
-					console.log(ip,mac);
+					
 					if(ip && mac){
+						console.log("ip:",ip,"mac:",mac);
 						LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
 					}
 					
@@ -791,7 +794,7 @@ setInterval(function() {
 //	    			}
 //	    		});
 	    		
-	    		setTimeout(function(entries) {
+//	    		setTimeout(function(entries) {
 	
 					LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
 						io.sockets.emit("SOCKET-LAN-DEVICES", data);
@@ -829,14 +832,16 @@ setInterval(function() {
 							});	
 						}
 				});	         			
-	    		}, 500,entries);
+//	    		}, 500,entries);
 	    	}
+	    	
+	    	semaforoNmap = true;
 	   });
 		
 	} catch (e) {
 		console.log("ERROR LAN_DEVICE NMAP", e);
 	}
-}, 3000);
+}, 2000);
 
 
 //setInterval(function() {
