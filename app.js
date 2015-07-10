@@ -21,7 +21,7 @@ var arp = null; try { arp = require('arp-a'); } catch (e) {}
 //var gpio = require("pi-gpio");
 
 
-
+var host = null;
 
 
 
@@ -32,7 +32,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.enable('view cache');
 var server = app.listen(process.env.PORT || 8081, function () {
 	var interfaces = os.networkInterfaces();
-	var host = "";
 	for (var k in interfaces) {
 		if(interfaces.hasOwnProperty(k)) {
 		    for (var k2 in interfaces[k]) {
@@ -764,17 +763,33 @@ app.post('/433mhz/:binCode', function(req, res) {
 setInterval(function() {
 
 	try {
-	    exec("sudo ip neighbor show dev wlan0 | grep REACHABLE | awk '{print $1,$3}'", function(err, stdout,stderr) {
+//	    exec("sudo ip neighbor show dev wlan0 | grep REACHABLE | awk '{print $1,$3}'", function(err, stdout,stderr) {
+		exec("sudo nmap -sP -n -PE -PA -T5 -e wlan0 192.168.0.2-24 --exclude "+host+" | grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}|([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | tr '\n' '#'", function(err, stdout,stderr) {
+	    	
 	    	if(stdout){
-	    		var entries = stdout.split('\n');
-	    		entries.forEach(function(target) {
-	    			if(target){
-	    				var entry = target.split(' ');
-	    				var ip = entry[0];
-	    				var mac = entry[1];
-	    				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
-	    			}
-	    		});
+	    		
+	    		var entries = stdout.split('#');
+	    		console.log(entries);
+	    		
+	    		for (var int = 0; int < entries.length; int++) {
+					var ip = entries[int++];
+					var mac = entries[int];
+					console.log(ip,mac);
+					if(ip && mac){
+						LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
+					}
+					
+				} 
+	    		
+//	    		var entries = stdout.split('\n');
+//	    		entries.forEach(function(target) {
+//	    			if(target){
+//	    				var entry = target.split(' ');
+//	    				var ip = entry[0];
+//	    				var mac = entry[1];
+//	    				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
+//	    			}
+//	    		});
 	    		
 	    		setTimeout(function(entries) {
 	
@@ -821,7 +836,7 @@ setInterval(function() {
 	} catch (e) {
 		console.log("ERROR LAN_DEVICE NMAP", e);
 	}
-}, 1000);
+}, 3000);
 
 
 //setInterval(function() {
