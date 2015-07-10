@@ -771,39 +771,28 @@ setInterval(function() {
 	    	if(stdout){
 	    		
 	    		var entries = stdout.split('#');
-//	    		console.log(entries);
-	    		
+	    		var macs = "";
 	    		for (var int = 0; int < entries.length; int++) {
 					var ip = entries[int++];
 					var mac = entries[int];
 					if(ip && mac){
-//						console.log("ip:",ip,"mac:",mac);
+						macs += mac; 
 						LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
 					}
-					
 				} 
-	    		
-//	    		var entries = stdout.split('\n');
-//	    		entries.forEach(function(target) {
-//	    			if(target){
-//	    				var entry = target.split(' ');
-//	    				var ip = entry[0];
-//	    				var mac = entry[1];
-//	    				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
-//	    			}
-//	    		});
+
 	    		
 //	    		setTimeout(function(entries) {
 	
 					LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
 						io.sockets.emit("SOCKET-LAN-DEVICES", data);
-						var macs = "";
-						entries.forEach(function(target) {
-							if(target){
-								macs += target.split(' ')[1]; 
-							}
-							
-						});
+//						var macs = "";
+//						entries.forEach(function(target) {
+//							if(target){
+//								macs += target.split(' ')[1]; 
+//							}
+//							
+//						});
 						if(data && data.length > 0){
 							
 							data.forEach(function(device) {

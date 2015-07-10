@@ -104,7 +104,6 @@ $(function() {
 
 
 function renderListViewLanDevices(response){
-	console.log(response);
 	$.each(response, function (i, obj) { 
 		obj.target = JSON.stringify(obj);
 		try {
