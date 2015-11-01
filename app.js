@@ -67,27 +67,29 @@ var server = app.listen(process.env.PORT || 8081, function () {
 
   MCP23017.scanLights(function(data) {  
 	  
-	  console.log("LIGHTS ", data.code);
+	  console.log("MCP23017.scanLights ", data.code);
 	  
-//	  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
-//	
-//		  console.log("LIGHTS ", doc);
+//	  LIGHTS.findOne(req.body, function(err, data){
 //		  
-//			var code = doc.code;
-//			var isOn = doc.isOn;
-//			
-//			LIGHTS.update({code : doc.code}, {isOn : !isOn}, {upsert : false}, function (err, data) {
-//				console.log("LIGHTS status ", isOn);
-//				if(isOn === true){ //light is on, so we need to turn off
-//					Lights.StudioOff();
-//				}else{ //light is off, so we need to turn on
-//					Lights.StudioOn();
-//				}
-//				
-//			});	
-//
-//			
-//		  });		  
+//	  });
+	  
+	  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
+	
+		  console.log("LIGHTS.findOneAndUpdate ", doc);
+		  
+			var code = doc.code;
+			var isOn = doc.isOn;
+			
+			if(isOn === true){ //light is on, so we need to turn off
+				Lights.StudioOff();
+			}else if(isOn === false) { //light is off, so we need to turn on
+				Lights.StudioOn();
+			}			
+			
+			LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {});	
+
+			
+		  });		  
 	  
 	  
   });
