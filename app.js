@@ -46,22 +46,72 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		}
 	}
 
+//	
+//	app.put('/WifiSensor', function(req, res) {
+//		WifiSensor.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
+//	        res.send({});
+//		});	
+//	});
+//	app.del('/WifiSensor', function(req, res) {
+//		WifiSensor.findOne(req.body, function(err, data){
+//			data.remove();
+//			Area.update({}, {'$pull':  { wifisensors : {_id: data._id} }}, {multi: true}, function (err, data) {
+//				if(err){console.log(err);}
+//			});			
+//			res.send({});
+//		});	
+//	});
 	
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
   MCP23017.scanLights(function(data) {  
 	  console.log("Lights Scan", data);
+	  
+	  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+	
+		  console.log("LIGHTS ", doc);
+		  
+			var code = doc.code;
+			var isOn = doc.code;
+			
+			LIGHTS.update({code : doc.code}, {isOn : !isOn}, {upsert : false}, function (err, data) {
+		       
+				if(isOn){ //light is on, so we need to turn off
+					Lights.StudioOff();
+				}else{ //light is off, so we need to turn on
+					Lights.StudioOn();
+				}
+				
+			});	
+			
+			
+			
+//			LIGHTS.find({}).sort('-date').exec(function(err, doc) {
+//				if(!doc) {return;}
+//				
+//				io.sockets.emit("PIRSENSOR", doc);
+//				
+//				Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
+//					if(area){
+//						alarmDetection(doc, area._id);
+//							
+//					}
+//				});				
+//				
+//				
+//				
+//			});	
+			
+			
+		  });		  
+	  
+	  
   });
   
   
   MCP23017.scan(function(data) {
 	  console.log("MCP23017: ", data);
-	  
-//	  if("0x20-GPA5".indexOf(data.code) >= 0){
-//		  console.log("Light Studio change: ", data);
-//	  }
-	  
 	  
 	  
 	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
