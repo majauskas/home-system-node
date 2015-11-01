@@ -73,7 +73,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		  console.log("LIGHTS ", doc);
 		  
 			var code = doc.code;
-			var isOn = doc.code;
+			var isOn = doc.isOn;
 			
 			LIGHTS.update({code : doc.code}, {isOn : !isOn}, {upsert : false}, function (err, data) {
 				console.log("LIGHTS status ", isOn);
