@@ -67,15 +67,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 
   MCP23017.scanLights(function(data) {  
 	  
-	  console.log("MCP23017.scanLights ", data.code);
-	  
-//	  LIGHTS.findOne(req.body, function(err, data){
-//		  
-//	  });
-	  
 	  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
-	
-		  console.log("LIGHTS.findOneAndUpdate ", doc);
 		  
 			var code = doc.code;
 			var isOn = doc.isOn;
@@ -87,7 +79,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 			}			
 			
 			LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {});	
-
 			
 		  });		  
 	  
@@ -95,30 +86,30 @@ var server = app.listen(process.env.PORT || 8081, function () {
   });
   
   
-//  MCP23017.scan(function(data) {
-//	  console.log("MCP23017: ", data);
-//	  
-//	  
-//	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
-//		
-//		var code = doc.code;
-//		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
-//			if(!doc) {return;}
-//			
-//			io.sockets.emit("PIRSENSOR", doc);
-//			
-//			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
-//				if(area){
-//					alarmDetection(doc, area._id);
-//						
-//				}
-//			});				
-//			
-//			
-//			
-//		});		
-//	  });	 
-//  });
+  MCP23017.scan(function(data) {
+	  console.log("MCP23017: ", data);
+	  
+	  
+	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+		
+		var code = doc.code;
+		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
+			if(!doc) {return;}
+			
+			io.sockets.emit("PIRSENSOR", doc);
+			
+			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
+				if(area){
+					alarmDetection(doc, area._id);
+						
+				}
+			});				
+			
+			
+			
+		});		
+	  });	 
+  });
   
   email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
