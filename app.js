@@ -76,8 +76,8 @@ var server = app.listen(process.env.PORT || 8081, function () {
 			var isOn = doc.code;
 			
 			LIGHTS.update({code : doc.code}, {isOn : !isOn}, {upsert : false}, function (err, data) {
-		       
-				if(isOn){ //light is on, so we need to turn off
+				console.log("LIGHTS status ", isOn);
+				if(isOn === true){ //light is on, so we need to turn off
 					Lights.StudioOff();
 				}else{ //light is off, so we need to turn on
 					Lights.StudioOn();
