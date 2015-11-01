@@ -80,7 +80,15 @@ var server = app.listen(process.env.PORT || 8081, function () {
 				Lights.StudioOn();
 			}			
 			
-			LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {});	
+			LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+					
+				LIGHTS.find({}).sort('-date').exec(function(err, doc) {
+					if(!doc) {return;}
+					console.log("sockets LIGHTS", doc);
+					io.sockets.emit("LIGHTS", doc);
+				});				
+				
+			});	
 			
 		  });		  
 	  
@@ -278,6 +286,23 @@ LightsSchema.methods.toJSON = function() {
 };
 var LIGHTS = mongoose.model('LIGHTS', LightsSchema);
 
+app.put('/Lights', function(req, res) {
+	
+	console.log("Lights " + req.body);
+	
+	  LIGHTS.findOneAndUpdate({code : "0x20-GPA2"}, req.body, {upsert : true}, function (err, doc) {
+		  
+			var code = doc.code;
+			var isOn = doc.isOn;
+			
+			if(isOn === true){ //light is on, so we need to turn off
+				Lights.StudioOff();
+			}else if(isOn === false) { //light is off, so we need to turn on
+				Lights.StudioOn();
+			}			
+			
+		  });	
+});
 
 
 //-----------PIR_SENSOR---------------------------------------------

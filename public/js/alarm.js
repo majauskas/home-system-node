@@ -202,6 +202,15 @@ socket.on('SOCKET-CHANGE-ALARM-STATE', function (data) {
 	
 });
 
+
+
+socket.on('LIGHTS', function (data) {
+	
+	$("#chLightStudio").prop('checked', data[0].isOn).flipswitch('refresh');
+	
+});
+
+
 socket.on('SOCKET-WARNING-MSG', function (msg) {
 	UTILITY.alertPopup("Attenzione", msg);	
 });
@@ -220,7 +229,7 @@ socket.on('433MHZ', function (device) {
 
 				var data = response.data;
 				if(response.existing){
-					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") è gia registrato..");
+					UTILITY.alertPopup("", "Sensore: "+device.name+" ("+device.code+") ï¿½ gia registrato..");
 				}else{
 					isAddedNewWifiSensors = true;
 					$('#EDIT-WIFI-SENSOR-PAGE #code').html(data.code);
@@ -337,9 +346,20 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			$("#HOME-PAGE #fsIlluminazione [data-role='flipswitch']").unbind("change").on("change", function (){
 				if($(this).prop("checked")){
 					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-on.png");
+					
 				}else{
 					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-off.png");
 				}
+				
+				
+				$.ajax({
+					global: false,
+					type: "PUT", url: "Lights",
+					dataType : "json",
+					data : { isOn :  $(this).prop("checked")},
+					error: UTILITY.httpError
+				});					
+				
 			});
 			
 			
