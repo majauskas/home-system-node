@@ -51,6 +51,13 @@ var server = app.listen(process.env.PORT || 8081, function () {
 
   MCP23017.scan(function(data) {
 	  console.log("MCP23017: ", data);
+	  
+	  if("0x20-GPA5".indexOf(data.code) >= 0){
+		  console.log("Light Studio change: ", data);
+	  }
+	  
+	  
+	  
 	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
 		
 		var code = doc.code;
@@ -225,6 +232,24 @@ process.on('SIGINT', function() {
 });
 
 var Schema = mongoose.Schema;
+
+
+//-----------LIGHTS---------------------------------------------
+var LightsSchema = new Schema({
+    code: String,
+    name: String,
+    on: {type : Boolean, 'default': false},
+    date: Date
+},{toJSON:{virtuals: true}});
+
+LightsSchema.methods.toJSON = function() {
+	  var obj = this.toObject();
+	  var date = moment(obj.date), formatted = date.format('DD/MM/YYYY HH:mm:ss');
+	  obj.date = formatted;
+	  return obj;
+};
+var LIGHTS = mongoose.model('LIGHTS', LightsSchema);
+
 
 
 //-----------PIR_SENSOR---------------------------------------------
