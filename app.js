@@ -74,7 +74,9 @@ var server = app.listen(process.env.PORT || 8081, function () {
 			
 			if(isOn === true){ //light is on, so we need to turn off
 //				Lights.StudioOff();
+				 console.log("Studio light OFF");
 			}else if(isOn === false) { //light is off, so we need to turn on
+				console.log("Studio light ON");
 //				Lights.StudioOn();
 			}			
 			
@@ -86,30 +88,30 @@ var server = app.listen(process.env.PORT || 8081, function () {
   });
   
   
-  MCP23017.scan(function(data) {
-	  console.log("MCP23017: ", data);
-	  
-	  
-	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
-		
-		var code = doc.code;
-		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
-			if(!doc) {return;}
-			
-			io.sockets.emit("PIRSENSOR", doc);
-			
-			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
-				if(area){
-					alarmDetection(doc, area._id);
-						
-				}
-			});				
-			
-			
-			
-		});		
-	  });	 
-  });
+//  MCP23017.scan(function(data) {
+//	  console.log("MCP23017: ", data);
+//	  
+//	  
+//	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+//		
+//		var code = doc.code;
+//		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
+//			if(!doc) {return;}
+//			
+//			io.sockets.emit("PIRSENSOR", doc);
+//			
+//			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
+//				if(area){
+//					alarmDetection(doc, area._id);
+//						
+//				}
+//			});				
+//			
+//			
+//			
+//		});		
+//	  });	 
+//  });
   
   email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
