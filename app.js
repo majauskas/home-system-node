@@ -50,6 +50,11 @@ var server = app.listen(process.env.PORT || 8081, function () {
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
+  MCP23017.scanLights(function(data) {  
+  
+  });
+  
+  
   MCP23017.scan(function(data) {
 	  console.log("MCP23017: ", data);
 	  
