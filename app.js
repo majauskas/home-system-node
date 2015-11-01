@@ -66,7 +66,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
   console.log('app listening at http://%s:%s', host, port);
 
   MCP23017.scanLights(function(data) {  
-	  console.log("Lights Scan", data);
 	  
 	  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
 	
@@ -84,25 +83,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 				}
 				
 			});	
-			
-			
-			
-//			LIGHTS.find({}).sort('-date').exec(function(err, doc) {
-//				if(!doc) {return;}
-//				
-//				io.sockets.emit("PIRSENSOR", doc);
-//				
-//				Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
-//					if(area){
-//						alarmDetection(doc, area._id);
-//							
-//					}
-//				});				
-//				
-//				
-//				
-//			});	
-			
+
 			
 		  });		  
 	  
