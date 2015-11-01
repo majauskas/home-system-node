@@ -67,7 +67,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 
   MCP23017.scanLights(function(data) {  
 	  
-	  console.log("LIGHTS ", doc.code);
+	  console.log("LIGHTS ", data.code);
 	  
 //	  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
 //	
