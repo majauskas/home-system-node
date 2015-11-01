@@ -11,6 +11,7 @@ var email = require('./lib/email.js');
 var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
+var Lights = require('./lib/Lights.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
 var request = require('request');
