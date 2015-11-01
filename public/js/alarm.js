@@ -342,8 +342,9 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 					
 				}				
 			
+//			$("#HOME-PAGE #chLightStudio").unbind("change").on("change", OnOffZone);
 			
-			$("#HOME-PAGE #fsIlluminazione [data-role='flipswitch']").unbind("change").on("change", function (){
+			$("#HOME-PAGE #chLightStudio").unbind("change").on("change", function (){
 				if($(this).prop("checked")){
 					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-on.png");
 					

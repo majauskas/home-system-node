@@ -288,11 +288,10 @@ var LIGHTS = mongoose.model('LIGHTS', LightsSchema);
 
 app.put('/Lights', function(req, res) {
 	
-	console.log("Lights " + req.body);
+	console.log("Lights " + req.body.isOn);
 	
-	  LIGHTS.findOneAndUpdate({code : "0x20-GPA2"}, req.body, {upsert : true}, function (err, doc) {
+	  LIGHTS.findOneAndUpdate({code : "0x20-GPA2"}, {isOn : req.body.isOn}, {upsert : true}, function (err, doc) {
 		  
-			var code = doc.code;
 			var isOn = doc.isOn;
 			
 			if(isOn === true){ //light is on, so we need to turn off
