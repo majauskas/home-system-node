@@ -239,7 +239,7 @@ var Schema = mongoose.Schema;
 var LightsSchema = new Schema({
     code: String,
     name: String,
-    on: {type : Boolean, 'default': false},
+    isOn: {type : Boolean, 'default': false},
     date: Date
 },{toJSON:{virtuals: true}});
 
