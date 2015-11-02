@@ -46,21 +46,28 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		}
 	}
 
-//	
-//	app.put('/WifiSensor', function(req, res) {
-//		WifiSensor.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
-//	        res.send({});
-//		});	
-//	});
-//	app.del('/WifiSensor', function(req, res) {
-//		WifiSensor.findOne(req.body, function(err, data){
-//			data.remove();
-//			Area.update({}, {'$pull':  { wifisensors : {_id: data._id} }}, {multi: true}, function (err, data) {
-//				if(err){console.log(err);}
-//			});			
-//			res.send({});
-//		});	
-//	});
+	new CronJob({
+		  cronTime: '00 15 23 * * 1-5',
+		  onTick: function() {
+			  Lights.CameraDaLetto2On();
+			setTimeout(function() {	
+				Lights.CameraDaLetto2Off();
+			               
+			  }, 120000);
+
+		  },
+		  onComplete: function() {
+			  console.log('You will see this message every second');
+
+		  },
+		  startNow: true,
+		  timeZone: null,
+		  context: null
+		});
+	
+	
+	
+	
 	
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
