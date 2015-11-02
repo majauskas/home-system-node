@@ -47,19 +47,15 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	}
 
 	new CronJob({
-		  cronTime: '00 15 23 * * 1-5',
+		  cronTime: '00 15 07 * * 1-5',
 		  onTick: function() {
 			  Lights.CameraDaLetto2On();
-			setTimeout(function() {	
-				Lights.CameraDaLetto2Off();
-			               
-			  }, 120000);
+				setTimeout(function() {	
+					Lights.CameraDaLetto2Off();
+				}, 300000);
 
 		  },
-		  onComplete: function() {
-			  console.log('You will see this message every second');
-
-		  },
+		  onComplete: function() {},
 		  startNow: true,
 		  timeZone: null,
 		  context: null
@@ -308,6 +304,20 @@ app.put('/Lights', function(req, res) {
 			}			
 			
 		  });	
+});
+
+app.put('/LightsCameraDaLetto2', function(req, res) {
+	
+	console.log("LightsCameraDaLetto2 " + req.body.isOn);
+		  
+	var isOn = req.body.isOn;
+	
+	if(isOn === true){ //light is on, so we need to turn off
+		Lights.CameraDaLetto2On();
+	}else if(isOn === false) { //light is off, so we need to turn on
+		Lights.CameraDaLetto2Off();
+	}			
+			
 });
 
 
