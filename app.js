@@ -76,20 +76,20 @@ var server = app.listen(process.env.PORT || 8081, function () {
 			var isOn = doc.isOn;
 	
 			
-			if(code === "0x20-GPA5"){
-				if(isOn === true){ //light is on, so we need to turn off
-					Lights.CameraDaLetto2Off();
-				}else if(isOn === false) { //light is off, so we need to turn on
-					Lights.CameraDaLetto2On();
-				}
-			}else{
+//			if(code === "0x20-GPA5"){
+//				if(isOn === true){ //light is on, so we need to turn off
+//					Lights.CameraDaLetto2Off();
+//				}else if(isOn === false) { //light is off, so we need to turn on
+//					Lights.CameraDaLetto2On();
+//				}
+//			}else{
 				
 				if(isOn === true){ //light is on, so we need to turn off
 					Lights.StudioOff();
 				}else if(isOn === false) { //light is off, so we need to turn on
 					Lights.StudioOn();
 				}				
-			}
+//			}
 			
 			
 			
