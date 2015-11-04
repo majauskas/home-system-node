@@ -290,9 +290,9 @@ app.put('/Lights', function(req, res) {
 	
 	console.log("Lights " + req.body.isOn);
 	
-	  LIGHTS.findOneAndUpdate({code : "0x20-GPA2"}, {isOn : req.body.isOn}, {upsert : true}, function (err, doc) {
+//	  LIGHTS.findOneAndUpdate({code : "0x20-GPA2"}, {isOn : req.body.isOn}, {upsert : true}, function (err, doc) {
 		  
-			var isOn = doc.isOn;
+			var isOn = req.body.isOn;
 			
 			if(isOn === true){ //light is on, so we need to turn off
 				Lights.StudioOn();
@@ -300,7 +300,7 @@ app.put('/Lights', function(req, res) {
 				Lights.StudioOff();
 			}			
 			
-		  });	
+//		  });	
 });
 
 app.put('/LightsCameraDaLetto2', function(req, res) {
