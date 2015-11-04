@@ -294,9 +294,9 @@ app.put('/Lights', function(req, res) {
 		  
 			var isOn = req.body.isOn;
 			
-			if(isOn === true){ //light is on, so we need to turn off
+			if(isOn === "true"){ //light is on, so we need to turn off
 				Lights.StudioOn();
-			}else if(isOn === false) { //light is off, so we need to turn on
+			}else if(isOn === "false") { //light is off, so we need to turn on
 				Lights.StudioOff();
 			}			
 			
