@@ -50,9 +50,9 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		  cronTime: '00 15 07 * * 1-5',
 		  onTick: function() {
 			  Lights.CameraDaLetto2On();
-				setTimeout(function() {	
-					Lights.CameraDaLetto2Off();
-				}, 300000);
+//				setTimeout(function() {	
+//					Lights.CameraDaLetto2Off();
+//				}, 300000);
 
 		  },
 		  onComplete: function() {},
