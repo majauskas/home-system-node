@@ -72,31 +72,63 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	  
 		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
 			  
-//					var code = doc.code;
-//					var isOn = doc.isOn;
-//			
-//					if(isOn === true){ //light is on, so we need to turn off
-//						Lights.StudioOff();
-//					}else if(isOn === false) { //light is off, so we need to turn on
-//						Lights.StudioOn();
-//					}				
-//					
-//					LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-//							
+					var code = doc.code;
+					var isOn = doc.isOn;
+					
+					LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+						
+						if(code === "0x21-GPB0"){
+							if(isOn === false){ 
+								Lights.StudioOff();
+							}else { 
+								Lights.StudioOn();
+							}						
+						}
+						
+						if(code === "0x21-GPB1"){
+							if(isOn === false){ 
+								Lights.CameraDaLetto2Off();
+							}else { 
+								Lights.CameraDaLetto2On();
+							}						
+						}						
+						
+						
+						
 //						LIGHTS.find({}).sort('-date').exec(function(err, doc) {
 //							if(!doc) {return;}
 //							console.log("sockets LIGHTS", doc);
 //							io.sockets.emit("LIGHTS", doc);
 //						});				
-//						
-//					});	
+						
+					});						
+					
+//					if(code === "0x21-GPB0"){
+//						if(isOn === true){ 
+//							Lights.StudioOff();
+//						}else { 
+//							Lights.StudioOn();
+//						}						
+//					}
+//					
+//					if(code === "0x21-GPB1"){
+//						if(isOn === true){ 
+//							Lights.CameraDaLetto2Off();
+//						}else { 
+//							Lights.CameraDaLetto2On();
+//						}						
+//					}					
+					
+			
+				
+					
+
 				
 		   });		  
 	  
   });
   
-  
-  
+
   
   
   
@@ -290,30 +322,53 @@ app.put('/Lights', function(req, res) {
 	
 	console.log("Lights " + req.body.isOn);
 	
-//	  LIGHTS.findOneAndUpdate({code : "0x20-GPA2"}, {isOn : req.body.isOn}, {upsert : true}, function (err, doc) {
-		  
-			var isOn = req.body.isOn;
+	var isOn = (req.body.isOn == "true");
+	
+	LIGHTS.findOne({code:"0x21-GPB0"}).exec(function(err, data) {
+		if(data.isOn !== isOn){
 			
-			if(isOn === "true"){ //light is on, so we need to turn off
+			if(isOn === true){ 
 				Lights.StudioOn();
-			}else if(isOn === "false") { //light is off, so we need to turn on
+			}else {
 				Lights.StudioOff();
-			}			
+			}
 			
-//		  });	
+			LIGHTS.update({code : "0x21-GPB0"}, {isOn : isOn}, function (err, data) {});
+				
+		}
+	});
+
+			
+			
 });
 
 app.put('/LightsCameraDaLetto2', function(req, res) {
 	
 	console.log("LightsCameraDaLetto2 " + req.body.isOn);
-		  
-	var isOn = req.body.isOn;
+
+	var isOn = (req.body.isOn == "true");
 	
-	if(isOn === "true"){ //light is on, so we need to turn off
-		Lights.CameraDaLetto2On();
-	}else if(isOn === "false") { //light is off, so we need to turn on
-		Lights.CameraDaLetto2Off();
-	}			
+	LIGHTS.findOne({code:"0x21-GPB1"}).exec(function(err, data) {
+		if(data.isOn !== isOn){
+			
+			if(isOn === true){ 
+				Lights.CameraDaLetto2On();
+			}else {
+				Lights.CameraDaLetto2Off();
+			}
+			
+			LIGHTS.update({code : "0x21-GPB1"}, {isOn : isOn}, function (err, data) {});
+				
+		}
+	});	
+	
+//	var isOn = req.body.isOn;
+//	
+//	if(isOn === "true"){ //light is on, so we need to turn off
+//		Lights.CameraDaLetto2On();
+//	}else if(isOn === "false") { //light is off, so we need to turn on
+//		Lights.CameraDaLetto2Off();
+//	}			
 			
 });
 
