@@ -47,12 +47,12 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	}
 
 	new CronJob({
-		  cronTime: '00 15 07 * * 1-5',
+		  cronTime: '00 13 07 * * 1-5',
 		  onTick: function() {
 			  Lights.CameraDaLetto2On();
-//				setTimeout(function() {	
-//					Lights.CameraDaLetto2Off();
-//				}, 300000);
+				setTimeout(function() {	
+					Lights.CameraDaLetto2Off();
+				}, 600000);
 
 		  },
 		  onComplete: function() {},
@@ -70,70 +70,56 @@ var server = app.listen(process.env.PORT || 8081, function () {
 
   MCP23017.scanLights(function(data) {  
 	  
-	  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
-		  
-			var code = doc.code;
-			var isOn = doc.isOn;
-	
-			
-//			if(code === "0x20-GPA5"){
-//				if(isOn === true){ //light is on, so we need to turn off
-//					Lights.CameraDaLetto2Off();
-//				}else if(isOn === false) { //light is off, so we need to turn on
-//					Lights.CameraDaLetto2On();
-//				}
-//			}else{
+		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
+			  
+//					var code = doc.code;
+//					var isOn = doc.isOn;
+//			
+//					if(isOn === true){ //light is on, so we need to turn off
+//						Lights.StudioOff();
+//					}else if(isOn === false) { //light is off, so we need to turn on
+//						Lights.StudioOn();
+//					}				
+//					
+//					LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+//							
+//						LIGHTS.find({}).sort('-date').exec(function(err, doc) {
+//							if(!doc) {return;}
+//							console.log("sockets LIGHTS", doc);
+//							io.sockets.emit("LIGHTS", doc);
+//						});				
+//						
+//					});	
 				
-				if(isOn === true){ //light is on, so we need to turn off
-					Lights.StudioOff();
-				}else if(isOn === false) { //light is off, so we need to turn on
-					Lights.StudioOn();
-				}				
-//			}
-			
-			
-			
-			
-			LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-					
-				LIGHTS.find({}).sort('-date').exec(function(err, doc) {
-					if(!doc) {return;}
-					console.log("sockets LIGHTS", doc);
-					io.sockets.emit("LIGHTS", doc);
-				});				
-				
-			});	
-			
-		  });		  
-	  
+		   });		  
 	  
   });
   
   
-//  MCP23017.scan(function(data) {
-//	  console.log("MCP23017: ", data);
-//	  
-//	  
-//	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
-//		
-//		var code = doc.code;
-//		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
-//			if(!doc) {return;}
-//			
-//			io.sockets.emit("PIRSENSOR", doc);
-//			
-//			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
-//				if(area){
-//					alarmDetection(doc, area._id);
-//						
-//				}
-//			});				
-//			
-//			
-//			
-//		});		
-//	  });	 
-//  });
+  
+  
+  
+  
+  MCP23017.scanPirSensors(function(data) {
+	  
+	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+		
+		var code = doc.code;
+		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
+			if(!doc) {return;}
+			
+			io.sockets.emit("PIRSENSOR", doc);
+			
+			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
+				if(area){
+					alarmDetection(doc, area._id);
+						
+				}
+			});				
+			
+		});		
+	  });	 
+  });
   
   email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
