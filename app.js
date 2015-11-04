@@ -103,25 +103,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 						
 					});						
 					
-//					if(code === "0x21-GPB0"){
-//						if(isOn === true){ 
-//							Lights.StudioOff();
-//						}else { 
-//							Lights.StudioOn();
-//						}						
-//					}
-//					
-//					if(code === "0x21-GPB1"){
-//						if(isOn === true){ 
-//							Lights.CameraDaLetto2Off();
-//						}else { 
-//							Lights.CameraDaLetto2On();
-//						}						
-//					}					
-					
-			
-				
-					
 
 				
 		   });		  
@@ -149,7 +130,46 @@ var server = app.listen(process.env.PORT || 8081, function () {
 				}
 			});				
 			
-		});		
+		});	
+		
+		
+		
+		if(code === "0x20-GPA7"){
+
+			LIGHTS.findOne({code:"0x21-GPB1"}).exec(function(err, data) {
+				if(data.isOn === false){
+					
+					Lights.CameraDaLetto2On();
+					LIGHTS.update({code : "0x21-GPB1"}, {isOn : true}, function (err, data) {});
+					
+					setTimeout(function() {	
+						Lights.CameraDaLetto2Off();
+						LIGHTS.update({code : "0x21-GPB1"}, {isOn : false}, function (err, data) {});
+					}, 30000);
+					
+				}
+			});			
+		}
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	  });	 
   });
   
@@ -322,7 +342,7 @@ app.put('/Lights', function(req, res) {
 	
 	console.log("Lights " + req.body.isOn);
 	
-	var isOn = (req.body.isOn == "true");
+	var isOn = (req.body.isOn === "true");
 	
 	LIGHTS.findOne({code:"0x21-GPB0"}).exec(function(err, data) {
 		if(data.isOn !== isOn){
@@ -346,7 +366,7 @@ app.put('/LightsCameraDaLetto2', function(req, res) {
 	
 	console.log("LightsCameraDaLetto2 " + req.body.isOn);
 
-	var isOn = (req.body.isOn == "true");
+	var isOn = (req.body.isOn === "true");
 	
 	LIGHTS.findOne({code:"0x21-GPB1"}).exec(function(err, data) {
 		if(data.isOn !== isOn){
@@ -361,14 +381,7 @@ app.put('/LightsCameraDaLetto2', function(req, res) {
 				
 		}
 	});	
-	
-//	var isOn = req.body.isOn;
-//	
-//	if(isOn === "true"){ //light is on, so we need to turn off
-//		Lights.CameraDaLetto2On();
-//	}else if(isOn === "false") { //light is off, so we need to turn on
-//		Lights.CameraDaLetto2Off();
-//	}			
+		
 			
 });
 
