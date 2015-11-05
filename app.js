@@ -131,45 +131,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 			});				
 			
 		});	
-		
-		
-		
-		if(code === "0x20-GPA7"){
-
-			LIGHTS.findOne({code:"0x21-GPB1"}).exec(function(err, data) {
-				if(data.isOn === false){
-					
-					Lights.CameraDaLetto2On();
-					LIGHTS.update({code : "0x21-GPB1"}, {isOn : true}, function (err, data) {});
-					
-					setTimeout(function() {	
-						Lights.CameraDaLetto2Off();
-						LIGHTS.update({code : "0x21-GPB1"}, {isOn : false}, function (err, data) {});
-					}, 30000);
-					
-				}
-			});			
-		}
-		
-		
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	  });	 
   });
   
