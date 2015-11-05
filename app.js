@@ -93,13 +93,10 @@ var server = app.listen(process.env.PORT || 8081, function () {
 							}						
 						}						
 						
-						
-						
-//						LIGHTS.find({}).sort('-date').exec(function(err, doc) {
-//							if(!doc) {return;}
-//							console.log("sockets LIGHTS", doc);
-//							io.sockets.emit("LIGHTS", doc);
-//						});				
+						LIGHTS.find({}).sort('-date').exec(function(err, doc) {
+							if(!doc) {return;}
+							io.sockets.emit("socket-light-controllers", doc);
+						});	
 						
 					});						
 					
@@ -256,10 +253,10 @@ function disarm(areaId) {
 
 
 
-if(os.hostname().toLowerCase() === "minde-pc" || os.hostname().toLowerCase() === "raspberrypi"){
+if(os.hostname().toLowerCase() === "raspberrypi"){
 	mongoose.connect('mongodb://localhost/home-system');
 }else{
-	mongoose.connect('mongodb://10.221.160.78/home-system');
+	mongoose.connect('mongodb://ajauskas.dyndns.org/home-system');
 } 
 
 mongoose.connection.on("connected", function(ref) {
@@ -298,6 +295,12 @@ LightsSchema.methods.toJSON = function() {
 	  return obj;
 };
 var LIGHTS = mongoose.model('LIGHTS', LightsSchema);
+
+app.get('/light-controllers', function(req, res) {
+	LIGHTS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
+});
+
+
 
 app.put('/Lights', function(req, res) {
 	

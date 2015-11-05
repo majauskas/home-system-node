@@ -2,6 +2,7 @@
 
 <!-- <html manifest="cache.manifest"> -->
 <html manifest="cache.manifest" type="text/cache-manifest">
+<!-- <html> -->
 <head> 
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	
@@ -51,6 +52,8 @@
 	<script type="text/javascript" src="js/audio.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/alarm-auto-on-off.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/zone.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/light-controllers.js" charset="iso-8859-1"></script>
+	
 	
 	
 	<script type="text/javascript">
@@ -640,6 +643,35 @@
 
 
 
+
+
+<div id="LIGHT-CONTROLLERS-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Light Controllers</h1>
+		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>		
+	</div>
+	
+	<div data-role="main" class="ui-content" style="text-align: center;">
+		<ul data-role="listview" data-inset="false" id="listview-light-controllers"></ul>	
+		<script id="template-light-controllers" type="text/x-jquery-tmpl">
+					<li data-icon='pir' data='${target}' class="ui-nodisc-icon"><a>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>											
+						<p class='ui-li-aside' style='text-align: center;'></p>
+						<p>${date}</p>
+					</a></li>
+		</script>
+	</div>
+
+  	<br/><br/><br/><br/>			
+ 		
+</div>
+
+
+
+
+
+
 <div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
 	<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
 		<li data-icon="pir"><a href="#SENSORI-PIR-PAGE">Sensori PIR</a></li>
@@ -647,7 +679,7 @@
 	    <li data-icon="node"><a href="#AREAS-PAGE">Zone</a></li>
 	    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Telecomandi</a></li>
 	    <li data-icon="listbox"><a href="#EVENTS-PAGE">Eventi</a></li>
-	    <li data-icon="light"><a href="#ILLUMINAZIONE-PAGE">Illuminazione</a></li>
+	    <li data-icon="light"><a href="#LIGHT-CONTROLLERS-PAGE">Light Controllers</a></li>
 	    <li data-icon="speaker"><a href="#AUDIO-PAGE">Audio</a></li>
 	    <li data-icon="network"><a href="#LAN-DEVICE-PAGE">Dispositivi Di Rete</a></li>
 	</ul>
