@@ -391,6 +391,9 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 //		type : 'GET',
 //		url : "/lights",
 //		success: function(response) {
+//			response.code 
+//			
+//			
 //			
 //        }
 //	});	

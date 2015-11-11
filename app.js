@@ -48,35 +48,22 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	}
 
 	
-	new CronJob({
-		  cronTime: '00 13 07 * * 1-5',
-		  onTick: function() {
-			  Lights.CameraDaLetto2On();
-				setTimeout(function() {	
-					Lights.CameraDaLetto2Off();
-				}, 600000);
-
-		  },
-		  onComplete: function() {},
-		  startNow: true,
-		  timeZone: null,
-		  context: null
-		});
+//	new CronJob({
+//		  cronTime: '00 13 07 * * 1-5',
+//		  onTick: function() {
+//			  Lights.CameraDaLetto2On();
+//				setTimeout(function() {	
+//					Lights.CameraDaLetto2Off();
+//				}, 600000);
+//
+//		  },
+//		  onComplete: function() {},
+//		  startNow: true,
+//		  timeZone: null,
+//		  context: null
+//		});
 	
-	new CronJob({
-		  cronTime: '00 20 22 * * 1-5',
-		  onTick: function() {
-			  Lights.CameraDaLetto2On();
-				setTimeout(function() {	
-					Lights.CameraDaLetto2Off();
-				}, 30000);
 
-		  },
-		  onComplete: function() {},
-		  startNow: true,
-		  timeZone: null,
-		  context: null
-		});	
 	
 	
   var port = server.address().port;
@@ -99,19 +86,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 					}else { 
 						Lights.StudioOn();
 					}						
-					
-//					if(code === "0x21-GPB1"){
-//						if(isOn === false){ 
-//							Lights.CameraDaLetto2Off();
-//						}else { 
-//							Lights.CameraDaLetto2On();
-//						}						
-//					}						
-					
-					LIGHTS.find({}).sort('-date').exec(function(err, doc) {
-						if(!doc) {return;}
-						io.sockets.emit("socket-light-controllers", doc);
-					});	
 					
 				});						
 				
@@ -139,14 +113,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 						Lights.CameraDaLetto2On();
 					}						
 					
-					LIGHTS.find({}).sort('-date').exec(function(err, doc) {
-						if(!doc) {return;}
-						io.sockets.emit("socket-light-controllers", doc);
-					});	
-					
 				});						
-				
-
 			
 	   });		  
 	  }
