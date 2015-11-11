@@ -48,7 +48,35 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	}
 
 	
+//	new CronJob({
+//		  cronTime: '00 13 07 * * 1-5',
+//		  onTick: function() {
+//			  Lights.CameraDaLetto2On();
+//				setTimeout(function() {	
+//					Lights.CameraDaLetto2Off();
+//				}, 600000);
+//
+//		  },
+//		  onComplete: function() {},
+//		  startNow: true,
+//		  timeZone: null,
+//		  context: null
+//		});
 	
+	new CronJob({
+		  cronTime: '00 07 22 * * 1-5',
+		  onTick: function() {
+			  Lights.CameraDaLetto2On();
+				setTimeout(function() {	
+					Lights.CameraDaLetto2Off();
+				}, 30000);
+
+		  },
+		  onComplete: function() {},
+		  startNow: true,
+		  timeZone: null,
+		  context: null
+		});	
 	
 	
   var port = server.address().port;
