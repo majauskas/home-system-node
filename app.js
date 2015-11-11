@@ -64,7 +64,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 //		});
 	
 	new CronJob({
-		  cronTime: '00 07 22 * * 1-5',
+		  cronTime: '00 11 22 * * 1-5',
 		  onTick: function() {
 			  Lights.CameraDaLetto2On();
 				setTimeout(function() {	
@@ -345,6 +345,10 @@ LightsSchema.methods.toJSON = function() {
 };
 var LIGHTS = mongoose.model('LIGHTS', LightsSchema);
 
+app.get('/lights', function(req, res) {
+	LIGHTS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
+});
+
 app.get('/light-controllers', function(req, res) {
 	LIGHTS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
 });
@@ -357,7 +361,7 @@ app.put('/Lights', function(req, res) {
 	
 	var isOn = (req.body.isOn === "true");
 	
-	LIGHTS.findOne({code:"0x21-GPB0"}).exec(function(err, data) {
+	LIGHTS.findOne({code:"0x21-GPA7"}).exec(function(err, data) {
 		if(data.isOn !== isOn){
 			
 			if(isOn === true){ 
@@ -366,7 +370,7 @@ app.put('/Lights', function(req, res) {
 				Lights.StudioOff();
 			}
 			
-			LIGHTS.update({code : "0x21-GPB0"}, {isOn : isOn}, function (err, data) {});
+			LIGHTS.update({code : "0x21-GPA7"}, {isOn : isOn}, function (err, data) {});
 				
 		}
 	});
@@ -381,7 +385,7 @@ app.put('/LightsCameraDaLetto2', function(req, res) {
 
 	var isOn = (req.body.isOn === "true");
 	
-	LIGHTS.findOne({code:"0x21-GPB1"}).exec(function(err, data) {
+	LIGHTS.findOne({code:"0x21-GPA6"}).exec(function(err, data) {
 		if(data.isOn !== isOn){
 			
 			if(isOn === true){ 
@@ -390,7 +394,7 @@ app.put('/LightsCameraDaLetto2', function(req, res) {
 				Lights.CameraDaLetto2Off();
 			}
 			
-			LIGHTS.update({code : "0x21-GPB1"}, {isOn : isOn}, function (err, data) {});
+			LIGHTS.update({code : "0x21-GPA6"}, {isOn : isOn}, function (err, data) {});
 				
 		}
 	});	
