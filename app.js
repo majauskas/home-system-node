@@ -92,7 +92,36 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	   });		  
 	  }
 	  
+
+	  
+	  if(data.code === "0x21-GPA6"){
 		  
+		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
+			  
+				var code = doc.code;
+				var isOn = doc.isOn;
+				
+				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+					
+					if(isOn === false){ 
+						Lights.CameraDaLetto2Off();
+					}else { 
+						Lights.CameraDaLetto2On();
+					}						
+					
+					LIGHTS.find({}).sort('-date').exec(function(err, doc) {
+						if(!doc) {return;}
+						io.sockets.emit("socket-light-controllers", doc);
+					});	
+					
+				});						
+				
+
+			
+	   });		  
+	  }
+	  
+	  
 	  
   });
   
