@@ -64,7 +64,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 //		});
 	
 	new CronJob({
-		  cronTime: '00 11 22 * * 1-5',
+		  cronTime: '00 15 22 * * 1-5',
 		  onTick: function() {
 			  Lights.CameraDaLetto2On();
 				setTimeout(function() {	
