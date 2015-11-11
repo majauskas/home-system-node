@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./lib/email.js');
 var MCP23017 = require('./lib/MCP23017.js');
+var LightsController = require('./lib/LightsController.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
 var Lights = require('./lib/Lights.js');
@@ -46,21 +47,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		}
 	}
 
-	new CronJob({
-		  cronTime: '00 13 07 * * 1-5',
-		  onTick: function() {
-			  Lights.CameraDaLetto2On();
-				setTimeout(function() {	
-					Lights.CameraDaLetto2Off();
-				}, 600000);
-
-		  },
-		  onComplete: function() {},
-		  startNow: true,
-		  timeZone: null,
-		  context: null
-		});
-	
 	
 	
 	
@@ -68,41 +54,45 @@ var server = app.listen(process.env.PORT || 8081, function () {
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
-  MCP23017.scanLights(function(data) {  
+  LightsController.scan(function(data) {  
 	  
+	  console.log(data.code);
+	  if(data.code === "0x21-GPA7"){
+		  
 		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
 			  
-					var code = doc.code;
-					var isOn = doc.isOn;
-					
-					LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-						
-						if(code === "0x21-GPB0"){
-							if(isOn === false){ 
-								Lights.StudioOff();
-							}else { 
-								Lights.StudioOn();
-							}						
-						}
-						
-						if(code === "0x21-GPB1"){
-							if(isOn === false){ 
-								Lights.CameraDaLetto2Off();
-							}else { 
-								Lights.CameraDaLetto2On();
-							}						
-						}						
-						
-						LIGHTS.find({}).sort('-date').exec(function(err, doc) {
-							if(!doc) {return;}
-							io.sockets.emit("socket-light-controllers", doc);
-						});	
-						
-					});						
-					
-
+				var code = doc.code;
+				var isOn = doc.isOn;
 				
-		   });		  
+				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+					
+					if(isOn === false){ 
+						Lights.StudioOff();
+					}else { 
+						Lights.StudioOn();
+					}						
+					
+//					if(code === "0x21-GPB1"){
+//						if(isOn === false){ 
+//							Lights.CameraDaLetto2Off();
+//						}else { 
+//							Lights.CameraDaLetto2On();
+//						}						
+//					}						
+					
+					LIGHTS.find({}).sort('-date').exec(function(err, doc) {
+						if(!doc) {return;}
+						io.sockets.emit("socket-light-controllers", doc);
+					});	
+					
+				});						
+				
+
+			
+	   });		  
+	  }
+	  
+		  
 	  
   });
   
