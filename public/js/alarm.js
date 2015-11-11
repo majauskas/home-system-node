@@ -387,7 +387,13 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
         }
 	});	
 	
-
+//	$.ajax({
+//		type : 'GET',
+//		url : "/lights",
+//		success: function(response) {
+//			
+//        }
+//	});	
 	
 });	
 
