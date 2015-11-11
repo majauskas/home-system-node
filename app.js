@@ -104,8 +104,10 @@ var server = app.listen(process.env.PORT || 8081, function () {
 				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
 					
 					if(isOn === false){ 
+						Lights.CameraDaLettoOff();
 						Lights.CameraDaLetto2Off();
 					}else { 
+						Lights.CameraDaLettoOn();
 						Lights.CameraDaLetto2On();
 					}						
 					
