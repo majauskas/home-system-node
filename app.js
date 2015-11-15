@@ -9,10 +9,10 @@ var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./lib/email.js');
 var MCP23017 = require('./lib/MCP23017.js');
-var LightsController = require('./lib/LightsController.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
-var Lights = require('./lib/Lights.js');
+var LightsTrigger = require('./lib/LightsTrigger.js');
+var LightsController = require('./lib/LightsController.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
 var request = require('request');
@@ -51,9 +51,9 @@ var server = app.listen(process.env.PORT || 8081, function () {
 //	new CronJob({
 //		  cronTime: '00 13 07 * * 1-5',
 //		  onTick: function() {
-//			  Lights.CameraDaLetto2On();
+//			  LightsController.CameraDaLetto2On();
 //				setTimeout(function() {	
-//					Lights.CameraDaLetto2Off();
+//					LightsController.CameraDaLetto2Off();
 //				}, 600000);
 //
 //		  },
@@ -69,53 +69,59 @@ var server = app.listen(process.env.PORT || 8081, function () {
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
-  LightsController.scan(function(data) {  
+  LightsTrigger.scan(function(data) {  
 	  
 	  console.log(data.code);
 	  if(data.code === "0x21-GPA7"){
+		 
+		  LightsController.studioOnOff();
 		  
-		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
-			  
-				var code = doc.code;
-				var isOn = doc.isOn;
-				
-				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-					
-					if(isOn === false){ 
-						Lights.StudioOff();
-					}else { 
-						Lights.StudioOn();
-					}						
-					
-				});						
-				
-
-			
-	   });		  
+//		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
+//			  
+//				var code = doc.code;
+//				var isOn = doc.isOn;
+//				
+//				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+//					
+//					if(isOn === false){ 
+//						LightsController.StudioOff();
+//					}else { 
+//						LightsController.StudioOn();
+//					}						
+//					
+//				});						
+//				
+//
+//			
+//	   });		  
 	  }
 	  
 
 	  
 	  if(data.code === "0x21-GPA6"){
 		  
-		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
-			  
-				var code = doc.code;
-				var isOn = doc.isOn;
-				
-				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-					
-					if(isOn === false){ 
-						Lights.CameraDaLettoOff();
-						Lights.CameraDaLetto2Off();
-					}else { 
-						Lights.CameraDaLettoOn();
-						Lights.CameraDaLetto2On();
-					}						
-					
-				});						
-			
-	   });		  
+		  LightsController.cameraDaLettoMuroOnOff();
+		  LightsController.cameraDaLettoSoffitoOnOff();
+		  
+		  
+//		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
+//			  
+//				var code = doc.code;
+//				var isOn = doc.isOn;
+//				
+//				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+//					
+//					if(isOn === false){ 
+//						LightsController.CameraDaLettoOff();
+//						LightsController.CameraDaLetto2Off();
+//					}else { 
+//						LightsController.CameraDaLettoOn();
+//						LightsController.CameraDaLetto2On();
+//					}						
+//					
+//				});						
+//			
+//	   });		  
 	  }
 	  
 	  
@@ -332,9 +338,9 @@ app.put('/Lights', function(req, res) {
 		if(data.isOn !== isOn){
 			
 			if(isOn === true){ 
-				Lights.StudioOn();
+				LightsController.StudioOn();
 			}else {
-				Lights.StudioOff();
+				LightsController.StudioOff();
 			}
 			
 			LIGHTS.update({code : "0x21-GPA7"}, {isOn : isOn}, function (err, data) {});
@@ -356,7 +362,7 @@ app.put('/LightsCameraDaLetto2', function(req, res) {
 		if(data.isOn !== isOn){
 			
 			if(isOn === true){ 
-				Lights.CameraDaLetto2On();
+				LightsController.CameraDaLetto2On();
 			}else {
 				Lights.CameraDaLetto2Off();
 			}
