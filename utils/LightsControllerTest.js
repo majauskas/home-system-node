@@ -1,6 +1,5 @@
 
 
-var MCP23017_ADDRESS_0x20 = 0x20;
 var MCP23017_ADDRESS_0x21 = 0x21;
 var MCP23017_ADDRESS_0x22 = 0x22;
 
@@ -12,6 +11,13 @@ var OLATA = 0x14; // used for writing port A
 var OLATB = 0x15; // used for writing port B
 
 
+var i2c = require('/home/pi/node_modules/i2c-bus');
+var i2c1 = i2c.openSync(1);
+var i2c1_21 = i2c.openSync(1);
+
+i2c1_21.writeByteSync(MCP23017_ADDRESS_0x21, IODIRA, 0x00); //Set all of bank A to outputs 
+i2c1_21.writeByteSync(MCP23017_ADDRESS_0x21, IODIRB, 0x00); //Set all of bank B to outputs		
+ 
 function sleep(milliseconds) {
 
       var start = new Date().getTime();
@@ -40,6 +46,90 @@ function binArray2dec(num){
       return (y === '1') ? x + Math.pow(2, i) : x;
     }, 0);
 }
+
+
+
+
+
+
+function scan (callBack) {
+	
+	if(i2c1_21 === null){return;}
+	
+	
+	var lastTime = new Date();
+	
+	var last_state = null;
+	
+	var last_code = null;
+	
+	setInterval(function() {
+		
+		var current_state_a = dec2bin(i2c1_21.readByteSync(MCP23017_ADDRESS_0x21, GPIOA), 8).split("").reverse().join("");
+//		var current_state = current_state_a +  dec2bin( i2c1_21.readByteSync(MCP23017_ADDRESS_0x21, GPIOB), 8).split("").reverse().join("");
+		var current_state = current_state_a +  "00000000";
+		
+		i2c1_21.writeByteSync(MCP23017_ADDRESS_0x21, IODIRA, 0x00);
+		i2c1_21.writeByteSync(MCP23017_ADDRESS_0x21, IODIRB, 0x00);	
+		
+		if(last_state === null){
+			last_state = current_state;
+			return;
+		}
+		
+		if(last_state !== current_state){
+			var duration = Number(new Date() - lastTime);
+
+  			if( duration > 400){
+  				
+  	  			var last_array = last_state.split('');
+  	  			var current_array = current_state.split('');
+//  	  			last_state = current_state;
+  	  			
+		  			current_array.forEach(function(value, i) { 
+		  				
+		  				if(last_array[i] !== value){
+		  					var code = "0x21-GP" + ( (i<8) ? ("A"+i): ("B"+(i-8)));
+		  					setTimeout(function() {
+		  						last_code = null;
+		  					}, 50);
+		  					if(last_code !== null) return;
+		  					last_code = code;
+		  					console.log(code, current_state, current_state_a, new Date()); 
+//		  					setTimeout(function() {
+		  						callBack({code: code, date: new Date()});
+//		  						i2c1_21.writeByteSync(MCP23017_ADDRESS_0x21, IODIRA, 0x00);
+//		  						var current_state_a = dec2bin(i2c1_21.readByteSync(MCP23017_ADDRESS_0x22, GPIOA), 8).split("").reverse().join("");
+//		  						console.log(current_state_a);
+//		  					}, 100);
+//		  					return;
+			  				
+		  				}
+		  		    });	
+  			}
+  	  		last_state = current_state;
+  	  		lastTime = new Date();
+  			
+		}		
+	},100);	
+	
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function readPin(address, gpio, pin){
   var bytes = dec2bin( i2c1.readByteSync(address, gpio), 8).split("").reverse(); 
@@ -76,10 +166,11 @@ function switchPin(address, gpio, pin){
   if(gpio === "B"){ GPIO = GPIOB; IODIR = IODIRB;}
 
    
-   console.log();
+ 
   var bytes = dec2bin( i2c1.readByteSync(address, GPIO), 8).split("").reverse();
-  console.log("read",bytes[pin]);
-
+  
+//  console.log("read",bytes[pin]);
+  console.log("0x22-GP"+gpio+pin, bytes.join(""), bytes[pin], new Date());
   
   var oldPinValue =  bytes[pin];
   var newPinValue = "0";
@@ -88,25 +179,64 @@ function switchPin(address, gpio, pin){
   }
   bytes[pin] = newPinValue;
   var  write =  bytes[pin];
-  console.log("write", write);
+//  console.log("write", write);
   
 
   
  i2c1.writeByteSync(address, IODIR, bin2dec(bytes.join("")));
 
+ 
  return newPinValue;
 
 }   
 
- var i2c = require('i2c-bus');
- i2c1 = i2c.openSync(1);
+
+
+
+
+scan(function(data) {  
+
+//	console.log(data.code);
+	
+	if(data.code === "0x21-GPA4"){
+		
+		switchPin(MCP23017_ADDRESS_0x22, "A", 1); //cameretta 
+		  
+	}	 	
+	
+	if(data.code === "0x21-GPA7"){
+		 
+		switchPin(MCP23017_ADDRESS_0x22, "A", 7);//studio
+		  
+	}
+	
+	
+	
+	if(data.code === "0x21-GPA6"){
+		  
+		switchPin(MCP23017_ADDRESS_0x22, "A", 6);
+		switchPin(MCP23017_ADDRESS_0x22, "A", 0);
+		  
+	}
+
+	if(data.code === "0x21-GPA5"){
+		
+		switchPin(MCP23017_ADDRESS_0x22, "A", 5); //coridorio
+		  
+	}
+	 
+
+
+});
+
+
  
 
-setInterval(function() {
-	
- switchPin(MCP23017_ADDRESS_0x22, "A", 5);
- 
-},2000);
+//setInterval(function() {
+//	
+// switchPin(MCP23017_ADDRESS_0x22, "A", 1);
+// 
+//},2000);
 
 
 
