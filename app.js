@@ -11,7 +11,7 @@ var email = require('./lib/email.js');
 //var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
-var LightsTrigger = require('./lib/LightsTrigger.js');
+//var LightsTrigger = require('./lib/LightsTrigger.js');
 var LightsController = require('./lib/LightsController.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
@@ -65,68 +65,68 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	
 
 	
-	
-  var port = server.address().port;
-  console.log('app listening at http://%s:%s', host, port);
-
-  LightsTrigger.scan(function(data) {  
-	  
-	  console.log(data.code);
-	  if(data.code === "0x21-GPA7"){
-		 
-		  LightsController.studioOnOff();
-		  
-//		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
-//			  
-//				var code = doc.code;
-//				var isOn = doc.isOn;
-//				
-//				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-//					
-//					if(isOn === false){ 
-//						LightsController.StudioOff();
-//					}else { 
-//						LightsController.StudioOn();
-//					}						
-//					
-//				});						
-//				
+//	
+//  var port = server.address().port;
+//  console.log('app listening at http://%s:%s', host, port);
 //
-//			
-//	   });		  
-	  }
-	  
-
-	  
-	  if(data.code === "0x21-GPA6"){
-		  
-		  LightsController.cameraDaLettoMuroOnOff();
-		  LightsController.cameraDaLettoSoffitoOnOff();
-		  
-		  
-//		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
-//			  
-//				var code = doc.code;
-//				var isOn = doc.isOn;
-//				
-//				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-//					
-//					if(isOn === false){ 
-//						LightsController.CameraDaLettoOff();
-//						LightsController.CameraDaLetto2Off();
-//					}else { 
-//						LightsController.CameraDaLettoOn();
-//						LightsController.CameraDaLetto2On();
-//					}						
-//					
-//				});						
-//			
-//	   });		  
-	  }
-	  
-	  
-	  
-  });
+//  LightsTrigger.scan(function(data) {  
+//	  
+//	  console.log(data.code);
+//	  if(data.code === "0x21-GPA7"){
+//		 
+//		  LightsController.studioOnOff();
+//		  
+////		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
+////			  
+////				var code = doc.code;
+////				var isOn = doc.isOn;
+////				
+////				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+////					
+////					if(isOn === false){ 
+////						LightsController.StudioOff();
+////					}else { 
+////						LightsController.StudioOn();
+////					}						
+////					
+////				});						
+////				
+////
+////			
+////	   });		  
+//	  }
+//	  
+//
+//	  
+//	  if(data.code === "0x21-GPA6"){
+//		  
+//		  LightsController.cameraDaLettoMuroOnOff();
+//		  LightsController.cameraDaLettoSoffitoOnOff();
+//		  
+//		  
+////		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
+////			  
+////				var code = doc.code;
+////				var isOn = doc.isOn;
+////				
+////				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
+////					
+////					if(isOn === false){ 
+////						LightsController.CameraDaLettoOff();
+////						LightsController.CameraDaLetto2Off();
+////					}else { 
+////						LightsController.CameraDaLettoOn();
+////						LightsController.CameraDaLetto2On();
+////					}						
+////					
+////				});						
+////			
+////	   });		  
+//	  }
+//	  
+//	  
+//	  
+//  });
   
 
   
