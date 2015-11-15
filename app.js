@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./lib/email.js');
-var MCP23017 = require('./lib/MCP23017.js');
+//var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
 var LightsTrigger = require('./lib/LightsTrigger.js');
@@ -132,26 +132,26 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
   
   
-  MCP23017.scanPirSensors(function(data) {
-	  
-	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
-		
-		var code = doc.code;
-		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
-			if(!doc) {return;}
-			
-			io.sockets.emit("PIRSENSOR", doc);
-			
-			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
-				if(area){
-					alarmDetection(doc, area._id);
-						
-				}
-			});				
-			
-		});	
-	  });	 
-  });
+//  MCP23017.scanPirSensors(function(data) {
+//	  
+//	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+//		
+//		var code = doc.code;
+//		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
+//			if(!doc) {return;}
+//			
+//			io.sockets.emit("PIRSENSOR", doc);
+//			
+//			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
+//				if(area){
+//					alarmDetection(doc, area._id);
+//						
+//				}
+//			});				
+//			
+//		});	
+//	  });	 
+//  });
   
   email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
