@@ -194,49 +194,43 @@ function switchPin(address, gpio, pin){
 
 
 
-scan(function(data) {  
-
-//	console.log(data.code);
-	
-	if(data.code === "0x21-GPA4"){
-		
-		switchPin(MCP23017_ADDRESS_0x22, "A", 1); //cameretta 
-		  
-	}	 	
-	
-	if(data.code === "0x21-GPA7"){
-		 
-		switchPin(MCP23017_ADDRESS_0x22, "A", 7);//studio
-		  
-	}
-	
-	
-	
-	if(data.code === "0x21-GPA6"){
-		  
-		switchPin(MCP23017_ADDRESS_0x22, "A", 6);
-		switchPin(MCP23017_ADDRESS_0x22, "A", 0);
-		  
-	}
-
-	if(data.code === "0x21-GPA5"){
-		
-		switchPin(MCP23017_ADDRESS_0x22, "A", 5); //coridorio
-		  
-	}
-	 
-
-
-});
+//scan(function(data) {  
+//
+//	
+//	if(data.code === "0x21-GPA4"){
+//		
+//		switchPin(MCP23017_ADDRESS_0x22, "A", 1); //cameretta 
+//		  
+//	}	 	
+//	
+//	if(data.code === "0x21-GPA7"){
+//		 
+//		switchPin(MCP23017_ADDRESS_0x22, "A", 7);//studio
+//		  
+//	}
+//	if(data.code === "0x21-GPA6"){
+//		  
+//		switchPin(MCP23017_ADDRESS_0x22, "A", 6);
+//		switchPin(MCP23017_ADDRESS_0x22, "A", 0);
+//		  
+//	}
+//
+//	if(data.code === "0x21-GPA5"){
+//		
+//		switchPin(MCP23017_ADDRESS_0x22, "A", 5); //coridorio
+//		  
+//	}
+//
+//});
 
 
  
 
-//setInterval(function() {
-//	
-// switchPin(MCP23017_ADDRESS_0x22, "A", 1);
-// 
-//},2000);
+setInterval(function() {
+	
+ switchPin(MCP23017_ADDRESS_0x22, "A", 0);
+ 
+},2000);
 
 
 
