@@ -8,12 +8,11 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./lib/email.js');
-//var MCP23017 = require('./lib/MCP23017.js');
+var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
-//var LightsTrigger = require('./lib/LightsTrigger.js');
+var LightsTrigger = require('./lib/LightsTrigger.js');
 var LightsController = require('./lib/LightsController.js');
-//var LightsControllerTest = require('./utils/LightsControllerTest.js');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
 var request = require('request');
@@ -21,13 +20,8 @@ var child_process = require('child_process');
 var exec = child_process.exec;
 var arp = null; try { arp = require('arp-a'); } catch (e) {}
 
-//var gpio = require("pi-gpio");
-
 
 var host = null;
-
-
-
 //app.set('view engine', 'html');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -64,12 +58,28 @@ var server = app.listen(process.env.PORT || 8081, function () {
 //		  context: null
 //		});
 	
-
-	
 	
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
+  LightsTrigger.scan(function(data) {
+	  
+		if(data.code === "0x21-GPA4"){
+			LightsController.switchPin(0x22, "A", 4); //cameretta				0x21-GPA4
+		}	 	 
+		if(data.code === "0x21-GPA5"){
+			LightsController.switchPin(0x22, "A", 5); //coridoio				0x21-GPA5
+		}	
+		if(data.code === "0x21-GPA6"){
+			LightsController.switchPin(0x22, "A", 3); //camera da letto soffito	0x21-GPA6
+			LightsController.switchPin(0x22, "A", 6); //camera da letto muro	0x21-GPA6
+		}	
+		if(data.code === "0x21-GPA7"){
+			LightsController.switchPin(0x22, "A", 7); //studio     				0x21-GPA7 
+		}  
+		
+  });
+  
 //  LightsTrigger.scan(function(data) {  
 //	  
 //	  console.log(data.code);
@@ -128,7 +138,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 //	  
 //	  
 //  });
-  
+//  
 
   
   
@@ -238,12 +248,7 @@ function alarmDetection(sensor, areaId) {
 			Siren.on();
 	}, 15000);
 	
-	//TODO: activate the siren and email/sms notifications
-//	gpio.open(16, "output", function(err) {     // Open pin 16 for output 
-//	    gpio.write(16, 1, function() {          // Set pin 16 high (1) 
-//	        gpio.close(16);                     // Close pin 16 
-//	    });
-//	});
+
 	Area.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': true, 'alarmActivate.sensor.name': sensor.name }}, function (err, data) {});	
 	
 	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Avviso Allarme: "+sensor.name}}, function (err, data) {});
@@ -261,15 +266,6 @@ function disarm(areaId) {
 	
 	Area.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': false, 'alarmActivate.sensor.name': null }}, function (err, data) {});	
 	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato"}}, function (err, data) {});
-		
-		
-		
-	//	gpio.open(16, "output", function(lerr) { // Open pin 16 for output
-	//		gpio.write(16, 0, function() { // Set pin 16 high (1)
-	//			gpio.close(16); // Close pin 16
-	//		});
-	//	});
-	
 	
 }
 
@@ -329,52 +325,52 @@ app.get('/light-controllers', function(req, res) {
 
 
 
-app.put('/Lights', function(req, res) {
-	
-	console.log("Lights " + req.body.isOn);
-	
-	var isOn = (req.body.isOn === "true");
-	
-	LIGHTS.findOne({code:"0x21-GPA7"}).exec(function(err, data) {
-		if(data.isOn !== isOn){
-			
-			if(isOn === true){ 
-				LightsController.StudioOn();
-			}else {
-				LightsController.StudioOff();
-			}
-			
-			LIGHTS.update({code : "0x21-GPA7"}, {isOn : isOn}, function (err, data) {});
-				
-		}
-	});
-
-			
-			
-});
-
-app.put('/LightsCameraDaLetto2', function(req, res) {
-	
-	console.log("LightsCameraDaLetto2 " + req.body.isOn);
-
-	var isOn = (req.body.isOn === "true");
-	
-	LIGHTS.findOne({code:"0x21-GPA6"}).exec(function(err, data) {
-		if(data.isOn !== isOn){
-			
-			if(isOn === true){ 
-				LightsController.CameraDaLetto2On();
-			}else {
-				Lights.CameraDaLetto2Off();
-			}
-			
-			LIGHTS.update({code : "0x21-GPA6"}, {isOn : isOn}, function (err, data) {});
-				
-		}
-	});	
-		
-			
-});
+//app.put('/Lights', function(req, res) {
+//	
+//	console.log("Lights " + req.body.isOn);
+//	
+//	var isOn = (req.body.isOn === "true");
+//	
+//	LIGHTS.findOne({code:"0x21-GPA7"}).exec(function(err, data) {
+//		if(data.isOn !== isOn){
+//			
+//			if(isOn === true){ 
+//				LightsController.StudioOn();
+//			}else {
+//				LightsController.StudioOff();
+//			}
+//			
+//			LIGHTS.update({code : "0x21-GPA7"}, {isOn : isOn}, function (err, data) {});
+//				
+//		}
+//	});
+//
+//			
+//			
+//});
+//
+//app.put('/LightsCameraDaLetto2', function(req, res) {
+//	
+//	console.log("LightsCameraDaLetto2 " + req.body.isOn);
+//
+//	var isOn = (req.body.isOn === "true");
+//	
+//	LIGHTS.findOne({code:"0x21-GPA6"}).exec(function(err, data) {
+//		if(data.isOn !== isOn){
+//			
+//			if(isOn === true){ 
+//				LightsController.CameraDaLetto2On();
+//			}else {
+//				Lights.CameraDaLetto2Off();
+//			}
+//			
+//			LIGHTS.update({code : "0x21-GPA6"}, {isOn : isOn}, function (err, data) {});
+//				
+//		}
+//	});	
+//		
+//			
+//});
 
 
 //-----------PIR_SENSOR---------------------------------------------

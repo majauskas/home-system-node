@@ -13,11 +13,20 @@ var OLATB = 0x15; // used for writing port B
 
 var i2c = require('/home/pi/node_modules/i2c-bus');
 var i2c1 = i2c.openSync(1);
-var i2c1_21 = i2c.openSync(1);
 
-i2c1_21.writeByteSync(MCP23017_ADDRESS_0x21, IODIRA, 0x00); //Set all of bank A to outputs 
-i2c1_21.writeByteSync(MCP23017_ADDRESS_0x21, IODIRB, 0x00); //Set all of bank B to outputs		
- 
+
+//switchPin(MCP23017_ADDRESS_0x22, "A", 7); //studio
+//switchPin(MCP23017_ADDRESS_0x22, "A", 6); //camera da letto muro
+//switchPin(MCP23017_ADDRESS_0x22, "A", 5); //coridoio
+//switchPin(MCP23017_ADDRESS_0x22, "A", 4); //cameretta
+//switchPin(MCP23017_ADDRESS_0x22, "A", 3); //camera da letto soffito
+//console.log(getPinStatus(MCP23017_ADDRESS_0x22, "A", 7));
+//allOff(MCP23017_ADDRESS_0x22, "A");
+//allOn(MCP23017_ADDRESS_0x22, "A");
+
+  
+
+
 
 function dec2bin(dec,length){
 	  var out = "";
@@ -34,46 +43,10 @@ function bin2dec(num){
 
 
 
-function scan (callBack) {
-	if(i2c1 === null){return;}
-	
-	var last_state = null;
-	setInterval(function() {
-		
-		var current_state = dec2bin( i2c1.readByteSync(MCP23017_ADDRESS_0x21, GPIOA), 8).split("").reverse().join("") +  dec2bin( i2c1.readByteSync(MCP23017_ADDRESS_0x21, GPIOB), 8).split("").reverse().join("");
-		
-		if(last_state === null){
-			last_state = current_state;
-			return;
-		}
-		
-		if(last_state !== current_state){
-  			var last_array = last_state.split('');
-  			var current_array = current_state.split('');
-  			last_state = current_state;
-  			current_array.forEach(function(value, i) {
-  				
-  				if(last_array[i] !== value){
-  					var code = "0x21-GP" + ( (i<8) ? ("A"+i): ("B"+(i-8)));
-  					console.log(code, new Date());
-	  				callBack({code: code, date: new Date()});
-  				}
-  		    });	
-
-		}		
-	},100);	
-	
-};
-
-
-
-
-
 
 function getPinStatus(address, gpio, pin){
 	  var GPIO = GPIOA;
 	  if(gpio === "B"){ GPIO = GPIOB;}
-	  
 	  var bytes = dec2bin( i2c1.readByteSync(address, GPIO), 8).split("").reverse(); 
 	  
 	  var currentState = "off";
@@ -91,7 +64,7 @@ function allOn(address, gpio){
 	  i2c1.writeByteSync(address, IODIR, 0x00);
 	  i2c1.writeByteSync(address, OLAT, bin2dec("11111111"));
 }
- 
+
 function allOff(address, gpio){
 	  var GPIO = GPIOA;
 	  var IODIR = IODIRA; 
@@ -149,33 +122,59 @@ function switchPin(address, gpio, pin){
 	  
 	  return currentState;
 
-}  
+}
 
 
 
 
-scan(function(data) {  
+ 
 
-//	switchPin(MCP23017_ADDRESS_0x22, "A", 7); //studio     				0x21-GPA7 
-//	switchPin(MCP23017_ADDRESS_0x22, "A", 6); //camera da letto muro	0x21-GPA6
-//	switchPin(MCP23017_ADDRESS_0x22, "A", 5); //coridoio				0x21-GPA5
-//	switchPin(MCP23017_ADDRESS_0x22, "A", 4); //cameretta				0x21-GPA4
-//	switchPin(MCP23017_ADDRESS_0x22, "A", 3); //camera da letto soffito	0x21-GPA6
+//s.2
+//	
+// switchPin(MCP23017_ADDRESS_0x22, "A", 1);
+// 
+//},2000);
 
-	if(data.code === "0x21-GPA4"){
-		switchPin(MCP23017_ADDRESS_0x22, "A", 4); //cameretta				0x21-GPA4
-	}	 	
-	if(data.code === "0x21-GPA5"){
-		switchPin(MCP23017_ADDRESS_0x22, "A", 5); //coridoio				0x21-GPA5
-	}	
-	if(data.code === "0x21-GPA6"){
-		switchPin(MCP23017_ADDRESS_0x22, "A", 3); //camera da letto soffito	0x21-GPA6
-		switchPin(MCP23017_ADDRESS_0x22, "A", 6); //camera da letto muro	0x21-GPA6
-	}	
-	if(data.code === "0x21-GPA7"){
-		switchPin(MCP23017_ADDRESS_0x22, "A", 7); //studio     				0x21-GPA7 
-	}
 
-});
+  
+    // i2c1.closeSync();
 
+  
+
+
+
+
+
+                                            
+//i2c1.writeByteSync(MCP23017_ADDRESS_0x22, IODIRA, bin2dec("11111111"));
+//i2c1.closeSync();
+         
+//var data = new Buffer([0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01]);
+
+//i2c1.writeByteSync(MCP23017_ADDRESS_0x22, IODIRA, Array.prototype.slice.call(data, 0));
+ 
+// i2c1.writeByteSync(MCP23017_ADDRESS_0x22, IODIRA, 0xFF); //11111111        
+
+//var digit = bin2dec("11111110");                                                                      
+//i2c1.writeByteSync(MCP23017_ADDRESS_0x22, IODIRA, digit);   
+  //i2c1.writeByteSync(MCP23017_ADDRESS_0x22, IODIRA, 0x7F); //01111111 
+  // i2c1.writeByteSync(MCP23017_ADDRESS_0x22, IODIRA, 0xFF); //11111111 
+ // i2c1.writeByteSync(MCP23017_ADDRESS_0x22, IODIRA, 0xBF); //10111111 
+ 
+ //   i2c1.writeQuickSync(MCP23017_ADDRESS_0x22, bin2dec("0000000011111111")) ;
+  // Start temperature conversion
+  //i2c1.sendByteSync(MCP23017_ADDRESS_0x22, 0xFF);
+  // bin2dec("0000000011111111")
+  
+
+//  console.log("0x22-GPA", dec2bin( i2c1.readByteSync(MCP23017_ADDRESS_0x22, GPIOA), 8).split("").reverse().join(""));
+//  console.log("0x22-GPB", dec2bin( i2c1.readByteSync(MCP23017_ADDRESS_0x22, GPIOB), 8).split("").reverse().join("")); 
+   //i2c1.writeByteSync(MCP23017_ADDRESS_0x22, IODIRA, digit); 
+  
+  
+  
+ // i2c1.closeSync();           
+
+
+//i2c1 = i2c.openSync(1);
 

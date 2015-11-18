@@ -1,6 +1,6 @@
 
 
-var gpio = require("pi-gpio");
+var gpio = require("/home/pi/node_modules/pi-gpio");
 
 	gpio.open(18, "output", function(err) {     
 	    gpio.write(18, 1, function() {         
@@ -19,7 +19,7 @@ console.log("off light");
 	    });
 	});
              
-}, 10000);	
+}, 5000);	
 
 
 
