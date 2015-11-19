@@ -479,12 +479,7 @@
 						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>												
 					</a></li>
 		</script>
-		
-	  	
-	
-		
 	</div>
-<!-- 	<br/><br/><br/><br/> -->
 		<div class="container-b">
 		<a id="btSearchRemoteControls" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Aggiungi Telecomando</a>
 	</div>	
@@ -645,30 +640,73 @@
 
 
 
+
 <div id="LIGHT-CONTROLLERS-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
-		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
-		<h1>Light Controllers</h1>
-		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>		
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Light Controllers<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	
-	<div data-role="main" class="ui-content" style="text-align: center;">
+	<div data-role="main" class="ui-content wrapper" style="text-align: center;" data-iscroll>
 		<ul data-role="listview" data-inset="false" id="listview-light-controllers"></ul>	
 		<script id="template-light-controllers" type="text/x-jquery-tmpl">
-					<li data-icon='pir' data='${target}' class="ui-nodisc-icon"><a>
-						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>											
-						<p class='ui-li-aside' style='text-align: center;'></p>
-						<p>${date}</p>
+					<li data-icon='remote' data='${target}' class="ui-nodisc-icon"><a>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>												
 					</a></li>
 		</script>
 	</div>
+		<div class="container-b">
+		<a id="btSearchLightControllers" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Aggiungi Controller</a>
+	</div>	
+</div> 				
 
-  	<br/><br/><br/><br/>			
- 		
-</div>
 
 
 
+<div id="EDIT-LIGHT-CONTROLLERS-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a id="btIndietro" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Controller</h1>
+		<a id="btConfirm" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>
+	</div>
+	<div class="ui-content">
+		<fieldset>
+			<legend>Controller</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Code:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="code"></td>
+						</tr>				
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Name:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
+		<p></p>
+		<fieldset>
+			<legend>Zone</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-areas"></table>
+				<script id="template-controlgroup-areas" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">${name}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" id="${_id}" {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>		
+
+	</div>
+
+  	<br/><br/>
+	<div class="btDownContainer">
+		<a id="btDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina Telecomando</a>
+	</div> 	
+	
+</div> 
 
 
 

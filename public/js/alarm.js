@@ -258,7 +258,7 @@ socket.on('433MHZ', function (device) {
 				
 				var data = response.data;
 				if(response.existing){
-					UTILITY.alertPopup("", "Telecomando: "+data.name+" ("+data.code+") � gia registrato.."); 
+					UTILITY.alertPopup("", "Telecomando: "+data.name+" ("+data.code+") è gia registrato"); 
 				}else{
 					isUpdatedRemoteControlArea = true;
 					

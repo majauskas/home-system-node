@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 05-11-2015 12:47
+# Cache manifest version 19-11-2015 12:47
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -23,6 +23,8 @@ RemoteControl
 PirSensor
 
 LAN_DEVICE
+
+light-controllers
 
 CACHE:
 

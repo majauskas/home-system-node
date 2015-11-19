@@ -4,16 +4,15 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var fs = require('fs');
-var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var os = require('os');
 var email = require('./lib/email.js');
+var database = require('./lib/database.js');
 var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
-var LightsTrigger = require('./lib/LightsTrigger.js');
+//var LightsTrigger = require('./lib/LightsTrigger.js');
 var LightsController = require('./lib/LightsController.js');
-var moment = require('moment');
 var CronJob = require('cron').CronJob;
 var request = require('request');
 var child_process = require('child_process');
@@ -62,7 +61,13 @@ var server = app.listen(process.env.PORT || 8081, function () {
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
-  LightsTrigger.scan(function(data) {
+  LightsController.scan(function(data) {
+
+		database.LIGHT_CONTROLLERS.update({code: data.code}, data, {upsert : true}, function (err, num, res) {
+			console.log(err, num, res);
+			io.sockets.emit("SOCKET-ADD-LIGHT-CONTROLLER", data, res.updatedExisting);
+		});
+
 	  
 		if(data.code === "0x21-GPA4"){
 			LightsController.switchPin(0x22, "A", 4); //cameretta				0x21-GPA4
@@ -80,7 +85,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 		
   });
   
-//  LightsTrigger.scan(function(data) {  
+//  LightsController.scan(function(data) {  
 //	  
 //	  console.log(data.code);
 //	  if(data.code === "0x21-GPA7"){
@@ -145,15 +150,15 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
 //  MCP23017.scanPirSensors(function(data) {
 //	  
-//	  PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+//	  database.PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
 //		
 //		var code = doc.code;
-//		PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
+//		database.PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
 //			if(!doc) {return;}
 //			
 //			io.sockets.emit("PIRSENSOR", doc);
 //			
-//			Area.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
+//			database.AREA.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
 //				if(area){
 //					alarmDetection(doc, area._id);
 //						
@@ -176,6 +181,9 @@ app.get('/home-system', function(req, res) {
 
 
 
+
+
+
 var _volumeSirena = "100";
 var _volumeVoce = "100";
 
@@ -185,7 +193,7 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('disarm', function (areaId) {
 		
-		Area.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
+		database.AREA.findByIdAndUpdate(areaId, {isActivated: false}, function (err, data) {
 			io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 		});	
 		
@@ -195,7 +203,7 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	socket.on('SOCKET-GET-CONFIGURATION', function (callback) {
-		CONFIGURATION.findOne({}).exec(function(err, data) {
+		database.CONFIGURATION.findOne({}).exec(function(err, data) {
 			if(!data){
 				_volumeSirena = data.audio.volumeSirena;
 				_volumeVoce = data.audio.volumeVoce;
@@ -206,12 +214,12 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('SOCKET-CHANGE-SIREN-VOLUME', function (value) {
 		_volumeSirena = value;
-		CONFIGURATION.findOneAndUpdate({}, { 'audio.volumeSirena' : value}, function (err, doc) {});
+		database.CONFIGURATION.findOneAndUpdate({}, { 'audio.volumeSirena' : value}, function (err, doc) {});
 	});	
 
 	socket.on('SOCKET-CHANGE-VOICE-VOLUME', function (value) {
 		_volumeVoce = value;
-		CONFIGURATION.findOneAndUpdate({}, { 'audio.volumeVoce' : value}, function (err, doc) {});
+		database.CONFIGURATION.findOneAndUpdate({}, { 'audio.volumeVoce' : value}, function (err, doc) {});
 	});
 	
 	
@@ -243,15 +251,15 @@ function alarmDetection(sensor, areaId) {
 		    if(!isAlarmActivated){return;}
 		    
 			email("Sound", sensor.name + "\n Sirena allarme attivata");
-			Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
+			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3", _volumeSirena ,"-q -v -l10");//repeat mp3
 			Siren.on();
 	}, 15000);
 	
 
-	Area.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': true, 'alarmActivate.sensor.name': sensor.name }}, function (err, data) {});	
+	database.AREA.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': true, 'alarmActivate.sensor.name': sensor.name }}, function (err, data) {});	
 	
-	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Avviso Allarme: "+sensor.name}}, function (err, data) {});
+	database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Avviso Allarme: "+sensor.name}}, function (err, data) {});
 
 }
 
@@ -264,147 +272,37 @@ function disarm(areaId) {
 	Sound.kill();
 	Siren.off();
 	
-	Area.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': false, 'alarmActivate.sensor.name': null }}, function (err, data) {});	
-	Event.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato"}}, function (err, data) {});
+	database.AREA.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': false, 'alarmActivate.sensor.name': null }}, function (err, data) {});	
+	database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato"}}, function (err, data) {});
 	
 }
 
 
-
-
-if(os.hostname().toLowerCase() === "raspberrypi"){
-	mongoose.connect('mongodb://localhost/home-system');
-}else{
-	mongoose.connect('mongodb://ajauskas.dyndns.org/home-system');
-} 
-
-mongoose.connection.on("connected", function(ref) {
-  console.log("Connected to DB!");
-});
-mongoose.connection.on("error", function(err) {
-  console.error('Failed to connect to DB on startup ', err);
-});
-mongoose.connection.on('disconnected', function () {
-  console.log('Mongoose default connection to DB disconnected');
-});
-
-//If the Node process ends, close the Mongoose connection 
-process.on('SIGINT', function() {  
-  mongoose.connection.close(function () { 
-    console.log('Mongoose default connection disconnected through app termination'); 
-    process.exit(0); 
-  }); 
-});
-
-var Schema = mongoose.Schema;
-
-
-//-----------LIGHTS---------------------------------------------
-var LightsSchema = new Schema({
-    code: String,
-    name: String,
-    isOn: {type : Boolean, 'default': false},
-    date: Date
-},{toJSON:{virtuals: true}});
-
-LightsSchema.methods.toJSON = function() {
-	  var obj = this.toObject();
-	  var date = moment(obj.date), formatted = date.format('DD/MM/YYYY HH:mm:ss');
-	  obj.date = formatted;
-	  return obj;
-};
-var LIGHTS = mongoose.model('LIGHTS', LightsSchema);
-
 app.get('/lights', function(req, res) {
-	LIGHTS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
+	database.LIGHTS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
 });
 
 app.get('/light-controllers', function(req, res) {
-	LIGHTS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
+	database.LIGHT_CONTROLLERS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
 });
 
 
-
-//app.put('/Lights', function(req, res) {
-//	
-//	console.log("Lights " + req.body.isOn);
-//	
-//	var isOn = (req.body.isOn === "true");
-//	
-//	LIGHTS.findOne({code:"0x21-GPA7"}).exec(function(err, data) {
-//		if(data.isOn !== isOn){
-//			
-//			if(isOn === true){ 
-//				LightsController.StudioOn();
-//			}else {
-//				LightsController.StudioOff();
-//			}
-//			
-//			LIGHTS.update({code : "0x21-GPA7"}, {isOn : isOn}, function (err, data) {});
-//				
-//		}
-//	});
-//
-//			
-//			
-//});
-//
-//app.put('/LightsCameraDaLetto2', function(req, res) {
-//	
-//	console.log("LightsCameraDaLetto2 " + req.body.isOn);
-//
-//	var isOn = (req.body.isOn === "true");
-//	
-//	LIGHTS.findOne({code:"0x21-GPA6"}).exec(function(err, data) {
-//		if(data.isOn !== isOn){
-//			
-//			if(isOn === true){ 
-//				LightsController.CameraDaLetto2On();
-//			}else {
-//				Lights.CameraDaLetto2Off();
-//			}
-//			
-//			LIGHTS.update({code : "0x21-GPA6"}, {isOn : isOn}, function (err, data) {});
-//				
-//		}
-//	});	
-//		
-//			
-//});
-
-
 //-----------PIR_SENSOR---------------------------------------------
-var PirSensorSchema = new Schema({
-    code: String,
-    name: String,
-    state: String,
-    date: Date
-},{toJSON:{virtuals: true}});
-
-PirSensorSchema.methods.toJSON = function() {
-	  var obj = this.toObject();
-	  var date = moment(obj.date), formatted = date.format('DD/MM/YYYY HH:mm:ss');
-	  obj.date = formatted;
-	  return obj;
-};
-var PIR_SENSOR = mongoose.model('PIR_SENSOR', PirSensorSchema);
-
-
 app.get('/PirSensor', function(req, res) {
-	PIR_SENSOR.find({}).sort('-date').exec(function(err, data) { res.send(data); });
+	database.PIR_SENSOR.find({}).sort('-date').exec(function(err, data) { res.send(data); });
 });
 
 
 app.put('/PirSensor', function(req, res) {
-	PIR_SENSOR.findByIdAndUpdate(req.body._id, {name: req.body.name}, function (err, data) {
-		PIR_SENSOR.find({}).exec(function(err, data) {
+	database.PIR_SENSOR.findByIdAndUpdate(req.body._id, {name: req.body.name}, function (err, data) {
+		database.PIR_SENSOR.find({}).exec(function(err, data) {
 			res.send(data);
 		});
 	});	
 });
 
 app.del('/PirSensor/:id', function(req, res) {
-	PIR_SENSOR.remove({_id : req.params.id}, function (err, data) {
+	database.PIR_SENSOR.remove({_id : req.params.id}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	 });
@@ -412,39 +310,20 @@ app.del('/PirSensor/:id', function(req, res) {
 
 
 //-----------WifiSensor---------------------------------------------
-var WifiSensorSchema = new Schema({
-	code: Number,
-	binCode: String,	
-	name: String,
-	isOpen: {type : Boolean, 'default': null},
-	isBatteryLow: {type : Boolean, 'default': null},
-	date: Date	
-});
-WifiSensorSchema.methods.toJSON = function() {
-	  var obj = this.toObject();
-	  var date = moment(obj.date), formatted = date.format('DD/MM/YYYY HH:mm:ss');
-	  obj.date = formatted;
-	  return obj;
-}; 
-var WifiSensor = mongoose.model('WifiSensor', WifiSensorSchema);
-
-
-
 app.get('/WifiSensor', function(req, res) {
-	WifiSensor.find({}).sort('-date').exec(function(err, data) {
+	database.WIFISENSOR.find({}).sort('-date').exec(function(err, data) {
 		res.send(data);
 	});
 });
 
 
-
 app.get('/WifiSensor/:code/:binCode', function(req, res) {
 
-	WifiSensor.findOne({code : req.params.code}, function (err, data) {
+	database.WIFISENSOR.findOne({code : req.params.code}, function (err, data) {
 		if(data){
 			res.send({data:data, existing:true });
 		}else{
-			WifiSensor.create(req.params, function (err, data) {
+			database.WIFISENSOR.create(req.params, function (err, data) {
 				if(err){console.log(err); res.status(500).send(err); }
 				res.send({data:data, existing:false });
 			});				
@@ -455,32 +334,26 @@ app.get('/WifiSensor/:code/:binCode', function(req, res) {
 
 
 app.put('/WifiSensor', function(req, res) {
-	WifiSensor.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
+	database.WIFISENSOR.update({code : req.body.code}, req.body, {upsert : true}, function (err, data) {
         res.send({});
 	});	
 });
 app.del('/WifiSensor', function(req, res) {
-	WifiSensor.findOne(req.body, function(err, data){
+	database.WIFISENSOR.findOne(req.body, function(err, data){
 		data.remove();
-		Area.update({}, {'$pull':  { wifisensors : {_id: data._id} }}, {multi: true}, function (err, data) {
+		database.AREA.update({}, {'$pull':  { wifisensors : {_id: data._id} }}, {multi: true}, function (err, data) {
 			if(err){console.log(err);}
 		});			
 		res.send({});
 	});	
 });
 
+
+
 //----------- CONFIGURATION ---------------------------------------------
-var ConfigurationSchema = new Schema({
-	audio: {
-		volumeSirena: String,
-		volumeVoce: String
-	}
-});
-mongoose.model('CONFIGURATION', ConfigurationSchema); 
-var CONFIGURATION = mongoose.model('CONFIGURATION');
-CONFIGURATION.findOne({}).exec(function(err, data) {
+database.CONFIGURATION.findOne({}).exec(function(err, data) {
 	if(!data){
-		CONFIGURATION.create({audio:{volumeSirena: _volumeSirena, volumeVoce: _volumeVoce}}, function (err, data) {
+		database.CONFIGURATION.create({audio:{volumeSirena: _volumeSirena, volumeVoce: _volumeVoce}}, function (err, data) {
 			console.log("CONFIGURATION create", err, data);
 		});	
 	}else{
@@ -489,96 +362,45 @@ CONFIGURATION.findOne({}).exec(function(err, data) {
 	}
 });	
 
-//CONFIGURATION.findOne({}).exec(function(err, data) {
-//	if(!data){
-//		_volumeSirena = data.audio.volumeSirena;
-//		_volumeVoce = data.audio.volumeVoce;
-//	}
-//});
-
 
 //----------- LAN_DEVICE ---------------------------------------------
-var LanDeviceschema = new Schema({
-	ip: String,
-	mac: String,
-	name: String,
-	nmapname: String,
-	manufacturer: String,
-	exists: {type : Boolean, 'default': true},
-	lastLogin: Date
-});
-
-LanDeviceschema.methods.toJSON = function() {
-	  var obj = this.toObject();
-	  var lastLogin = moment(obj.lastLogin), formatted = lastLogin.format('DD/MM/YYYY HH:mm:ss');
-	  obj.lastLogin = formatted;
-	  return obj;
-}; 
-var LAN_DEVICE = mongoose.model('LAN_DEVICE', LanDeviceschema); 
-
 app.get('/LAN_DEVICE', function(req, res) {
-	LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
+	database.LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
 	});		
 });
 app.put('/LAN_DEVICE', function(req, res) {
-	LAN_DEVICE.update({mac : req.body.mac}, req.body, function (err, data) {
+	database.LAN_DEVICE.update({mac : req.body.mac}, req.body, function (err, data) {
         res.send({});
 	});	
 });
 app.del('/LAN_DEVICE', function(req, res) {
-	LAN_DEVICE.remove({mac : req.body.mac}, function (err, data) {
+	database.LAN_DEVICE.remove({mac : req.body.mac}, function (err, data) {
 		res.send({});
 	 });		
 });
 
 
 
-//-----------Area---------------------------------------------
-var AreaSchema = new Schema({
-	name : {type : String, required : true, unique: true, trim: true},
-	activeSensors: [],
-	alarmActivate: {
-		state: {type : Boolean, 'default': false},
-		sensor: {
-			name: String
-		}
-	},
-	isActivated: {type : Boolean, 'default': false},	
-	schedulers: [],
-	auto_on_off: {
-//		isActivated: {type : Boolean, 'default': false},
-		scheduler: {},
-		lan_devices : []
-	},
-	date: {type : Date, 'default': Date.now()}	
-	
-});
-mongoose.model('Area', AreaSchema); 
-var Area = mongoose.model('Area');
-
-
-
-
-
+//-----------AREA---------------------------------------------
 app.post('/Area', function(req, res) {
-	Area.create(req.body, function (err, data) {
+	database.AREA.create(req.body, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});		
 	
 });
 app.put('/Area/:id', function(req, res) {
-	Area.update({_id : req.params.id}, req.body, function (err, data) {
+	database.AREA.update({_id : req.params.id}, req.body, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
 });
 
 app.put('/Area/isActivated/:id', function(req, res) {
-	Area.update({}, {isActivated: false},{multi: true}, function (err, data) {
-		Area.findByIdAndUpdate(req.params.id, {isActivated: req.body.isActivated}, function (err, data) {
+	database.AREA.update({}, {isActivated: false},{multi: true}, function (err, data) {
+		database.AREA.findByIdAndUpdate(req.params.id, {isActivated: req.body.isActivated}, function (err, data) {
 			if(err){console.log(err); res.status(500).send(err); }
 			else { 
 				res.send({});
@@ -592,7 +414,7 @@ app.put('/Area/isActivated/:id', function(req, res) {
 						activeSensors[i] = parseInt(activeSensors[i]);
 						if(!activeSensors[i]){activeSensors[i]=0;}
 					}
-					WifiSensor.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, sensor) {
+					database.WIFISENSOR.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, sensor) {
 						if(sensor){
 							io.sockets.emit("SOCKET-WARNING-MSG", sensor.name+" &#232; aperta!");
 						}
@@ -609,7 +431,7 @@ app.put('/Area/isActivated/:id', function(req, res) {
 
 app.put('/Area/schedulers/:id', function(req, res) {
 	var schedulers = req.body.schedulers || [];
-	Area.findByIdAndUpdate(req.params.id, {'$set':  {'schedulers': schedulers}}, function (err, data) {
+	database.AREA.findByIdAndUpdate(req.params.id, {'$set':  {'schedulers': schedulers}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 		
@@ -620,7 +442,7 @@ app.put('/Area/schedulers/:id', function(req, res) {
 	
 app.put('/Area/activeSensors/:id', function(req, res) {
 	var activeSensors = req.body.activeSensors || [];
-	Area.findByIdAndUpdate(req.params.id, {'$set':  {'activeSensors': activeSensors}}, function (err, data) {
+	database.AREA.findByIdAndUpdate(req.params.id, {'$set':  {'activeSensors': activeSensors}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
@@ -629,7 +451,7 @@ app.put('/Area/activeSensors/:id', function(req, res) {
 
 app.put('/Area/autoOnOff/:id', function(req, res) {
 	var auto_on_off = req.body.auto_on_off || {};
-	Area.findByIdAndUpdate(req.params.id, {'$set':  {'auto_on_off': auto_on_off}}, function (err, data) {
+	database.AREA.findByIdAndUpdate(req.params.id, {'$set':  {'auto_on_off': auto_on_off}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 		
@@ -639,14 +461,14 @@ app.put('/Area/autoOnOff/:id', function(req, res) {
 
 
 app.get('/Area', function(req, res) {
-	Area.find({}).sort('date').populate('wifisensors').populate('pirsensors').exec(function(err, data) {
+	database.AREA.find({}).sort('date').populate('wifisensors').populate('pirsensors').exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send(data); }
 	});		
 });
 
 app.del('/Area/:id', function(req, res) {
-	Area.remove({_id : req.params.id}, function (err, data) {
+	database.AREA.remove({_id : req.params.id}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	 });
@@ -654,43 +476,16 @@ app.del('/Area/:id', function(req, res) {
 
 
 
-//----------- Events ---------------------------------------------
-
-var EventSchema = new Schema({
-	code : {type : Number},
-	binCode : {type : String},
-	date: {type : Date},
-	device : { 
-		provider : String,
-		name : String,
-		isLock : Boolean,
-		isOpen : Boolean,
-		isBatteryLow : Boolean
-	}
-},{toJSON:{virtuals: true}});
-
-
-EventSchema.methods.toJSON = function() {
-	  var obj = this.toObject();
-	  var date = moment(obj.date), formatted = date.format('DD/MM/YYYY HH:mm:ss');
-	  obj.date = formatted;
-	  return obj;
-};
-
-
-mongoose.model('Event', EventSchema); 
-var Event = mongoose.model('Event');
-
-
+//----------- EVENTS ---------------------------------------------
 app.get('/Event', function(req, res) {
-	Event.find({},'-__v -code -binCode -device.provider').sort('-date').limit(15).exec(function(err, data) {
+	database.EVENT.find({},'-__v -code -binCode -device.provider').sort('-date').limit(15).exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else {res.send(data); }
 	});		
 });
 
 app.del('/Event/:id', function(req, res) {
-	Event.remove({ _id: req.params.id }, function (err, data) {
+	database.EVENT.remove({ _id: req.params.id }, function (err, data) {
 		 res.send({});
 	});
 });
@@ -699,28 +494,17 @@ app.del('/Event/:id', function(req, res) {
 
 
 
-//-----------RemoteControlSchema---------------------------------------------
-var RemoteControlSchema = new Schema({
-	code: Number,
-	binCode: String,	
-	name: String,
-	activeArea: String,
-	isLock: {type : Boolean, 'default': null},
-	isBatteryLow: {type : Boolean, 'default': null},
-	date: Date
-});
-mongoose.model('RemoteControl', RemoteControlSchema); 
-var RemoteControl = mongoose.model('RemoteControl');
+//-----------REMOTECONTROL---------------------------------------------
 
-app.get('/RemoteControl', function(req, res) { RemoteControl.find({}).sort('-date').exec(function(err, data) { res.send(data); }); });
+app.get('/RemoteControl', function(req, res) { database.REMOTE_CONTROL.find({}).sort('-date').exec(function(err, data) { res.send(data); }); });
 
 app.get('/RemoteControl/:code/:binCode', function(req, res) {
 
-	RemoteControl.findOne({code : req.params.code}, function (err, data) {
+	database.REMOTE_CONTROL.findOne({code : req.params.code}, function (err, data) {
 		if(data){
 			res.send({data:data, existing:true });
 		}else{
-			RemoteControl.create(req.params, function (err, data) {
+			database.REMOTE_CONTROL.create(req.params, function (err, data) {
 				if(err){console.log(err); res.status(500).send(err); }
 				res.send({data:data, existing:false });
 			});				
@@ -730,16 +514,15 @@ app.get('/RemoteControl/:code/:binCode', function(req, res) {
 
 
 
-
 app.put('/RemoteControl/:id', function(req, res) {
-	RemoteControl.update({_id : req.params.id}, req.body, function (err, data) {
+	database.REMOTE_CONTROL.update({_id : req.params.id}, req.body, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
 });
 
 app.del('/RemoteControl/:id', function(req, res) {
-	RemoteControl.findByIdAndRemove(req.params.id, function (err, data) {
+	database.REMOTE_CONTROL.findByIdAndRemove(req.params.id, function (err, data) {
 		 res.send({});
 	});
 });
@@ -748,7 +531,7 @@ app.del('/RemoteControl/:id', function(req, res) {
 
 
 app.put('/RemoteControl/activeArea/:id', function(req, res) {
-	RemoteControl.findByIdAndUpdate(req.params.id, {'$set':  {'activeArea':  req.body.activeArea}}, function (err, data) {
+	database.REMOTE_CONTROL.findByIdAndUpdate(req.params.id, {'$set':  {'activeArea':  req.body.activeArea}}, function (err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else { res.send({}); }
 	});	
@@ -808,9 +591,9 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		io.sockets.emit("433MHZ", {code:code,binCode:binCode});	
 		
-		Area.findOne({isActivated:true, activeSensors : code.toString() }).exec(function(err, area) {
+		database.AREA.findOne({isActivated:true, activeSensors : code.toString() }).exec(function(err, area) {
 			if(area){
-				WifiSensor.findOne({code:code}, function(err, sensor){
+				database.WIFISENSOR.findOne({code:code}, function(err, sensor){
 					if(sensor.isOpen !== false){
 						alarmDetection(sensor, area._id);
 					}
@@ -820,13 +603,13 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		
 		
-		WifiSensor.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow, date:new Date()}, function (err, data) {
+		database.WIFISENSOR.findOneAndUpdate({code : code}, {isOpen:isOpen, isBatteryLow:isBatteryLow, date:new Date()}, function (err, data) {
 			if(data !== null){
-				WifiSensor.find({}).sort('-date').exec(function(err, data) {
+				database.WIFISENSOR.find({}).sort('-date').exec(function(err, data) {
 					io.sockets.emit("WIFISENSOR", data);
 				});
 				
-				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
+				database.EVENT.create({code:code,binCode:binCode, date: new Date(), device:{provider:"wifi-sensor", name:data.name, isOpen:data.isOpen, isBatteryLow:data.isBatteryLow}}, function (err, data) {});
 				if(isBatteryLow){ //send email notification of battery low
 					email("Battery of sensor '"+ data.name + "' is low", "");
 				}
@@ -836,7 +619,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 		//010001001100110100001100 OFF
 		//010001001100110100000011 HOME
 		//010001001100110100110000 SOS
-		RemoteControl.findOne({code : code}).exec(function(err, data) {
+		database.REMOTE_CONTROL.findOne({code : code}).exec(function(err, data) {
 			if(data !== null){
 				
 				var isActivated = null;
@@ -852,7 +635,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 				
 				
 				if(data.activeArea){
-					Area.findByIdAndUpdate(data.activeArea, {isActivated: isActivated}, function (err, data) {
+					database.AREA.findByIdAndUpdate(data.activeArea, {isActivated: isActivated}, function (err, data) {
 						console.log(data);
 						if(data){
 							
@@ -867,7 +650,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 									activeSensors[i] = parseInt(activeSensors[i]);
 									if(!activeSensors[i]){activeSensors[i]=0;}
 								}
-								WifiSensor.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, data) {
+								database.WIFISENSOR.findOne({isOpen : true, code: { $in : activeSensors }}, function (err, data) {
 									if(data){
 										setTimeout(function(data) {
 											console.log(data.name, "/home/pi/home-system-node/mp3/"+data.name.replace(" ", "")+".mp3");
@@ -884,7 +667,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 					});	
 				}
 				
-				Event.create({code:code,binCode:binCode, date: new Date(), device:{provider:"remote-control", name:data.name, isLock:isActivated}}, function (err, data) {});
+				database.EVENT.create({code:code,binCode:binCode, date: new Date(), device:{provider:"remote-control", name:data.name, isLock:isActivated}}, function (err, data) {});
 			}
 		});	
 		
@@ -923,14 +706,14 @@ setInterval(function() {
 					var mac = entries[int];
 					if(ip && mac){
 						macs += mac; 
-						LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
+						database.LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
 					}
 				} 
 
 	    		
 //	    		setTimeout(function(entries) {
 	
-					LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
+					database.LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
 						io.sockets.emit("SOCKET-LAN-DEVICES", data);
 //						var macs = "";
 //						entries.forEach(function(target) {
@@ -947,7 +730,7 @@ setInterval(function() {
 									obj.exists = true;
 									obj.lastLogin = new Date();
 								}	
-								LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
+								database.LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
 								
 								
 								if(!device.manufacturer){
@@ -957,7 +740,7 @@ setInterval(function() {
 									        var arr = body.split('|');
 									        if(arr.length === 2){
 	    								        var manufacturer = arr[1].trim();
-	    								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer}, function (err, doc) {});
+	    								        database.LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer}, function (err, doc) {});
 									        }
 									    }
 								    });    								
@@ -989,13 +772,13 @@ setInterval(function() {
 //        				var entry = target.split(' ');
 //        				var mac = entry[0];
 //        				var name = entry[1].replace("(", "").replace(")", "");
-//        				LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], nmapname:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
+//        				database.LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], nmapname:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
 //        			}
 //        		});
 //        		
 //        		setTimeout(function() {
 //
-//    				LAN_DEVICE.find({}).sort('-lastLogin name').exec(function(err, data) {
+//    				database.LAN_DEVICE.find({}).sort('-lastLogin name').exec(function(err, data) {
 //    					io.sockets.emit("SOCKET-LAN-DEVICES", data);
 //    					var macs = "";
 //    					entries.forEach(function(target) {
@@ -1012,7 +795,7 @@ setInterval(function() {
 //    								obj.exists = true;
 //    								obj.lastLogin = new Date();
 //    							}	
-//    							LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
+//    							database.LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
 //    							
 //    							
 //    							if(!device.manufacturer){
@@ -1022,7 +805,7 @@ setInterval(function() {
 //    								        var arr = body.split('|');
 //    								        if(arr.length === 2){
 //        								        var manufacturer = arr[1].trim();
-//        								        LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer}, function (err, doc) {});
+//        								        database.LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer}, function (err, doc) {});
 //    								        }
 //    								    }
 //    							    });    								
@@ -1052,7 +835,7 @@ function startAutoOnOff() {
 		
 		
 		
-		Area.find({'auto_on_off.lan_devices': {'$ne': null }}).exec(function(err, data) {
+		database.AREA.find({'auto_on_off.lan_devices': {'$ne': null }}).exec(function(err, data) {
 			data.forEach(function(area) {
 				if(area.auto_on_off.lan_devices.length > 0){
 					var lan_devices = [];
@@ -1066,17 +849,17 @@ function startAutoOnOff() {
 					
 					if(!area.isActivated){
 						
-						LAN_DEVICE.find({exists:false, mac: { $in : lan_devices }}).sort('-lastLogin').exec(function(err, devices) {
+						database.LAN_DEVICE.find({exists:false, mac: { $in : lan_devices }}).sort('-lastLogin').exec(function(err, devices) {
 							
 							if(devices.length === lan_devices.length){
 								var lastLogin = devices[0].lastLogin
 								var d = new Date(lastLogin.getTime() + 120*1000);
 								if(new Date() > d){
-									Area.findByIdAndUpdate(area._id, {isActivated: true}, function (err, data) {
+									database.AREA.findByIdAndUpdate(area._id, {isActivated: true}, function (err, data) {
 										console.log("Allarme attivato", "Auto ON allarme zona: "+area.name+" by "+devices[0].name);
 										io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 										email("Allarme attivato", "Auto ON allarme zona: "+area.name+" by "+devices[0].name);
-										Event.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto ON allarme zona: "+area.name}}, function (err, data) {});
+										database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto ON allarme zona: "+area.name}}, function (err, data) {});
 									});	
 								}
 							}					
@@ -1084,13 +867,13 @@ function startAutoOnOff() {
 						});	
 					}else{
 						
-						LAN_DEVICE.find({exists:true, mac: { $in : lan_devices }}).exec(function(err, devices) {
+						database.LAN_DEVICE.find({exists:true, mac: { $in : lan_devices }}).exec(function(err, devices) {
 							if(devices.length > 0){
-								Area.findByIdAndUpdate(area._id, {isActivated: false}, function (err, data) {
+								database.AREA.findByIdAndUpdate(area._id, {isActivated: false}, function (err, data) {
 									console.log("Allarme disattivato", "Auto OFF allarme zona: "+area.name+" by "+devices[0].name);
 									io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 									email("Allarme disattivato", "Auto OFF allarme zona: "+area.name+" by "+devices[0].name);
-									Event.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto OFF allarme zona: "+area.name}}, function (err, data) {});
+									database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:devices[0].name, name:"Auto OFF allarme zona: "+area.name}}, function (err, data) {});
 								});
 							}
 						});	
@@ -1120,7 +903,7 @@ function checkJobs() {
 	cronAllJobs = [];	
 	
 	
-	Area.find({}).exec(function(err, areas) {
+	database.AREA.find({}).exec(function(err, areas) {
 		if(err){console.log(err); return;}
 		
 		areas.forEach(function(area) {
@@ -1142,14 +925,14 @@ function checkJobs() {
 				
 				var cronJobFrom = new CronJob(cronOnAllarm, function(){
 						console.log('job cronOnAllarm init at ', new Date(), this.areaId);
-						Area.findByIdAndUpdate(this.areaId, {isActivated: true}, function (err, data) {
+						database.AREA.findByIdAndUpdate(this.areaId, {isActivated: true}, function (err, data) {
 							io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 						});
 				},null, true, null, {'areaId':area._id});
 				
 				var cronJobTo = new CronJob(cronOffAllarm, function(){
 					console.log('job cronOffAllarm init at ', new Date(), this.areaId);
-					Area.findByIdAndUpdate(this.areaId, {isActivated: false}, function (err, data) {
+					database.AREA.findByIdAndUpdate(this.areaId, {isActivated: false}, function (err, data) {
 						io.sockets.emit("SOCKET-CHANGE-ALARM-STATE", {_id:data._id, isActivated: data.isActivated});
 					});
 				},null, true, null, {'areaId':area._id});			
@@ -1242,7 +1025,7 @@ function checkJobs() {
 //TEST
 //setInterval(function() {
 //	
-//	Area.findOne({isActivated:true, activeSensors : "GPA-1" }).exec(function(err, area) {
+//	database.AREA.findOne({isActivated:true, activeSensors : "GPA-1" }).exec(function(err, area) {
 //		if(area){
 //			alarmDetection({name:"PIR prescrizione", code:"GPA-1"}, area._id);
 //		}
@@ -1250,10 +1033,24 @@ function checkJobs() {
 //}, 5000);
 
 app.post('/testPir', function(req, res) {
-	Area.findOne({isActivated:true, activeSensors : "0x20-GPA1" }).exec(function(err, area) {
+	database.AREA.findOne({isActivated:true, activeSensors : "0x20-GPA1" }).exec(function(err, area) {
 		if(area){
 			alarmDetection({name:"PIR Bagno", code:"0x20-GPA1"}, area._id);
 		}
 	});	
 	res.send();
 });
+
+
+//database.LIGHT_CONTROLLERS.find({code: "aaaaaaaaaa"}).exec(function(err, data, arg){
+//	console.log(err, data, arg);
+////	io.sockets.emit("SOCKET-ADD-LIGHT-CONTROLLER", data[0]);	
+//});	 
+
+//setInterval(function() {
+//	database.LIGHT_CONTROLLERS.find({}).populate('lights').exec(function(err, data){
+//		io.sockets.emit("SOCKET-ADD-LIGHT-CONTROLLER", data[0]);	
+//	});
+//	
+//}, 5000);
+
