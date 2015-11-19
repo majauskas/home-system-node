@@ -57,31 +57,54 @@ var server = app.listen(process.env.PORT || 8081, function () {
 //		  context: null
 //		});
 	
+		
 	
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
 
   LightsController.scan(function(data) {
 
-		database.LIGHT_CONTROLLERS.update({code: data.code}, data, {upsert : true}, function (err, num, res) {
-			console.log(err, num, res);
-			io.sockets.emit("SOCKET-ADD-LIGHT-CONTROLLER", data, res.updatedExisting);
+		database.LIGHT_CONTROLLERS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, res) {
+			
+			database.LIGHTS.find({code: { $in : res.lights }}).exec(function(err, entries) {
+				entries.forEach(function(target) {
+					
+					var address = parseInt(target.code.substring(0, 4), 16);
+					var port = target.code.substring(7, 8);
+					var pin = target.code.substring(8);
+					
+					console.log(address, port, pin);
+					target.isOn = LightsController.switchPin(address, port, pin);
+					target.save(function (err) {});
+					
+				});
+			});	
+			
+			
+			database.LIGHT_CONTROLLERS.find({}).exec(function(err, data){
+				io.sockets.emit("socket-add-light-controller", data);
+			});
+			
+			database.LIGHTS.find({}).sort('name').exec(function(err, data){
+				io.sockets.emit("socket-lights", data);
+			});
+			
+			
 		});
-
 	  
-		if(data.code === "0x21-GPA4"){
-			LightsController.switchPin(0x22, "A", 4); //cameretta				0x21-GPA4
-		}	 	 
-		if(data.code === "0x21-GPA5"){
-			LightsController.switchPin(0x22, "A", 5); //coridoio				0x21-GPA5
-		}	
-		if(data.code === "0x21-GPA6"){
-			LightsController.switchPin(0x22, "A", 3); //camera da letto soffito	0x21-GPA6
-			LightsController.switchPin(0x22, "A", 6); //camera da letto muro	0x21-GPA6
-		}	
-		if(data.code === "0x21-GPA7"){
-			LightsController.switchPin(0x22, "A", 7); //studio     				0x21-GPA7 
-		}  
+//		if(data.code === "0x21-GPA4"){
+//			LightsController.switchPin(0x22, "A", 4); //cameretta				0x21-GPA4
+//		}	 	 
+//		if(data.code === "0x21-GPA5"){
+//			LightsController.switchPin(0x22, "A", 5); //coridoio				0x21-GPA5
+//		}	
+//		if(data.code === "0x21-GPA6"){
+//			LightsController.switchPin(0x22, "A", 3); //camera da letto soffito	0x21-GPA6
+//			LightsController.switchPin(0x22, "A", 6); //camera da letto muro	0x21-GPA6
+//		}	
+//		if(data.code === "0x21-GPA7"){
+//			LightsController.switchPin(0x22, "A", 7); //studio     				0x21-GPA7 
+//		}  
 		
   });
   
@@ -223,7 +246,39 @@ io.sockets.on('connection', function (socket) {
 	});
 	
 	
+	socket.on('SOCKET-SWITHC-LIGHT', function (data) {
+		console.log("SOCKET-SWITHC-LIGHT", data);
+		var code = data.code;
+		var address = parseInt(code.substring(0, 4), 16);
+		var gpio = code.substring(7, 8);
+		var pin = code.substring(8);
+		
+		var value = 1;
+		if(data.isOn === false){
+			value = 0;
+		}
+		console.log(address, gpio, pin, value);
+
+		LightsController.writePin(address, gpio, pin, value);
+		
+		database.LIGHTS.update({code : code}, {isOn: data.isOn, date: new Date()}, function (err, data) {
+
+		});	
+		
+	});
+	
+
+	
+	
+//	socket.on('socket-enable-add-light-controller', function () {
+//		isEnableAddLightController = false;
+//	});	
+	
+	
 });
+
+//var isEnableAddLightController = false;
+
 
 var isAlarmActivated = false;
 var alarmTimer = null;
@@ -277,13 +332,42 @@ function disarm(areaId) {
 	
 }
 
-
 app.get('/lights', function(req, res) {
-	database.LIGHTS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
+	database.LIGHTS.find({}).sort('name').exec(function(err, data) { res.send(data); });
 });
+
+app.put('/lights/:id', function(req, res) {
+	database.LIGHTS.update({_id : req.params.id}, req.body, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
+
+app.put('/light-controllers/lights/:id', function(req, res) {
+	var lights = req.body.lights || [];
+	database.LIGHT_CONTROLLERS.findByIdAndUpdate(req.params.id, {'$set':  {'lights': lights}}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
+
 
 app.get('/light-controllers', function(req, res) {
 	database.LIGHT_CONTROLLERS.find({}).sort('-date').exec(function(err, data) { res.send(data); });
+});
+
+app.put('/light-controllers/:id', function(req, res) {
+	database.LIGHT_CONTROLLERS.update({_id : req.params.id}, req.body, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
+
+
+app.del('/light-controllers/:id', function(req, res) {
+	database.LIGHT_CONTROLLERS.findByIdAndRemove(req.params.id, function (err, data) {
+		 res.send({});
+	});
 });
 
 
@@ -715,13 +799,6 @@ setInterval(function() {
 	
 					database.LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
 						io.sockets.emit("SOCKET-LAN-DEVICES", data);
-//						var macs = "";
-//						entries.forEach(function(target) {
-//							if(target){
-//								macs += target.split(' ')[1]; 
-//							}
-//							
-//						});
 						if(data && data.length > 0){
 							
 							data.forEach(function(device) {
@@ -1042,15 +1119,46 @@ app.post('/testPir', function(req, res) {
 });
 
 
-//database.LIGHT_CONTROLLERS.find({code: "aaaaaaaaaa"}).exec(function(err, data, arg){
-//	console.log(err, data, arg);
-////	io.sockets.emit("SOCKET-ADD-LIGHT-CONTROLLER", data[0]);	
-//});	 
+ 
 
-//setInterval(function() {
-//	database.LIGHT_CONTROLLERS.find({}).populate('lights').exec(function(err, data){
-//		io.sockets.emit("SOCKET-ADD-LIGHT-CONTROLLER", data[0]);	
-//	});
+setInterval(function() {
+
+	database.LIGHTS.find({}).sort('name').exec(function(err, data){
+		io.sockets.emit("socket-lights", data);
+	});
+
+}, 5000);
+
+
+
+
+
+//var data = {code : "0x21-GPA7", date: new Date()};
+//database.LIGHT_CONTROLLERS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, res) {
 //	
-//}, 5000);
+//	database.LIGHTS.find({code: { $in : res.lights }}).exec(function(err, entries) {
+//		
+//		console.log("target", entries);
+//		
+//		entries.forEach(function(target) {
+//			
+//			console.log("forEach",target);
+//			var address = parseInt(target.code.substring(0, 4), 16);
+//			var port = target.code.substring(7, 8);
+//			var pin = target.code.substring(8);
+//			
+//			console.log(address, port, pin);
+//			target.isOn = true;
+////			target.isOn = LightsController.switchPin(address, port, pin);
+//			target.save(function (err) {});
+//			
+//			
+//		});
+//		
+//	});	
+//	
+//	
+//});
+
+
 

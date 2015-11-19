@@ -53,6 +53,7 @@
 	<script type="text/javascript" src="js/alarm-auto-on-off.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/zone.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/light-controllers.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/lights.js" charset="iso-8859-1"></script>
 	
 	
 	
@@ -647,7 +648,7 @@
 		<h1>Light Controllers<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	<div data-role="main" class="ui-content wrapper" style="text-align: center;" data-iscroll>
+	<div data-role="main" class="ui-content" style="text-align: center;">
 		<ul data-role="listview" data-inset="false" id="listview-light-controllers"></ul>	
 		<script id="template-light-controllers" type="text/x-jquery-tmpl">
 					<li data-icon='remote' data='${target}' class="ui-nodisc-icon"><a>
@@ -655,9 +656,6 @@
 					</a></li>
 		</script>
 	</div>
-		<div class="container-b">
-		<a id="btSearchLightControllers" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Aggiungi Controller</a>
-	</div>	
 </div> 				
 
 
@@ -687,17 +685,18 @@
 		</fieldset>
 		<p></p>
 		<fieldset>
-			<legend>Zone</legend>
-				<table width="100%" style="border-collapse: collapse" id="controlgroup-areas"></table>
-				<script id="template-controlgroup-areas" type="text/x-jquery-tmpl">
+			<legend>Lights</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-controller-lights"></table>
+				<script id="template-controller-lights" type="text/x-jquery-tmpl">
 						<tr>
-							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">${name}</td>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
 							<td width="40%" style="text-align: right;">
-								<input type="check" data-role="flipswitch" id="${_id}" {{if (checked)}}checked{{/if}}  data-theme="b">
+								<input type="check" data-role="flipswitch" code='${code}' {{if (checked)}}checked{{/if}}  data-theme="b">
 							</td>
 						</tr>
 				</script>
-		</fieldset>		
+		</fieldset>
+			
 
 	</div>
 
@@ -710,6 +709,32 @@
 
 
 
+<div id="LIGHTS-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Lights<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div data-role="main" class="ui-content" style="padding: 5px">
+		<p></p>
+		<fieldset>
+			<legend>Lights</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-lights"></table>
+				<script id="template-lights" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
+							<td width="3%"><img src="images/Light-Bulb-{{if (isOn)}}on{{else}}off{{/if}}.png"/></td>
+							<td width="37%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" data='${target}' {{if (isOn)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>
+	</div>
+</div> 	
+
+
+
 <div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
 	<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
 		<li data-icon="pir"><a href="#SENSORI-PIR-PAGE">Sensori PIR</a></li>
@@ -718,6 +743,7 @@
 	    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Telecomandi</a></li>
 	    <li data-icon="listbox"><a href="#EVENTS-PAGE">Eventi</a></li>
 	    <li data-icon="light"><a href="#LIGHT-CONTROLLERS-PAGE">Light Controllers</a></li>
+	    <li data-icon="light"><a href="#LIGHTS-PAGE">Lights</a></li>
 	    <li data-icon="speaker"><a href="#AUDIO-PAGE">Audio</a></li>
 	    <li data-icon="network"><a href="#LAN-DEVICE-PAGE">Dispositivi Di Rete</a></li>
 	</ul>

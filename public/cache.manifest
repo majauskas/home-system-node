@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 19-11-2015 12:47
+# Cache manifest version 19-11-2015 19:47
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -25,6 +25,8 @@ PirSensor
 LAN_DEVICE
 
 light-controllers
+
+lights
 
 CACHE:
 
@@ -51,6 +53,7 @@ js/audio.js
 js/alarm-auto-on-off.js
 js/zone.js
 js/light-controllers.js
+js/lights.js
 jquery/images/ajax-loader.gif
 images/Wifi-02-24-1C95FF.png
 images/1c95ff-infrared-sensor-24.png
