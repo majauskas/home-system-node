@@ -11,7 +11,6 @@ var database = require('./lib/database.js');
 var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
-//var LightsTrigger = require('./lib/LightsTrigger.js');
 var LightsController = require('./lib/LightsController.js');
 var CronJob = require('cron').CronJob;
 var request = require('request');
@@ -45,10 +44,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 //	new CronJob({
 //		  cronTime: '00 13 07 * * 1-5',
 //		  onTick: function() {
-//			  LightsController.CameraDaLetto2On();
-//				setTimeout(function() {	
-//					LightsController.CameraDaLetto2Off();
-//				}, 600000);
 //
 //		  },
 //		  onComplete: function() {},
@@ -72,125 +67,54 @@ var server = app.listen(process.env.PORT || 8081, function () {
 					var address = parseInt(target.code.substring(0, 4), 16);
 					var port = target.code.substring(7, 8);
 					var pin = target.code.substring(8);
-					
+										
 					console.log(address, port, pin);
 					target.isOn = LightsController.switchPin(address, port, pin);
 					target.save(function (err) {});
 					
+					database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"wall-trigger", name:"Light "+target.name+" "+ (target.isOn)?"On":"Off"}}, function (err, data) {});
+					
 				});
 			});	
 			
+			if(!res.lights){
+				database.LIGHT_CONTROLLERS.find({}).exec(function(err, controllers){
+					io.sockets.emit("socket-add-light-controller", controllers);
+				});
+			}
 			
-			database.LIGHT_CONTROLLERS.find({}).exec(function(err, data){
-				io.sockets.emit("socket-add-light-controller", data);
-			});
-			
-			database.LIGHTS.find({}).sort('name').exec(function(err, data){
-				io.sockets.emit("socket-lights", data);
+			database.LIGHTS.find({}).sort('name').exec(function(err, lights){
+				io.sockets.emit("socket-lights", lights);
 			});
 			
 			
 		});
-	  
-//		if(data.code === "0x21-GPA4"){
-//			LightsController.switchPin(0x22, "A", 4); //cameretta				0x21-GPA4
-//		}	 	 
-//		if(data.code === "0x21-GPA5"){
-//			LightsController.switchPin(0x22, "A", 5); //coridoio				0x21-GPA5
-//		}	
-//		if(data.code === "0x21-GPA6"){
-//			LightsController.switchPin(0x22, "A", 3); //camera da letto soffito	0x21-GPA6
-//			LightsController.switchPin(0x22, "A", 6); //camera da letto muro	0x21-GPA6
-//		}	
-//		if(data.code === "0x21-GPA7"){
-//			LightsController.switchPin(0x22, "A", 7); //studio     				0x21-GPA7 
-//		}  
 		
   });
   
-//  LightsController.scan(function(data) {  
-//	  
-//	  console.log(data.code);
-//	  if(data.code === "0x21-GPA7"){
-//		 
-//		  LightsController.studioOnOff();
-//		  
-////		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
-////			  
-////				var code = doc.code;
-////				var isOn = doc.isOn;
-////				
-////				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-////					
-////					if(isOn === false){ 
-////						LightsController.StudioOff();
-////					}else { 
-////						LightsController.StudioOn();
-////					}						
-////					
-////				});						
-////				
-////
-////			
-////	   });		  
-//	  }
-//	  
-//
-//	  
-//	  if(data.code === "0x21-GPA6"){
-//		  
-//		  LightsController.cameraDaLettoMuroOnOff();
-//		  LightsController.cameraDaLettoSoffitoOnOff();
-//		  
-//		  
-////		  LIGHTS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, doc) {
-////			  
-////				var code = doc.code;
-////				var isOn = doc.isOn;
-////				
-////				LIGHTS.update({code : doc.code}, {isOn : !isOn}, function (err, data) {
-////					
-////					if(isOn === false){ 
-////						LightsController.CameraDaLettoOff();
-////						LightsController.CameraDaLetto2Off();
-////					}else { 
-////						LightsController.CameraDaLettoOn();
-////						LightsController.CameraDaLetto2On();
-////					}						
-////					
-////				});						
-////			
-////	   });		  
-//	  }
-//	  
-//	  
-//	  
-//  });
-//  
 
   
   
-  
-//  MCP23017.scanPirSensors(function(data) {
-//	  
-//	  database.PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
-//		
-//		var code = doc.code;
-//		database.PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
-//			if(!doc) {return;}
-//			
-//			io.sockets.emit("PIRSENSOR", doc);
-//			
-//			database.AREA.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
-//				if(area){
-//					alarmDetection(doc, area._id);
-//						
-//				}
-//			});				
-//			
-//		});	
-//	  });	 
-//  });
+  MCP23017.scanPirSensors(function(data) {
+	  
+	  database.PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+		
+		var code = doc.code;
+		database.PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
+			if(!doc) {return;}
+			
+			io.sockets.emit("PIRSENSOR", doc);
+			
+			database.AREA.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
+				if(area){
+					alarmDetection(doc, area._id);
+						
+				}
+			});				
+			
+		});	
+	  });	 
+  });
   
   email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
@@ -247,7 +171,7 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	socket.on('SOCKET-SWITHC-LIGHT', function (data) {
-		console.log("SOCKET-SWITHC-LIGHT", data);
+
 		var code = data.code;
 		var address = parseInt(code.substring(0, 4), 16);
 		var gpio = code.substring(7, 8);
@@ -257,27 +181,17 @@ io.sockets.on('connection', function (socket) {
 		if(data.isOn === false){
 			value = 0;
 		}
-		console.log(address, gpio, pin, value);
-
+		
 		LightsController.writePin(address, gpio, pin, value);
 		
 		database.LIGHTS.update({code : code}, {isOn: data.isOn, date: new Date()}, function (err, data) {
-
+			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"mobile-trigger", name:"Light "+data.name+" "+ (data.isOn)?"On":"Off"}}, function (err, data) {});
 		});	
+		
 		
 	});
 	
-
-	
-	
-//	socket.on('socket-enable-add-light-controller', function () {
-//		isEnableAddLightController = false;
-//	});	
-	
-	
 });
-
-//var isEnableAddLightController = false;
 
 
 var isAlarmActivated = false;
@@ -1047,9 +961,6 @@ function checkJobs() {
 				
 				var endDate = new Date();
 				endDate.setHours(to[0],to[1],0);
-//console.log(startDate);
-//console.log(endDate);	
-//console.log(sysdate);	
 				
 				
 				
@@ -1099,66 +1010,12 @@ function checkJobs() {
 
 
 //************* TESTS ******************
-//TEST
-//setInterval(function() {
-//	
-//	database.AREA.findOne({isActivated:true, activeSensors : "GPA-1" }).exec(function(err, area) {
-//		if(area){
-//			alarmDetection({name:"PIR prescrizione", code:"GPA-1"}, area._id);
-//		}
-//	});	
-//}, 5000);
-
-app.post('/testPir', function(req, res) {
-	database.AREA.findOne({isActivated:true, activeSensors : "0x20-GPA1" }).exec(function(err, area) {
-		if(area){
-			alarmDetection({name:"PIR Bagno", code:"0x20-GPA1"}, area._id);
-		}
-	});	
-	res.send();
-});
-
-
- 
-
-setInterval(function() {
-
-	database.LIGHTS.find({}).sort('name').exec(function(err, data){
-		io.sockets.emit("socket-lights", data);
-	});
-
-}, 5000);
 
 
 
 
 
-//var data = {code : "0x21-GPA7", date: new Date()};
-//database.LIGHT_CONTROLLERS.findOneAndUpdate({code : data.code}, data, {upsert : true}, function (err, res) {
-//	
-//	database.LIGHTS.find({code: { $in : res.lights }}).exec(function(err, entries) {
-//		
-//		console.log("target", entries);
-//		
-//		entries.forEach(function(target) {
-//			
-//			console.log("forEach",target);
-//			var address = parseInt(target.code.substring(0, 4), 16);
-//			var port = target.code.substring(7, 8);
-//			var pin = target.code.substring(8);
-//			
-//			console.log(address, port, pin);
-//			target.isOn = true;
-////			target.isOn = LightsController.switchPin(address, port, pin);
-//			target.save(function (err) {});
-//			
-//			
-//		});
-//		
-//	});	
-//	
-//	
-//});
+
 
 
 

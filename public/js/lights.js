@@ -7,6 +7,7 @@ $(function() {
 
 function renderLights(response){
 	
+	APPLICATION.lights = response;
 
 	$("#controlgroup-lights").empty();
 	$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
@@ -37,16 +38,9 @@ $(document).on("pagecreate","#LIGHTS-PAGE", function(){
 });
 
 $(document).on("pageshow","#LIGHTS-PAGE", function(){
-//	$.ajax({
-//		type : 'GET',
-//		url : "/lights",
-//		success: function(response) {
-//			APPLICATION.lights = response;
-//			renderLights(response);
-//	    }
-//	});
 	socket.on('socket-lights', renderLights);	
 });
+
 $(document).on("pagehide","#LIGHTS-PAGE", function(){
 	socket.removeListener('socket-lights');	
 });
