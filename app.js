@@ -1011,8 +1011,12 @@ function checkJobs() {
 
 //************* TESTS ******************
 
-
-
+//
+//setInterval(function() {
+//	database.LIGHTS.find({}).sort('name').exec(function(err, lights){
+//		io.sockets.emit("socket-lights", lights);
+//	});
+//}, 5000);
 
 
 
