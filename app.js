@@ -72,8 +72,25 @@ var server = app.listen(process.env.PORT || 8081, function () {
 					target.isOn = LightsController.switchPin(address, port, pin);
 					target.save(function (err) {});
 					
-					database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"wall-trigger", name: "Light " + target.name +" " + ((target.isOn === true) ? "On":"Off"), isOn: target.isOn }}, function (err, data) {});
+					if(target.isOn === true){
+						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
+					} else{
+						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
+							database.LIGHT_HISTORY.find({code : res.code}).exec(function(err, records){
+								var kWh = 0;
+								records.forEach(function(record) {
+									var duration = Number(record.date_off - record.date_on); 
+									duration = (duration / 3600000); //ore
+									kWh += (record.watt / 1000) * duration;
+								});
+								var cost = kWh * 0.063080;
+								console.log({kWh: kWh, cost:cost});
+								database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
+							});
+						});
+					}
 					
+//					database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"wall-trigger", name: "Light " + target.name +" " + ((target.isOn === true) ? "On":"Off"), isOn: target.isOn }}, function (err, data) {});
 				});
 			});	
 			
@@ -170,28 +187,49 @@ io.sockets.on('connection', function (socket) {
 	});
 	
 	
-	socket.on('SOCKET-SWITHC-LIGHT', function (data) {
+	socket.on('SOCKET-SWITHC-LIGHT', function (target) {
 
-		var code = data.code;
+		var code = target.code;
 		var address = parseInt(code.substring(0, 4), 16);
 		var gpio = code.substring(7, 8);
 		var pin = code.substring(8);
 		
 		var value = 1;
-		if(data.isOn === false){
+		if(target.isOn === false){
 			value = 0;
 		}
 		
 		LightsController.writePin(address, gpio, pin, value);
 		
-		database.LIGHTS.update({code : code}, {isOn: data.isOn, date: new Date()}, function (err, arg) {
-			database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"mobile-trigger", name: "Light " + data.name +" " + ((data.isOn === true) ? "On":"Off"), isOn: data.isOn }}, function (err, data) {});
+		
+		if(target.isOn === true){
+			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
+		} else{
+			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
+				database.LIGHT_HISTORY.find({code : res.code}).exec(function(err, records){
+					var kWh = 0;
+					records.forEach(function(record) {
+						var duration = Number(record.date_off - record.date_on); 
+						duration = (duration / 3600000); //ore
+						kWh += (record.watt / 1000) * duration;
+					});
+					var cost = kWh * 0.063080;
+					console.log({kWh: kWh, cost:cost});
+					database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
+				});
+			});
+		}
+		
+		
+		database.LIGHTS.update({code : code}, {isOn: target.isOn, date: new Date()}, function (err, arg) {
+//			database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"mobile-trigger", name: "Light " + data.name +" " + ((data.isOn === true) ? "On":"Off"), isOn: data.isOn }}, function (err, data) {});
 		});	
 		
 		
 	});
 	
 });
+
 
 
 var isAlarmActivated = false;
