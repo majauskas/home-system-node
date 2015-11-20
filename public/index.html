@@ -110,26 +110,16 @@
 
 		<fieldset id="fsIlluminazione" style="display: none">
 			<legend><table><tr><td><img src="images/Light-Bulb-off.png"/></td><td style="color:yellow">&nbsp;Illuminazione</td></tr></table></legend>
-				<table width="100%" style="border-collapse: collapse">
-					<tr>
-						<td width="60%" style="font-weight: bold; text-shadow: none; color: white">Studio</td>
-						<td width="3%">
-							<img src="images/Light-Bulb-on.png"/>
-						</td>
-						<td width="37%" style="text-align: right;">
-							<input id="chLightStudio" type="check" data-role="flipswitch"  data-theme="b"> 
-						</td>
-					</tr>
-					<tr>
-						<td width="60%" style="font-weight: bold; text-shadow: none; color: white">Camera</td>
-						<td width="3%">
-							<img src="images/Light-Bulb-off.png"/>
-						</td>
-						<td width="37%" style="text-align: right;">
-							<input id="chCameraDaLetto2" type="check" data-role="flipswitch" data-theme="b">
-						</td>
-					</tr>					
-				</table>	
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-lights"></table>
+				<script id="template-lights" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
+							<td width="3%"><img src="images/Light-Bulb-{{if (isOn)}}on{{else}}off{{/if}}.png"/></td>
+							<td width="37%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" data='${target}' {{if (isOn)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
 		</fieldset>	
 		<br> 
 		<fieldset id="fsTemperatura" style="display: none">
@@ -718,8 +708,8 @@
 		<p></p>
 		<fieldset>
 			<legend>Lights</legend>
-				<table width="100%" style="border-collapse: collapse" id="controlgroup-lights"></table>
-				<script id="template-lights" type="text/x-jquery-tmpl">
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-lights-2"></table>
+				<script id="template-lights-2" type="text/x-jquery-tmpl">
 						<tr>
 							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
 							<td width="3%"><img src="images/Light-Bulb-{{if (isOn)}}on{{else}}off{{/if}}.png"/></td>
