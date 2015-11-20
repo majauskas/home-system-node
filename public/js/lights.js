@@ -23,9 +23,12 @@ function renderLights(response){
 		console.log(data);
 		if($(this).prop("checked")){
 			data.isOn = true;
+			$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-on.png");
 		}else{
 			data.isOn = false;
+			$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-off.png");
 		}
+		
 		socket.emit('SOCKET-SWITHC-LIGHT', data);
 	}); 
 	

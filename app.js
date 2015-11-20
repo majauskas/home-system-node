@@ -184,8 +184,9 @@ io.sockets.on('connection', function (socket) {
 		
 		LightsController.writePin(address, gpio, pin, value);
 		
-		database.LIGHTS.update({code : code}, {isOn: data.isOn, date: new Date()}, function (err, data) {
-			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"mobile-trigger", name:"Light "+data.name+" "+ (data.isOn)?"On":"Off"}}, function (err, data) {});
+		database.LIGHTS.update({code : code}, {isOn: data.isOn, date: new Date()}, function (err, arg) {
+			var name = "Light "+ data.name+" "+ (data.isOn === true) ? "On":"Off";
+			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"mobile-trigger", name: name }}, function (err, data) {});
 		});	
 		
 		
