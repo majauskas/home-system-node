@@ -72,7 +72,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 					target.isOn = LightsController.switchPin(address, port, pin);
 					target.save(function (err) {});
 					
-					database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"wall-trigger", name:"Light "+target.name+" "+ (target.isOn)?"On":"Off"}}, function (err, data) {});
+					database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"wall-trigger", name: "Light " + target.name +" " + ((target.isOn === true) ? "On":"Off"), isOn: target.isOn }}, function (err, data) {});
 					
 				});
 			});	
@@ -185,8 +185,7 @@ io.sockets.on('connection', function (socket) {
 		LightsController.writePin(address, gpio, pin, value);
 		
 		database.LIGHTS.update({code : code}, {isOn: data.isOn, date: new Date()}, function (err, arg) {
-			var name = "Light "+ data.name+" "+ (data.isOn === true) ? "On":"Off";
-			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"mobile-trigger", name: name }}, function (err, data) {});
+			database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"mobile-trigger", name: "Light " + data.name +" " + ((data.isOn === true) ? "On":"Off"), isOn: data.isOn }}, function (err, data) {});
 		});	
 		
 		

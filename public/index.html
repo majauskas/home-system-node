@@ -455,6 +455,8 @@
 								{{if (device.isBatteryLow == true)}}<img style='margin-left:10px' src='images/Battery-Low-24-FF0000.png'>{{/if}}
 								{{if (device.isLock == true)}}<img style='margin-left:10px' src='images/Lock-24-FF0000.png'>{{/if}}
 								{{if (device.isLock == false)}}<img style='margin-left:10px' src='images/Lock-Open-24-04C263.png'>{{/if}}
+								{{if (device.isOn == false)}}<img src='images/Light-Bulb-off.png'/>{{/if}}
+								{{if (device.isOn == true)}}<img src='images/Light-Bulb-on.png'/>{{/if}}
 							</p>
 						{{/if}}
 					</a></li>
