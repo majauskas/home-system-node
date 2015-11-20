@@ -90,6 +90,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 						});
 					}
 					
+					
 //					database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"wall-trigger", name: "Light " + target.name +" " + ((target.isOn === true) ? "On":"Off"), isOn: target.isOn }}, function (err, data) {});
 				});
 			});	
