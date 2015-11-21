@@ -596,12 +596,10 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		
 		code = parseInt(binCode.substr(0,16), 2);
-		console.log("code",binCode.substr(0,16), code);
 		
-		var isOpen = false, isBatteryLow = null; 
+		var isOpen = null, isBatteryLow = null; 
 		if(binCode.length === 40){ 
 			var state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
-			console.log("state",state);
 			if(state === "0010"){
 				isOpen = true;
 			}else if(state === "1000"){
@@ -619,14 +617,14 @@ app.post('/433mhz/:binCode', function(req, res) {
 //		000011111010010100000000|0000|101|1|01000001        batt OK inserita
 		
 		
-		console.log(code, isOpen, isBatteryLow, binCode, new Date());
+		console.log(code, binCode, isOpen, isBatteryLow, new Date());
 		
 		io.sockets.emit("433MHZ", {code:code,binCode:binCode});	
 		
 		database.AREA.findOne({isActivated:true, activeSensors : code.toString() }).exec(function(err, area) {
 			if(area){
 				database.WIFISENSOR.findOne({code:code}, function(err, sensor){
-					if(sensor.isOpen !== false){
+					if(sensor.isOpen !== false && sensor.isOpen !== null){
 						alarmDetection(sensor, area._id);
 					}
 				});	
