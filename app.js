@@ -575,14 +575,12 @@ app.put('/RemoteControl/activeArea/:id', function(req, res) {
 });
 
 //--------------------------------------------------------
-
-
 var lastTime = new Date();
 var lastBinCode;
 app.post('/433mhz/:binCode', function(req, res) {
 	
 	var binCode = req.params.binCode;
-	console.log("-------------------------------- ",binCode);
+	console.log("433mhz binCode",binCode);
 	var duration = Number(new Date() - lastTime);
 	
 	if(duration < 2200 || (duration < 1200 && lastBinCode === binCode)){
@@ -596,12 +594,14 @@ app.post('/433mhz/:binCode', function(req, res) {
 	var code=null;
 	if(binCode.length === 24 || binCode.length === 40 ){
 		
+		
 		code = parseInt(binCode.substr(0,16), 2);
+		console.log("code",binCode.substr(0,16), code);
 		
-		
-		var isOpen = null, isBatteryLow = null; 
+		var isOpen = false, isBatteryLow = null; 
 		if(binCode.length === 40){ 
 			var state = binCode.substr(24,4); 	//1000 - close  0010 - open	0000111110110110000000001000011110110100 (close) 0000111110110110000000000010011110110100 (open)
+			console.log("state",state);
 			if(state === "0010"){
 				isOpen = true;
 			}else if(state === "1000"){
@@ -618,11 +618,6 @@ app.post('/433mhz/:binCode', function(req, res) {
 //		000011110011110100000000|0000|101|0|10101010        batt KO inserita
 //		000011111010010100000000|0000|101|1|01000001        batt OK inserita
 		
-		
-//		else if(binCode.length === 24){ 
-////			state = binCode.substr(19,4);
-////			battery = "1";
-//		}
 		
 		console.log(code, isOpen, isBatteryLow, binCode, new Date());
 		
