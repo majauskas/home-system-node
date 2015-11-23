@@ -94,14 +94,24 @@ $(function() {
 
 function renderLights(response){
 
+	var kWh=0;
+	var cost=0; 
+	
 	$("#controlgroup-lights").empty();
-	$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+	$.each(response, function (i, obj) { 
+		obj.target = JSON.stringify(obj);
+		kWh += obj.kWh;
+		cost += obj.cost;
+	});
 	$("#template-lights").tmpl( response ).appendTo("#controlgroup-lights");
 	
+
 	$("#HOME-PAGE").trigger("create");
 	
 	$("#fsIlluminazione [data-role='flipswitch']").flipswitch( "refresh" );
 	
+	$("#HOME-PAGE h1 font").html(kWh.toFixed(2)+"kWh "+cost.toFixed(2)+"&euro;");
+	$("#HOME-PAGE h1 font").css('visibility', 'visible');
 	
 	$("#fsIlluminazione [data-role='flipswitch']").unbind("change").on("change", function (){
 		var data = jQuery.parseJSON($(this).attr("data"));
@@ -135,6 +145,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 		url : "/lights",
 		success: function(response) {
 			APPLICATION.lights = response;
+			$("#fsIlluminazione").show();
 			renderLights(response);
         }
 	});	

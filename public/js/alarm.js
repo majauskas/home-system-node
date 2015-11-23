@@ -310,7 +310,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			APPLICATION.areas = response; 
 			
 			if(response.length > 0){
-				$("#fsSecurity, #fsIlluminazione, #fsTemperatura").show();
+				$("#fsSecurity, #fsTemperatura").show();
 			}
 			
 			$("#controlgroup-alarm").html("");
@@ -342,44 +342,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 					
 				}				
 			
-//			$("#HOME-PAGE #chLightStudio").unbind("change").on("change", OnOffZone);
-			
-//			$("#HOME-PAGE #chLightStudio").unbind("change").on("change", function (){
-//				if($(this).prop("checked")){
-//					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-on.png");
-//					
-//				}else{
-//					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-off.png");
-//				}
-//				
-//				
-//				$.ajax({
-//					global: false,
-//					type: "PUT", url: "Lights",
-//					dataType : "json",
-//					data : { isOn :  $(this).prop("checked")},
-//					error: UTILITY.httpError
-//				});					
-//				
-//			});
-//			
-//			$("#HOME-PAGE #chCameraDaLetto2").unbind("change").on("change", function (){
-//				if($(this).prop("checked")){
-//					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-on.png");
-//				}else{
-//					$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-off.png");
-//				}
-//				
-//				
-//				$.ajax({
-//					global: false,
-//					type: "PUT", url: "LightsCameraDaLetto2",
-//					dataType : "json",
-//					data : { isOn :  $(this).prop("checked")},
-//					error: UTILITY.httpError
-//				});					
-//				
-//			});			
+	
 			
 			
 			

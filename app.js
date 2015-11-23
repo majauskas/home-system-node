@@ -615,9 +615,27 @@ app.post('/433mhz/:binCode', function(req, res) {
 		}
 //		000011110011110100000000|0000|101|0|10101010        batt KO inserita
 //		000011111010010100000000|0000|101|1|01000001        batt OK inserita
+//		000011111010010100000000|0010|011|1|00100101		batt OK, open 
+//		000011111010010100000000|1000|011|1|11000101		batt OK, close 
+
+//      000011110011110100000000|0010|011|1|10001101		batt ?(led on), open 
+//		000011110011110100000000|1000|011|1|00101101		batt ?(led on), close
+//		000011110011110100000000|0000|101|0|10101010
+//		000011110011110100000000|0010|011|1|10001101
+		
+//		000011110011110100000000|1000|011|1|00101101		batt KO, close
+//		000011110011110100000000|0010|011|1|10001101		batt KO, open
+//		000011110011110100000000|0000|101|0|10101010        batt KO inserita
+//		000011111010010100000000|1000|011|1|11000101		batt OK, close
+//		000011111010010100000000|0010|011|1|00100101		batt OK, open
+//		000011111010010100000000|0000|101|1|01000001        batt OK inserita
+//		000011110011110100000000|0000|101|1|10101001
+//		000011110011110100000000|1000|011|1|00101101        batt OK(nuova), close
+//		000011110011110100000000|0010|011|1|10001101		batt OK(nuova), open
 		
 		
-		console.log(code, binCode, isOpen, isBatteryLow, new Date());
+		
+		console.log(code, binCode, "isOpen:",isOpen, "isBatteryLow:",isBatteryLow, new Date());
 		
 		io.sockets.emit("433MHZ", {code:code,binCode:binCode});	
 		
@@ -784,69 +802,6 @@ setInterval(function() {
 }, 1000);
 
 
-//setInterval(function() {
-//	
-//	try {
-//        exec("sudo nmap -sP -PE -PA 192.168.0.3-24 | grep 'MAC' | awk '{print $3,$4}'", function(err, stdout,stderr) {
-//        	if(stdout){
-//        		var entries = stdout.split('\n');
-//        		entries.forEach(function(target) {
-//        			if(target){
-//        				var entry = target.split(' ');
-//        				var mac = entry[0];
-//        				var name = entry[1].replace("(", "").replace(")", "");
-//        				database.LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:entry[0], nmapname:name, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
-//        			}
-//        		});
-//        		
-//        		setTimeout(function() {
-//
-//    				database.LAN_DEVICE.find({}).sort('-lastLogin name').exec(function(err, data) {
-//    					io.sockets.emit("SOCKET-LAN-DEVICES", data);
-//    					var macs = "";
-//    					entries.forEach(function(target) {
-//    						if(target){
-//    							macs += target.split(' ')[0]; 
-//    						}
-//    						
-//    					});
-//    					if(data && data.length > 0){
-//    						
-//    						data.forEach(function(device) {
-//    							var obj = {exists : false};
-//    							if(macs.indexOf(device.mac) >= 0){
-//    								obj.exists = true;
-//    								obj.lastLogin = new Date();
-//    							}	
-//    							database.LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
-//    							
-//    							
-//    							if(!device.manufacturer){
-//    								var macaddress = device.mac;
-//    								request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
-//    								    if (!error && response.statusCode == 200) {
-//    								        var arr = body.split('|');
-//    								        if(arr.length === 2){
-//        								        var manufacturer = arr[1].trim();
-//        								        database.LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer}, function (err, doc) {});
-//    								        }
-//    								    }
-//    							    });    								
-//    							}
-//    							
-//    						});	
-//    					}
-//				});	         			
-//        		}, 1000);
-//        	}
-//       });
-//		
-//	} catch (e) {
-//		console.log("ERROR LAN_DEVICE NMAP", e);
-//	}
-//}, 5000);
-
-
 
 var intervalAutoOnOff;
 
@@ -1011,7 +966,6 @@ function checkJobs() {
 						clearInterval(intervalAutoOnOff);
 					}
 				}
-				
 				
 				
 				var cronJobTo = new CronJob(cronOff, function(){
