@@ -112,6 +112,7 @@ function renderLights(response){
 	
 	$("#HOME-PAGE h1 font").html(kWh.toFixed(2)+"kWh "+cost.toFixed(2)+"&euro;");
 	$("#HOME-PAGE h1 font").css('visibility', 'visible');
+	$("#HOME-PAGE h1 font").css('color', 'grey');
 	
 	$("#fsIlluminazione [data-role='flipswitch']").unbind("change").on("change", function (){
 		var data = jQuery.parseJSON($(this).attr("data"));

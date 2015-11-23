@@ -337,6 +337,7 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			                }
 			                else {
 			                    $(obj).css('visibility', 'visible');
+			                    $(obj).css('color', 'red');
 			                }
 			            }, 800);					
 					
