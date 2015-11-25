@@ -76,7 +76,10 @@ var server = app.listen(process.env.PORT || 8081, function () {
 						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
 					} else{
 						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
-							database.LIGHT_HISTORY.find({code : res.code}).exec(function(err, records){
+							
+							var date = new Date();
+							var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
+							database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay} }).exec(function(err, records){
 								var kWh = 0;
 								records.forEach(function(record) {
 									var duration = Number(record.date_off - record.date_on); 
@@ -207,7 +210,10 @@ io.sockets.on('connection', function (socket) {
 			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
 		} else{
 			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
-				database.LIGHT_HISTORY.find({code : res.code}).exec(function(err, records){
+				
+				var date = new Date();
+				var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
+				database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay}}).exec(function(err, records){
 					var kWh = 0;
 					records.forEach(function(record) {
 						var duration = Number(record.date_off - record.date_on); 
@@ -1003,9 +1009,6 @@ function checkJobs() {
 //		io.sockets.emit("socket-lights", lights);
 //	});
 //}, 5000);
-
-
-
 
 
 
