@@ -290,107 +290,88 @@ function AlarmDetection (device, areaId){
 	}, null,"Atenzione");
 }
 
-//socket.on('ALARM_DETECTION', function (device, areaId) {
-//	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
-//		socket.emit('disarm', areaId);
-//	}, null,"Atenzione");
-//});
 
 socket.on('ALARM_DETECTION', AlarmDetection);
 
-var intervalBlink = null;
-$(document).on("pagecreate","#HOME-PAGE", function(){
-
-	
-	$.ajax({
-		type : 'GET',
-		url : "/Area",
-		success: function(response) {
-
-			APPLICATION.areas = response; 
-			
-			if(response.length > 0){
-				$("#fsSecurity, #fsTemperatura").show();
-			}
-			
-			$("#controlgroup-alarm").html("");
-			$("#template-controlgroup-alarm").tmpl( response ).appendTo( "#controlgroup-alarm" );	
-			$("#HOME-PAGE").trigger("create");
-			
-        	$("#SENSORI-WIFI-PAGE").page();	
-        	$("#SENSORI-PIR-PAGE").page();	
-        	$("#AREAS-PAGE").page();
-
-			
-			
-			$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change", OnOffZone);
-			
-				var area = $.grep(response, function(target, i) {	
-					 return (target.alarmActivate.state);
-				})[0];	
-				if(area){
-					
-					 var obj = $("#HOME-PAGE h1 font");
-					 intervalBlink = setInterval(function() {
-			                if ($(obj).css("visibility") === "visible") {
-			                    $(obj).css('visibility', 'hidden');
-			                }
-			                else {
-			                    $(obj).css('visibility', 'visible');
-			                    $(obj).css('color', 'red');
-			                }
-			            }, 800);					
-					
-				}				
-			
-	
-			
-			
-			
-			
-        }
-	});	
-	
+//var intervalBlink = null;
+//$(document).on("pagecreate","#HOME-PAGE", function(){
+//
+//	
 //	$.ajax({
 //		type : 'GET',
-//		url : "/lights",
+//		url : "/home-page",
 //		success: function(response) {
-//			response.code 
+//
+//			var areas = response.areas;
+//			APPLICATION.areas = areas; 
+//			
+//			if(areas.length > 0){
+//				$("#fsSecurity, #fsTemperatura").show();
+//			}
+//			
+//			$("#controlgroup-alarm").html("");
+//			$("#template-controlgroup-alarm").tmpl( areas ).appendTo( "#controlgroup-alarm" );	
+//			$("#HOME-PAGE").trigger("create");
+//			
+//        	$("#SENSORI-WIFI-PAGE").page();	
+//        	$("#SENSORI-PIR-PAGE").page();	
+//        	$("#AREAS-PAGE").page();
+//
 //			
 //			
+//			$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change", OnOffZone);
+//			
+//				var area = $.grep(areas, function(target, i) {	
+//					 return (target.alarmActivate.state);
+//				})[0];	
+//				if(area){
+//					
+//					 var obj = $("#HOME-PAGE h1 font");
+//					 intervalBlink = setInterval(function() {
+//			                if ($(obj).css("visibility") === "visible") {
+//			                    $(obj).css('visibility', 'hidden');
+//			                }
+//			                else {
+//			                    $(obj).css('visibility', 'visible');
+//			                    $(obj).css('color', 'red');
+//			                }
+//			            }, 800);					
+//					
+//				}				
+//
 //			
 //        }
 //	});	
-	
-});	
-
-function OnOffZone(){
-	
-	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").off("change");
-
-	var id =  $(this).attr("id"); 
-
-	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").each(function( index, obj ) {
-		if($(this).attr("id") !== id){
-			$(this).prop('checked', false).flipswitch('refresh');
-		}
-	});	
-	
-	$.ajax({
-		global: false,
-		type: "PUT", url: "Area/isActivated/"+id,
-		dataType : "json",
-		data : { isActivated :  $(this).prop("checked")},
-		error: UTILITY.httpError
-	});					
-	
-	setTimeout(function() { $("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change",OnOffZone); },10);	
-	clearInterval(intervalBlink);
-	$("#HOME-PAGE h1 font").css('visibility', 'hidden');
-	
-}
-
-
+//	
+//});	
+//
+//function OnOffZone(){
+//	
+//	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").off("change");
+//
+//	var id =  $(this).attr("id"); 
+//
+//	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").each(function( index, obj ) {
+//		if($(this).attr("id") !== id){
+//			$(this).prop('checked', false).flipswitch('refresh');
+//		}
+//	});	
+//	
+//	$.ajax({
+//		global: false,
+//		type: "PUT", url: "Area/isActivated/"+id,
+//		dataType : "json",
+//		data : { isActivated :  $(this).prop("checked")},
+//		error: UTILITY.httpError
+//	});					
+//	
+//	setTimeout(function() { $("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change",OnOffZone); },10);	
+//	clearInterval(intervalBlink);
+//	$("#HOME-PAGE h1 font").css('visibility', 'hidden');
+//	
+//}
+//
+//
 
 
 

@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 23-11-2015 16:00
+# Cache manifest version 25-11-2015 16:00
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -45,6 +45,7 @@ jquery/jquery.mobile.iscrollview.js
 js/socket.io.js 
 js/util.js	
 js/alarm.js
+js/home-page.js
 js/pir-sensors.js
 js/wifi-sensors.js
 js/cons.js	

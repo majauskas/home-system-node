@@ -291,6 +291,42 @@ function disarm(areaId) {
 	
 }
 
+
+
+
+app.get('/home-page', function(req, res) {
+
+	var json = {};
+	database.AREA.find({}).sort('date').populate('wifisensors').populate('pirsensors').exec(function(err, data) {
+		json.areas = data;
+
+		database.LIGHTS.find({}).sort('name').exec(function(err, data) { 
+			json.lights = data;
+			res.send(json);
+//			database.WIFISENSOR.find({}).sort('-date').exec(function(err, data) {
+//				json.wifi = data;
+//				database.PIR_SENSOR.find({}).sort('-date').exec(function(err, data) { 
+//					json.pir = data;
+//					res.send(json);
+//				});
+//			});			
+			
+		});
+		
+	});	
+	
+});
+
+
+
+
+
+
+
+
+
+
+
 app.get('/lights', function(req, res) {
 	database.LIGHTS.find({}).sort('name').exec(function(err, data) { res.send(data); });
 });
