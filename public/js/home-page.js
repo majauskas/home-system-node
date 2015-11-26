@@ -119,10 +119,10 @@ function renderLights(response){
 		var data = jQuery.parseJSON($(this).attr("data"));
 		if($(this).prop("checked")){
 			data.isOn = true;
-			$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-on.png");
+			$(this).parent().parent().parent().find('img').attr("src","images/light_on.png");
 		}else{
 			data.isOn = false;
-			$(this).parent().parent().parent().find('img').attr("src","images/Light-Bulb-off.png");
+			$(this).parent().parent().parent().find('img').attr("src","images/light_off.png");
 		}
 		
 		socket.emit('SOCKET-SWITHC-LIGHT', data);

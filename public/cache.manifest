@@ -71,8 +71,9 @@ images/security.png
 images/carbon_fibre.png
 images/door_close.png
 images/door_open.png
-images/Light-Bulb-on.png
-images/Light-Bulb-off.png
+images/light_on.png
+images/light_off.png
+images/scheduler.png
 images/Temperature-32.png
 images/Armor-32.png
 jquery/images/iscroll-pull-icon@2x.png
@@ -83,6 +84,8 @@ images/1c95ff-network-01-24.png
 images/wifino_24.png
 images/wifisi_24.png
 images/Clock-01-24.png
+images/switch.png
+images/sensor.png
  
 
 

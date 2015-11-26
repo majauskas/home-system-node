@@ -275,7 +275,7 @@ function alarmDetection(sensor, areaId) {
 	
 	database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Avviso Allarme: "+sensor.name}}, function (err, data) {});
 
-}
+} 
 
 
 function disarm(areaId) {
@@ -930,6 +930,7 @@ function checkJobs() {
 			
 			area.schedulers.forEach(function(scheduler) {
 				
+//				console.log(area);
 
 				var id = scheduler.id;
 				var from = scheduler.from.split(":");
@@ -941,7 +942,7 @@ function checkJobs() {
 				
 				var cronOnAllarm = "00 "+from[1]+" "+from[0]+" * * " + daysOfWeek;
 				var cronOffAllarm = "00 "+to[1]+" "+to[0]+" * * " + daysOfWeek;
-				console.log(this.areaId, "Cron Job Allarm ON at " + cronOnAllarm + " and OFF at " + cronOffAllarm);
+				console.log(area.name, "Cron Job Allarm ON at " + cronOnAllarm + " and OFF at " + cronOffAllarm);
 				
 				var cronJobFrom = new CronJob(cronOnAllarm, function(){
 						console.log('job cronOnAllarm init at ', new Date(), this.areaId);
@@ -991,8 +992,7 @@ function checkJobs() {
 				var endDate = new Date();
 				endDate.setHours(to[0],to[1],0);
 				
-				
-				
+
 				
 				var cronJobFrom = new CronJob(cronOn, function(){
 					console.log('job auto on/off init at: ', new Date(), this.name);

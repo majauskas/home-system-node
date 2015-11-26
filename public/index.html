@@ -92,7 +92,7 @@
 		<h1>Home<br><font style="white-space:normal; font-weight:normal; text-shadow: none; visibility: hidden; color: red">Alarme Attivato!</font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	<div class="ui-content" style="padding: 5px">
+	<div class="ui-content" style="padding: 5px"> 
 
 		<fieldset id="fsSecurity" style="display: none">
 			<legend><table><tr><td><img src="images/Armor-32.png"/></td><td style="color: red">&nbsp;Sicurezza</td></tr></table></legend>			
@@ -110,12 +110,12 @@
 
 
 		<fieldset id="fsIlluminazione" style="display: none">
-			<legend><table><tr><td><img src="images/Light-Bulb-off.png"/></td><td style="color:yellow">&nbsp;Illuminazione</td></tr></table></legend>
+			<legend><table><tr><td><img src="images/light_on.png" width="40px" height="40px"/></td><td style="color:yellow">&nbsp;Illuminazione</td></tr></table></legend>
 				<table width="100%" style="border-collapse: collapse" id="controlgroup-lights"></table>
 				<script id="template-lights" type="text/x-jquery-tmpl">
 						<tr>
 							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
-							<td width="3%"><img src="images/Light-Bulb-{{if (isOn)}}on{{else}}off{{/if}}.png"/></td>
+							<td width="3%"><img src="images/light_{{if (isOn)}}on{{else}}off{{/if}}.png" width="40px" height="40px"/></td>
 							<td width="37%" style="text-align: right;">
 								<input type="check" data-role="flipswitch" data='${target}' {{if (isOn)}}checked{{/if}}  data-theme="b">
 							</td>
@@ -145,14 +145,13 @@
 			
 			<ul data-role="listview" data-inset="false" id="listview-pir-sensors"></ul>	
 			<script id="template-pir-sensors" type="text/x-jquery-tmpl">
-					<li data-icon='pir' data='${target}' class="ui-nodisc-icon"><a>
+					<li data-icon='sensor' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>											
 						<p class='ui-li-aside' style='text-align: center;'>{{if (state === 01 && name )}}<font style='color:red; font-weight: bold;'>ON</font></br>{{/if}}</p>
 						<p>${date}</p>
 					</a></li>
 		</script>
 		</div>
-		
 		
 
 </div> 			 
@@ -639,7 +638,7 @@
 	<div data-role="main" class="ui-content" style="text-align: center;">
 		<ul data-role="listview" data-inset="false" id="listview-light-controllers"></ul>	
 		<script id="template-light-controllers" type="text/x-jquery-tmpl">
-					<li data-icon='remote' data='${target}' class="ui-nodisc-icon"><a>
+					<li data-icon='switch' data='${target}' class="ui-nodisc-icon"><a>
 						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>												
 					</a></li>
 		</script>
@@ -697,45 +696,35 @@
 
 
 
-<div id="LIGHTS-PAGE" data-role="page">
+
+<div id="SCHEDULER-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
-		<h1>Lights<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<h1>Scheduler<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
 	</div>
-	<div data-role="main" class="ui-content" style="padding: 5px">
-		<p></p>
-		<fieldset>
-			<legend>Lights</legend>
-				<table width="100%" style="border-collapse: collapse" id="controlgroup-lights-2"></table>
-				<script id="template-lights-2" type="text/x-jquery-tmpl">
-						<tr>
-							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
-							<td width="3%"><img src="images/Light-Bulb-{{if (isOn)}}on{{else}}off{{/if}}.png"/></td>
-							<td width="37%" style="text-align: right;">
-								<input type="check" data-role="flipswitch" data='${target}' {{if (isOn)}}checked{{/if}}  data-theme="b">
-							</td>
-						</tr>
-				</script>
-		</fieldset>
+	<div data-role="main" class="ui-content">
+
+	   
 	</div>
-</div> 	
+</div> 
 
 
 
 <div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
 	<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
-		<li data-icon="pir"><a href="#SENSORI-PIR-PAGE">Sensori PIR</a></li>
-		<li data-icon="wifi"><a href="#SENSORI-WIFI-PAGE">Sensori Wifi</a></li>
-	    <li data-icon="node"><a href="#AREAS-PAGE">Zone</a></li>
-	    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Telecomandi</a></li>
-	    <li data-icon="listbox"><a href="#EVENTS-PAGE">Eventi</a></li>
-	    <li data-icon="light"><a href="#LIGHT-CONTROLLERS-PAGE">Light Controllers</a></li>
-<!-- 	    <li data-icon="light"><a href="#LIGHTS-PAGE">Lights</a></li> -->
+		<li data-icon="sensor"><a href="#SENSORI-PIR-PAGE">PIR Sensors</a></li>
+		<li data-icon="wifi"><a href="#SENSORI-WIFI-PAGE">WiFi Sensors</a></li>
+	    <li data-icon="node"><a href="#AREAS-PAGE">Areas</a></li>
+	    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Remote Controllers</a></li>
+	    <li data-icon="listbox"><a href="#EVENTS-PAGE">Events</a></li>
+	    <li data-icon="switch"><a href="#LIGHT-CONTROLLERS-PAGE">Light Controllers</a></li>
 	    <li data-icon="speaker"><a href="#AUDIO-PAGE">Audio</a></li>
-	    <li data-icon="network"><a href="#LAN-DEVICE-PAGE">Dispositivi Di Rete</a></li>
+	    <li data-icon="network"><a href="#LAN-DEVICE-PAGE">Network Devices</a></li>
+	    <li data-icon="scheduler"><a href="#SCHEDULER-PAGE">Scheduler</a></li>
 	</ul>
 </div> 
-	</body>
 
-</html>
+
+
+</body></html>

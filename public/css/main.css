@@ -172,20 +172,24 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 
 
 
-.ui-icon-wifi:after {background-image: url("../images/Wifi-02-24-1C95FF.png");background-position: 3px 3px; background-size: 70%;}
-.ui-icon-usb:after {background-image: url("../images/USB-Plug-24-1C95FF.png"); background-size: 18px 18px;}
-.ui-icon-node:after {background-image: url("../images/Node-24-1C95FF.png"); background-size: 18px 18px;}
-.ui-icon-pir:after {background-image: url("../images/1c95ff-infrared-sensor-24.png"); background-size: 18px 18px;}
-.ui-icon-remote:after {background-image: url("../images/1c95ff-remote-control-18.png"); background-size: 18px 18px;}
-.ui-icon-listbox:after {background-image: url("../images/ListBox-24-1C95FF.png"); background-size: 18px 18px;}
-.ui-icon-light:after {background-image: url("../images/1c95ff-light-bulb-24.png"); background-size: 18px 18px;}
-.ui-icon-speaker:after {background-image: url("../images/1c95ff-speaker-volume-24.png"); background-size: 18px 18px;}
-.ui-icon-network:after {background-image: url("../images/1c95ff-network-01-24.png"); background-size: 18px 18px;}
-.ui-icon-wifino:after {background-image: url("../images/wifino_24.png"); background-size: 24px 24px;}
-.ui-icon-wifisi:after {background-image: url("../images/wifisi_24.png"); background-size: 24px 24px;}
+.ui-icon-wifi:after {background-image: url("../images/Wifi-02-24-1C95FF.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-usb:after {background-image: url("../images/USB-Plug-24-1C95FF.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-node:after {background-image: url("../images/Node-24-1C95FF.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-pir:after {background-image: url("../images/1c95ff-infrared-sensor-24.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-remote:after {background-image: url("../images/1c95ff-remote-control-18.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-listbox:after {background-image: url("../images/ListBox-24-1C95FF.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-light:after {background-image: url("../images/1c95ff-light-bulb-24.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-speaker:after {background-image: url("../images/speaker.png"); background-size: 34px 34px; width: 38px; height: 38px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-network:after {background-image: url("../images/1c95ff-network-01-24.png"); background-size: 26px 26px; width: 38px; height: 38px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-wifino:after {background-image: url("../images/wifino_24.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-wifisi:after {background-image: url("../images/wifisi_24.png"); background-size: 26px 26px; width: 34px; height: 34px; margin-top: -18px; margin-right: -5px;}
+
+.ui-icon-scheduler:after {background-image: url("../images/scheduler.png"); background-size: 34px 34px; width: 38px; height: 38px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-switch:after {background-image: url("../images/switch.png"); background-size: 34px 34px; width: 38px; height: 38px; margin-top: -18px; margin-right: -5px;}
+.ui-icon-sensor:after {background-image: url("../images/sensor.png"); background-size: 34px 34px; width: 38px; height: 38px; margin-top: -18px; margin-right: -5px;}
 
 
-
+  
 
 .ui-icon-door:after {background-image: url("../images/Door-24.png"); background-size: 18px 18px;}
 .ui-icon-window:after {background-image: url("../images/Window-24.png"); background-size: 18px 18px;}
@@ -194,8 +198,6 @@ em { color: red; font-weight: bold; padding-right: .25em;}
 
 .ui-icon-areas:after {background-image: url("../images/Graph-Diagram-24.png"); background-size: 18px 18px;}
 .ui-icon-error:after {background-image: url("../images/Warning-Message-24-F50000.png"); background-size: 18px 18px;}
-/* .ui-icon-error:after {background-image: url("../images/Warning-Message-24-F50000.png");background-position: 3px 3px; background-size: 70%;} */
-
 
 
 .ui-icon-stampa {
@@ -320,4 +322,6 @@ div.growlUI h2 { font-size: small }
 	margin-left:15px;
     margin-right:15px;
 }
+ 
+ 
  
