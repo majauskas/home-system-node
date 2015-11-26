@@ -56,17 +56,20 @@ $(function() {
 //});
 
 
-//$(document).on("pagecreate","#HOME-PAGE", function(){
-//	$.ajax({
-//		type : 'GET',
-//		url : "/lights",
-//		success: function(response) {
-//			APPLICATION.lights = response;
-//			$("#fsIlluminazione").show();
-//			renderLights(response);
-//        }
-//	});	
-//});
+$(document).on("pagecreate","#SCHEDULER-PAGE", function(){
+	$.ajax({
+		type : 'GET',
+		url : "/schedulers",
+		success: function(response) {
+
+			$("#listview-schedulers").empty();
+			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+			$("#template-schedulers").tmpl( response ).appendTo( "#listview-schedulers" );		
+			$("#listview-schedulers").listview("refresh");
+			
+        }
+	});	
+});
 
 
 

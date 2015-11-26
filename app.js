@@ -322,8 +322,9 @@ app.get('/home-page', function(req, res) {
 
 
 
-
-
+app.get('/schedulers', function(req, res) {
+	database.SCHEDULERS.find({}).sort('name').exec(function(err, data) { res.send(data); });
+});
 
 
 

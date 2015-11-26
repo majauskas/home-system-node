@@ -26,7 +26,7 @@ LAN_DEVICE
 
 light-controllers
 
-lights
+schedulers
 
 home-page
 
@@ -56,7 +56,7 @@ js/audio.js
 js/alarm-auto-on-off.js
 js/zone.js
 js/light-controllers.js
-js/lights.js
+js/schedulers.js
 jquery/images/ajax-loader.gif
 images/Wifi-02-24-1C95FF.png
 images/1c95ff-infrared-sensor-24.png
