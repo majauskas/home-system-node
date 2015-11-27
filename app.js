@@ -326,6 +326,18 @@ app.get('/schedulers', function(req, res) {
 	database.SCHEDULERS.find({}).sort('name').exec(function(err, data) { res.send(data); });
 });
 
+app.get('/schedulers', function(req, res) {
+	database.SCHEDULERS.find({}).sort('name').exec(function(err, data) { res.send(data); });
+});
+
+app.put('/schedulers/commands:id', function(req, res) {
+	var commands = req.body.commands || [];
+	database.SCHEDULERS.findByIdAndUpdate(req.params.id, {'$set':  {'commands': commands}}, {upsert : true}, function (err, data) {
+		if(err){console.log(err); res.status(500).send(err); }
+		else { res.send({}); }
+	});	
+});
+//{upsert : true}
 
 
 app.get('/lights', function(req, res) {

@@ -714,6 +714,278 @@
 	</div>	
 </div> 
 
+<div id="EDIT-SCHEDULER-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a id="btIndietro" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Scheduler</h1>
+		<a id="btAddCommands" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-plus"></a>	
+	</div>
+	
+	<div class="ui-content">
+		<fieldset>
+			<legend><table><tr><td><img src="images/scheduler.png" width="40px" height="40px"/></td><td style="color:yellow">&nbsp;Programs</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse" id="scheduler-device"></table>
+					<script id="template-scheduler-device" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="20%">
+								<input data-mini="true" type="time" class="inFrom" value="${from}" index="${id}">
+							</td>
+							<td width="20%">
+								<input data-mini="true" type="time" class="inTo" value="${to}" index="${id}">
+							</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" class="cmbScheduler" index="${id}" id="cmbScheduler${id}">
+										<option value=""></option>
+										<option value="1-7">Tutti Giorni</option>
+										<option value="1-5">Lun - Ven</option>
+										<option value="6-7">Sab - Dom</option>
+										<option value="Off">Off</option>
+										<option value="delete">Rimuovi</option>											
+									</select>
+							</td>	
+						</tr>
+					</script>
+		</fieldset>		
+		
+	</div>
+  	<br/><br/><br/><br/>
+	<div class="btDownContainer">		
+		<a id="btDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina</a>
+	</div> 	
+
+
+		
+</div> 
+
+
+
+
+<div id="SCHEDULER-COMMAND" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#EDIT-SCHEDULER-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
+		<h1>Schedulers<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>
+	</div>
+	<div data-role="main" class="ui-content">
+		<fieldset>
+			<legend><table><tr><td><img src="images/light_on.png" width="40px" height="40px"/></td><td style="color:yellow">&nbsp;Commands</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Type:</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" id="cmbDeviceType">
+										<option value="light">Light</option>										
+									</select>
+							</td>
+						</tr>
+
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Name:</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" id="cmbDevice">
+										<option value="0x22-GPA3">Camera da letto 1</option>										
+									</select>
+							</td>
+						</tr>						
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Minute:</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" id="cmbCronMinute">
+										<option value="*">Every</option>
+										<option value="0">0</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+										<option value="24">24</option>
+										<option value="25">25</option>
+										<option value="26">26</option>
+										<option value="27">27</option>
+										<option value="28">28</option>
+										<option value="29">29</option>
+										<option value="30">30</option>
+										<option value="31">31</option>
+										<option value="32">32</option>
+										<option value="33">33</option>
+										<option value="34">34</option>
+										<option value="35">35</option>
+										<option value="36">36</option>
+										<option value="37">37</option>
+										<option value="38">38</option>
+										<option value="39">39</option>
+										<option value="40">40</option>
+										<option value="41">41</option>
+										<option value="42">42</option>
+										<option value="43">43</option>
+										<option value="44">44</option>
+										<option value="45">45</option>
+										<option value="46">46</option>
+										<option value="47">47</option>
+										<option value="48">48</option>
+										<option value="49">49</option>
+										<option value="50">50</option>
+										<option value="51">51</option>
+										<option value="52">52</option>
+										<option value="53">53</option>
+										<option value="54">54</option>
+										<option value="55">55</option>
+										<option value="56">56</option>
+										<option value="57">57</option>
+										<option value="58">58</option>
+										<option value="59">59</option>
+									</select>										
+							</td>
+						</tr>
+						
+
+						<tr>
+							<td style="font-weight: bold; text-shadow: none; color: white">Hour:</td>
+							<td style="text-align: left;">
+									<select data-mini="true" id="cmbCronHour">
+										<option value="*">Every</option>
+										<option value="0">0</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+									</select>										
+							</td>
+						</tr>						
+
+
+						<tr>
+							<td style="font-weight: bold; text-shadow: none; color: white">Day of month:</td>
+							<td style="text-align: left;">
+									<select data-mini="true" id="cmbCronDay">
+										<option value="*">Every</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+										<option value="24">24</option>
+										<option value="25">25</option>
+										<option value="26">26</option>
+										<option value="27">27</option>
+										<option value="28">28</option>
+										<option value="29">29</option>
+										<option value="30">30</option>
+										<option value="31">31</option>									
+									</select>										
+							</td>
+						</tr>
+						
+						
+						<tr>
+							<td style="font-weight: bold; text-shadow: none; color: white">Month:</td>
+							<td style="text-align: left;">
+									<select data-mini="true" id="cmbCronMonth">
+										<option value="*">Every</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>									
+									</select>										
+							</td>
+						</tr>
+						
+						<tr>
+							<td style="font-weight: bold; text-shadow: none; color: white">Day of week:</td>
+							<td style="text-align: left;">
+									<select data-mini="true" id="cmbCronWeekDay">
+										<option value="*">Every</option>
+										<option value="1">Monday</option>
+										<option value="2">Tuesday</option>
+										<option value="3">Wednesday</option>
+										<option value="4">Thursday</option>
+										<option value="5">Friday</option>
+										<option value="6">Saturday</option>
+										<option value="7">Sunday</option>
+										<option value="6-7">Weekend</option>
+										<option value="1-5">Work Days</option>									
+									</select>										
+							</td>
+						</tr>
+						
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Action:</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" id="cmbAction">
+										<option value="on">Switch On</option>	
+										<option value="off">Switch Off</option>									
+									</select>
+							</td>
+						</tr>						
+				</table>
+		</fieldset>
+	</div>
+</div> 
+
+
 <div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
 	<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
 		<li data-icon="sensor"><a href="#SENSORI-PIR-PAGE">PIR Sensors</a></li>
