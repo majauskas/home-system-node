@@ -6,6 +6,9 @@ var path = require('path');
 var fs = require('fs');
 var bodyParser = require('body-parser');
 var os = require('os');
+var _later = require('later');
+
+
 var email = require('./lib/email.js');
 var database = require('./lib/database.js');
 var MCP23017 = require('./lib/MCP23017.js');
@@ -330,14 +333,41 @@ app.get('/schedulers', function(req, res) {
 	database.SCHEDULERS.find({}).sort('name').exec(function(err, data) { res.send(data); });
 });
 
-app.put('/schedulers/commands:id', function(req, res) {
-	var commands = req.body.commands || [];
-	database.SCHEDULERS.findByIdAndUpdate(req.params.id, {'$set':  {'commands': commands}}, {upsert : true}, function (err, data) {
-		if(err){console.log(err); res.status(500).send(err); }
-		else { res.send({}); }
-	});	
+app.put('/schedulers/:id', function(req, res) {
+	
+
+	_later.date.localTime();
+	var s = _later.parse.cron(req.body.cronExpression);
+	var lastOccurrence = _later.schedule(s).prev(1);
+	var nextOccurrence = _later.schedule(s).next(1);
+	
+	if(req.params.id === "undefined"){
+		req.body.lastOccurrence = lastOccurrence;
+		req.body.nextOccurrence = nextOccurrence;
+		req.body.date = new Date();
+		
+		database.SCHEDULERS.create(req.body, function (err, data) {
+			if(err){console.log(err); res.status(500).send(err); }
+			else { res.send({}); }
+		});	
+		
+	}else{
+
+		database.SCHEDULERS.update({_id : req.params.id}, {
+															cronExpression: req.body.cronExpression, 
+															name: req.body.name,
+															lastOccurrence: lastOccurrence,
+															nextOccurrence: nextOccurrence,
+															isEnabled: req.body.isEnabled,
+															date: new Date(),
+															'$set':  {'commands': req.body.commands}
+														  }, function (err, data) {
+			if(err){console.log(err); res.status(500).send(err); }
+			else { res.send({}); }
+		});	
+	}
 });
-//{upsert : true}
+
 
 
 app.get('/lights', function(req, res) {
@@ -1058,6 +1088,4 @@ function checkJobs() {
 //		io.sockets.emit("socket-lights", lights);
 //	});
 //}, 5000);
-
-
 
