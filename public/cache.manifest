@@ -26,6 +26,8 @@ LAN_DEVICE
 
 light-controllers
 
+lights 
+
 schedulers
 
 home-page
