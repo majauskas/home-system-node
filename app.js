@@ -6,7 +6,7 @@ var path = require('path');
 var fs = require('fs');
 var bodyParser = require('body-parser');
 var os = require('os');
-var _later = require('later');
+//var _later = require('later');
 
 
 var email = require('./lib/email.js');
@@ -19,7 +19,7 @@ var CronJob = require('cron').CronJob;
 var request = require('request');
 var child_process = require('child_process');
 var exec = child_process.exec;
-var arp = null; try { arp = require('arp-a'); } catch (e) {}
+//var arp = null; try { arp = require('arp-a'); } catch (e) {}
 
 
 var host = null;
@@ -99,6 +99,13 @@ var server = app.listen(process.env.PORT || 8081, function () {
 					
 //					database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"wall-trigger", name: "Light " + target.name +" " + ((target.isOn === true) ? "On":"Off"), isOn: target.isOn }}, function (err, data) {});
 				});
+				
+				setTimeout(function() {
+					database.LIGHTS.find({}).sort('name').exec(function(err, lights){
+						io.sockets.emit("socket-lights", lights);
+					});
+				}, 50);
+				
 			});	
 			
 			if(!res.lights){
@@ -107,9 +114,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 				});
 			}
 			
-			database.LIGHTS.find({}).sort('name').exec(function(err, lights){
-				io.sockets.emit("socket-lights", lights);
-			});
+
 			
 			
 		});
@@ -196,6 +201,7 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('SOCKET-SWITHC-LIGHT', function (target) {
 
+		console.log('SOCKET-SWITHC-LIGHT', target);
 		var code = target.code;
 		var address = parseInt(code.substring(0, 4), 16);
 		var gpio = code.substring(7, 8);
@@ -333,40 +339,40 @@ app.get('/schedulers', function(req, res) {
 	database.SCHEDULERS.find({}).sort('name').exec(function(err, data) { res.send(data); });
 });
 
-app.put('/schedulers/:id', function(req, res) {
-	
-
-	_later.date.localTime();
-	var s = _later.parse.cron(req.body.cronExpression);
-	var lastOccurrence = _later.schedule(s).prev(1);
-	var nextOccurrence = _later.schedule(s).next(1);
-	
-	if(req.params.id === "undefined"){
-		req.body.lastOccurrence = lastOccurrence;
-		req.body.nextOccurrence = nextOccurrence;
-		req.body.date = new Date();
-		
-		database.SCHEDULERS.create(req.body, function (err, data) {
-			if(err){console.log(err); res.status(500).send(err); }
-			else { res.send({}); }
-		});	
-		
-	}else{
-
-		database.SCHEDULERS.update({_id : req.params.id}, {
-															cronExpression: req.body.cronExpression, 
-															name: req.body.name,
-															lastOccurrence: lastOccurrence,
-															nextOccurrence: nextOccurrence,
-															isEnabled: req.body.isEnabled,
-															date: new Date(),
-															'$set':  {'commands': req.body.commands}
-														  }, function (err, data) {
-			if(err){console.log(err); res.status(500).send(err); }
-			else { res.send({}); }
-		});	
-	}
-});
+//app.put('/schedulers/:id', function(req, res) {
+//	
+//
+//	_later.date.localTime();
+//	var s = _later.parse.cron(req.body.cronExpression);
+//	var lastOccurrence = _later.schedule(s).prev(1);
+//	var nextOccurrence = _later.schedule(s).next(1);
+//	
+//	if(req.params.id === "undefined"){
+//		req.body.lastOccurrence = lastOccurrence;
+//		req.body.nextOccurrence = nextOccurrence;
+//		req.body.date = new Date();
+//		
+//		database.SCHEDULERS.create(req.body, function (err, data) {
+//			if(err){console.log(err); res.status(500).send(err); }
+//			else { res.send({}); }
+//		});	
+//		
+//	}else{
+//
+//		database.SCHEDULERS.update({_id : req.params.id}, {
+//															cronExpression: req.body.cronExpression, 
+//															name: req.body.name,
+//															lastOccurrence: lastOccurrence,
+//															nextOccurrence: nextOccurrence,
+//															isEnabled: req.body.isEnabled,
+//															date: new Date(),
+//															'$set':  {'commands': req.body.commands}
+//														  }, function (err, data) {
+//			if(err){console.log(err); res.status(500).send(err); }
+//			else { res.send({}); }
+//		});	
+//	}
+//});
 
 
 
