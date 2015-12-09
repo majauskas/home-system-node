@@ -147,8 +147,8 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
 //  email("Home System Attivato", "App listening at http://"+host+":"+port);
   
-  email("test 1 isMultipleRecipients=false ");
-  email("test 2 isMultipleRecipients=true ",true);
+  email("test 1 isMultipleRecipients=false", "test1 ");
+  email("test 2 isMultipleRecipients=true ", "test2 ",true);
 });
 
 app.get('/home-system', function(req, res) {
