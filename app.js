@@ -277,6 +277,17 @@ function alarmDetection(sensor, areaId) {
 			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3", _volumeSirena ,"-q -v -l10");//repeat mp3
 			Siren.on();
+			
+			
+			database.CONFIGURATION.findOne({}).exec(function(err, data) {
+				var off_timeout = data.outsideSiren.off_timeout;
+				console.log("auto disarm after", off_timeout);
+				setTimeout(function(areaId) {
+					console.log("auto disarm areaId ", areaId, new Date());
+					disarm(areaId);
+				}, off_timeout, areaId);
+			});	
+			
 	}, 15000);
 	
 
