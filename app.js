@@ -145,7 +145,10 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	  });	 
   });
   
-  email("Home System Attivato", "App listening at http://"+host+":"+port);
+//  email("Home System Attivato", "App listening at http://"+host+":"+port);
+  
+  email("test 1 isMultipleRecipients=false ");
+  email("test 2 isMultipleRecipients=true ",true);
 });
 
 app.get('/home-system', function(req, res) {
@@ -270,7 +273,7 @@ function alarmDetection(sensor, areaId) {
 	    Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3", _volumeVoce);
 	}, 5000);
 	
-	alarmTimer = setTimeout(function() {
+	alarmTimer = setTimeout(function(sensor) {
 		    if(!isAlarmActivated){return;}
 		    
 			email("Sound", sensor.name + "\n Sirena allarme attivata");
@@ -288,7 +291,7 @@ function alarmDetection(sensor, areaId) {
 				}, off_timeout, areaId);
 			});	
 			
-	}, 15000);
+	}, 15000, sensor);
 	
 
 	database.AREA.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': true, 'alarmActivate.sensor.name': sensor.name }}, function (err, data) {});	
