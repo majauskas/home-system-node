@@ -4,6 +4,6 @@
 	     "pass": "****",
 	     "from": "Casa<sicurezza@home-system.com>",
 	     "to": "m.ajauskas@hotmail.it",
-         "multipleRecipients": "email_1,email2"
+         "multipleRecipients": "email_1, email2"
 	 }
 }

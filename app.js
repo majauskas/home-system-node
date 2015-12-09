@@ -145,10 +145,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	  });	 
   });
   
-//  email("Home System Attivato", "App listening at http://"+host+":"+port);
-  
-  email("test 1 isMultipleRecipients=false", "test1 ");
-  email("test 2 isMultipleRecipients=true ", "test2 ",true);
+  email("Home System Attivato", "App listening at http://"+host+":"+port);
 });
 
 app.get('/home-system', function(req, res) {
@@ -276,7 +273,7 @@ function alarmDetection(sensor, areaId) {
 	alarmTimer = setTimeout(function(sensor) {
 		    if(!isAlarmActivated){return;}
 		    
-			email("Sound", sensor.name + "\n Sirena allarme attivata");
+			email("Sound", sensor.name + "\n Sirena allarme attivata\n\n Per disattivarlo vai qui: http://ajauskas.dyndns.org:8081",true);
 			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3", _volumeSirena ,"-q -v -l10");//repeat mp3
 			Siren.on();
