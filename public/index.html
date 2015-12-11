@@ -50,7 +50,7 @@
 	<script type="text/javascript" src="js/pir-sensors.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/wifi-sensors.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/lan-devices.js" charset="iso-8859-1"></script>
-	<script type="text/javascript" src="js/audio.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/configuration.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/alarm-auto-on-off.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/zone.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/light-controllers.js" charset="iso-8859-1"></script>
@@ -522,36 +522,6 @@
 </div> 
 
 
-<div id="AUDIO-PAGE" data-role="page">
-	<div data-role="header" data-position="fixed">
-		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
-		<h1>Audio<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
-		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
-	</div>
-	<div class="ui-content">
-
-		<fieldset>
-			<legend><table><tr><td style="color: white">Sirena</td><td><img style="padding-left: 10px" src="images/Volume-Slider-32.png"/></td></tr></table></legend>
-			<table width="100%" style="border-collapse: collapse">
-				<tr>
-					<input type="range" name="slider-siren-volume" id="slider-siren-volume" value="" step="1" min="0" max="100" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
-				</tr>
-			</table>	
-		</fieldset>	
-		<br> 
-		<fieldset>
-			<legend><table><tr><td style="color: white">Voce</td><td><img style="padding-left: 10px" src="images/Volume-Slider-32.png"/></td></tr></table></legend>
-			<table width="100%" style="border-collapse: collapse">
-				<tr>
-					<input type="range" name="slider-voice-volume" id="slider-voice-volume" value="90" step="1" min="0" max="100" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
-				</tr>
-			</table>	
-		</fieldset>	
-	</div>
-
-</div> 	
-
-
 <div id="LAN-DEVICE-PAGE" data-role="page">
 	<div data-role="header" data-position="fixed">
 		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
@@ -964,6 +934,48 @@
 </div> 
 
 
+
+
+<div id="CONFIGURATION-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Audio<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div class="ui-content">
+
+		<fieldset>
+			<legend><table><tr><td style="color: white">Siren Timer(min)</td><td><img style="padding-left: 10px" src="images/siren.png" width="40px" height="40px"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+					<input type="range" name="slider-siren-timer" id="slider-siren-timer" value="" step="1" min="0" max="30" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>	
+		<br>
+		<fieldset>
+			<legend><table><tr><td style="color: white">Siren Volume(%)</td><td><img style="padding-left: 10px" src="images/Volume-Slider-32.png"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+					<input type="range" name="slider-siren-volume" id="slider-siren-volume" value="" step="1" min="0" max="100" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>	
+		<br> 
+		<fieldset>
+			<legend><table><tr><td style="color: white">Voice Volume(%)</td><td><img style="padding-left: 10px" src="images/Volume-Slider-32.png"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+					<input type="range" name="slider-voice-volume" id="slider-voice-volume" value="90" step="1" min="0" max="100" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>	
+	</div>
+
+</div> 
+
+
+
 <div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
 	<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
 		<li data-icon="sensor"><a href="#SENSORI-PIR-PAGE">PIR Sensors</a></li>
@@ -972,7 +984,7 @@
 	    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Remote Controllers</a></li>
 	    <li data-icon="listbox"><a href="#EVENTS-PAGE">Events</a></li>
 	    <li data-icon="switch"><a href="#LIGHT-CONTROLLERS-PAGE">Light Controllers</a></li>
-	    <li data-icon="speaker"><a href="#AUDIO-PAGE">Audio</a></li>
+	    <li data-icon="options"><a href="#CONFIGURATION-PAGE">Configuration</a></li>
 	    <li data-icon="network"><a href="#LAN-DEVICE-PAGE">Network Devices</a></li>
 	    <li data-icon="scheduler"><a href="#SCHEDULER-PAGE">Scheduler</a></li>
 	</ul>

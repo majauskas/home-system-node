@@ -126,18 +126,17 @@ var server = app.listen(process.env.PORT || 8081, function () {
   
   MCP23017.scanPirSensors(function(data) {
 	  
-	  database.PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, doc) {
+	  database.PIR_SENSOR.findOneAndUpdate({code : data.code}, data, {upsert : true }, function (err, sensor) {
 		
-		var code = doc.code;
-		database.PIR_SENSOR.find({}).sort('-date').exec(function(err, doc) {
-			if(!doc) {return;}
+		var code = sensor.code;
+		database.PIR_SENSOR.find({}).sort('-date').exec(function(err, sensors) {
+			if(!sensors) {return;}
 			
-			io.sockets.emit("PIRSENSOR", doc);
+			io.sockets.emit("PIRSENSOR", sensors);
 			
 			database.AREA.findOne({isActivated:true, activeSensors : code }).exec(function(err, area) {
 				if(area){
-					alarmDetection(doc, area._id);
-						
+					alarmDetection(sensor, area._id);
 				}
 			});				
 			
@@ -191,7 +190,11 @@ io.sockets.on('connection', function (socket) {
 	socket.on('SOCKET-CHANGE-SIREN-VOLUME', function (value) {
 		_volumeSirena = value;
 		database.CONFIGURATION.findOneAndUpdate({}, { 'audio.volumeSirena' : value}, function (err, doc) {});
-	});	
+	});
+	
+	socket.on('SOCKET-CHANGE-SIREN-TIMER', function (value) {
+		database.CONFIGURATION.findOneAndUpdate({}, { 'outsideSiren.auto_off_timer' : value}, function (err, doc) {});
+	});		
 
 	socket.on('SOCKET-CHANGE-VOICE-VOLUME', function (value) {
 		_volumeVoce = value;
@@ -272,25 +275,26 @@ function alarmDetection(sensor, areaId) {
 	
 	alarmTimer = setTimeout(function(sensor) {
 		    if(!isAlarmActivated){return;}
-		    
-			email("Sound", sensor.name + "\n Sirena allarme attivata\n\n Per disattivarlo vai qui: http://ajauskas.dyndns.org:8081",true);
+		    console.log("Attenzione, Allarme Attivato. sensor:", sensor);
+			email("Attenzione, Allarme Attivato", sensor.name + "\n Sirena allarme attivata\n\n Per disattivarlo vai qui: http://ajauskas.dyndns.org:8081",true);
 			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3", _volumeSirena ,"-q -v -l10");//repeat mp3
 			Siren.on();
 			
 			
 			database.CONFIGURATION.findOne({}).exec(function(err, data) {
-				var off_timeout = data.outsideSiren.off_timeout;
-				console.log("auto disarm after", off_timeout);
+				var auto_off_timer = data.outsideSiren.auto_off_timer;
+				auto_off_timer = auto_off_timer * 60000;
+				console.log("auto disarm after", auto_off_timer);
 				setTimeout(function(areaId) {
 					console.log("auto disarm areaId ", areaId, new Date());
 					disarm(areaId);
-				}, off_timeout, areaId);
+				}, auto_off_timer, areaId);
 			});	
 			
 	}, 15000, sensor);
 	
-
+	console.log("Avviso Allarme. sensor:", sensor);
 	database.AREA.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': true, 'alarmActivate.sensor.name': sensor.name }}, function (err, data) {});	
 	
 	database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Avviso Allarme: "+sensor.name}}, function (err, data) {});
@@ -714,6 +718,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 				isBatteryLow = true;
 			}
 			
+			console.log(code, binCode, "isOpen:",isOpen, "isBatteryLow:",isBatteryLow, new Date());
 		}
 //		000011110011110100000000|0000|101|0|10101010        batt KO inserita
 //		000011111010010100000000|0000|101|1|01000001        batt OK inserita
@@ -735,16 +740,16 @@ app.post('/433mhz/:binCode', function(req, res) {
 //		000011110011110100000000|1000|011|1|00101101        batt OK(nuova), close
 //		000011110011110100000000|0010|011|1|10001101		batt OK(nuova), open
 		
-		
-		
-		console.log(code, binCode, "isOpen:",isOpen, "isBatteryLow:",isBatteryLow, new Date());
+		else if(binCode.length === 24){
+			console.log(code, binCode, new Date());
+		}
 		
 		io.sockets.emit("433MHZ", {code:code,binCode:binCode});	
 		
 		database.AREA.findOne({isActivated:true, activeSensors : code.toString() }).exec(function(err, area) {
 			if(area){
 				database.WIFISENSOR.findOne({code:code}, function(err, sensor){
-					if(sensor.isOpen !== false && sensor.isOpen !== null){
+					if( (sensor.isOpen !== false && sensor.isOpen !== null) || sensor.binCode.length === 24){ //24bit sensore porta ingresso
 						alarmDetection(sensor, area._id);
 					}
 				});	
