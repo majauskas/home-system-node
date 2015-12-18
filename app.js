@@ -6,7 +6,7 @@ var path = require('path');
 var fs = require('fs');
 var bodyParser = require('body-parser');
 var os = require('os');
-//var _later = require('later');
+var _later = require('later');
 
 
 var email = require('./lib/email.js');
@@ -357,42 +357,46 @@ app.get('/schedulers', function(req, res) {
 	database.SCHEDULERS.find({}).sort('name').exec(function(err, data) { res.send(data); });
 });
 
-//app.put('/schedulers/:id', function(req, res) {
-//	
-//
-//	_later.date.localTime();
-//	var s = _later.parse.cron(req.body.cronExpression);
-//	var lastOccurrence = _later.schedule(s).prev(1);
-//	var nextOccurrence = _later.schedule(s).next(1);
-//	
-//	if(req.params.id === "undefined"){
-//		req.body.lastOccurrence = lastOccurrence;
-//		req.body.nextOccurrence = nextOccurrence;
-//		req.body.date = new Date();
-//		
-//		database.SCHEDULERS.create(req.body, function (err, data) {
-//			if(err){console.log(err); res.status(500).send(err); }
-//			else { res.send({}); }
-//		});	
-//		
-//	}else{
-//
-//		database.SCHEDULERS.update({_id : req.params.id}, {
-//															cronExpression: req.body.cronExpression, 
-//															name: req.body.name,
-//															lastOccurrence: lastOccurrence,
-//															nextOccurrence: nextOccurrence,
-//															isEnabled: req.body.isEnabled,
-//															date: new Date(),
-//															'$set':  {'commands': req.body.commands}
-//														  }, function (err, data) {
-//			if(err){console.log(err); res.status(500).send(err); }
-//			else { res.send({}); }
-//		});	
-//	}
-//});
+app.put('/schedulers/:id', function(req, res) {
+	
 
+	_later.date.localTime();
+	var s = _later.parse.cron(req.body.cronExpression);
+	var lastOccurrence = _later.schedule(s).prev(1);
+	var nextOccurrence = _later.schedule(s).next(1);
+	
+	if(req.params.id === "undefined"){
+		req.body.lastOccurrence = lastOccurrence;
+		req.body.nextOccurrence = nextOccurrence;
+		req.body.date = new Date();
+		
+		database.SCHEDULERS.create(req.body, function (err, data) {
+			if(err){console.log(err); res.status(500).send(err); }
+			else { res.send({}); }
+		});	
+		
+	}else{
 
+		database.SCHEDULERS.update({_id : req.params.id}, {
+															cronExpression: req.body.cronExpression, 
+															name: req.body.name,
+															lastOccurrence: lastOccurrence,
+															nextOccurrence: nextOccurrence,
+															isEnabled: req.body.isEnabled,
+															date: new Date(),
+															'$set':  {'commands': req.body.commands}
+														  }, function (err, data) {
+			if(err){console.log(err); res.status(500).send(err); }
+			else { res.send({}); }
+		});	
+	}
+});
+
+app.del('/schedulers/:id', function(req, res) {
+	database.SCHEDULERS.findByIdAndRemove(req.params.id, function (err, data) {
+		 res.send({});
+	});
+});
 
 app.get('/lights', function(req, res) {
 	database.LIGHTS.find({}).sort('name').exec(function(err, data) { res.send(data); });
@@ -837,7 +841,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 
 
 //sudo arp-scan --interface=wlan0 --localnet
-//https://ajauskas.dyndns.org:8080/setup.cgi?todo=nbtscan_refresh&this_file=DEV_devices.htm&next_file=DEV_devices.htm&SID=
+//https://ajauskas.homenet.org:8080/setup.cgi?todo=nbtscan_refresh&this_file=DEV_devices.htm&next_file=DEV_devices.htm&SID=
 //sudo nmap -sP -PE -PA 192.168.0.* | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}|([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}"
 
 //sudo arp -n | grep -E "([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}"  
