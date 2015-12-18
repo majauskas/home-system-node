@@ -114,9 +114,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 				});
 			}
 			
-
-			
-			
 		});
 		
   });
@@ -254,8 +251,9 @@ io.sockets.on('connection', function (socket) {
 var isAlarmActivated = false;
 var alarmTimer = null;
 var avvisoAllarmeTimer = null;
+var autoOffTimer = null;
 function alarmDetection(sensor, areaId) {
-	if(isAlarmActivated){return;}
+	if(isAlarmActivated === true){return;}
 	
 	isAlarmActivated = true;
 	console.log("alarmDetection ", sensor, areaId);
@@ -268,15 +266,15 @@ function alarmDetection(sensor, areaId) {
 	
 	
 	avvisoAllarmeTimer = setTimeout(function() {
-	    if(!isAlarmActivated){return;}
+	    if(isAlarmActivated === false){return;}
 	    
 	    Sound.playMp3("/home/pi/home-system-node/mp3/AvvisoAllarme.mp3", _volumeVoce);
 	}, 5000);
 	
 	alarmTimer = setTimeout(function(sensor) {
-		    if(!isAlarmActivated){return;}
+		    if(isAlarmActivated === false){return;}
 		    console.log("Attenzione, Allarme Attivato. sensor:", sensor);
-			email("Attenzione, Allarme Attivato", sensor.name + "\n Sirena allarme attivata\n\n Per disattivarlo vai qui: http://ajauskas.dyndns.org:8081",true);
+			email("Attenzione, Allarme Attivato", sensor.name + "\n Sirena allarme attivata\n\n Per disattivarlo vai qui: http://ajauskas.homenet.org:8081",true);
 			database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Sirena Allarme Attivata"}}, function (err, data) {});
 			Sound.playMp3("/home/pi/home-system-node/mp3/Siren.mp3", _volumeSirena ,"-q -v -l10");//repeat mp3
 			Siren.on();
@@ -284,10 +282,12 @@ function alarmDetection(sensor, areaId) {
 			
 			database.CONFIGURATION.findOne({}).exec(function(err, data) {
 				var auto_off_timer = data.outsideSiren.auto_off_timer;
-				auto_off_timer = auto_off_timer * 60000;
+//				auto_off_timer = auto_off_timer * 60000;
+				auto_off_timer = 10000;
 				console.log("auto disarm after", auto_off_timer);
-				setTimeout(function(areaId) {
-					console.log("auto disarm areaId ", areaId, new Date());
+				autoOffTimer = setTimeout(function(areaId) {
+					console.log("auto disarm areaId", areaId, new Date());
+					database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Auto Disarm areaId "+areaId}}, function (err, data) {});
 					disarm(areaId);
 				}, auto_off_timer, areaId);
 			});	
@@ -303,16 +303,19 @@ function alarmDetection(sensor, areaId) {
 
 
 function disarm(areaId) {
-	isAlarmActivated = false;
+	
 	console.log("DISARM", areaId, new Date());
 	clearTimeout(alarmTimer);
 	clearTimeout(avvisoAllarmeTimer);
+	if(autoOffTimer){clearTimeout(autoOffTimer);}
+	
 	Sound.kill();
 	Siren.off();
 	
 	database.AREA.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': false, 'alarmActivate.sensor.name': null }}, function (err, data) {});	
 	database.EVENT.create({code:"",binCode:"", date: new Date(), device:{provider:"system", name:"Allarme disattivato"}}, function (err, data) {});
 	
+	isAlarmActivated = false;
 }
 
 
@@ -621,7 +624,7 @@ app.del('/Area/:id', function(req, res) {
 
 //----------- EVENTS ---------------------------------------------
 app.get('/Event', function(req, res) {
-	database.EVENT.find({},'-__v -code -binCode -device.provider').sort('-date').limit(15).exec(function(err, data) {
+	database.EVENT.find({},'-__v -code -binCode -device.provider').sort('-date').limit(30).exec(function(err, data) {
 		if(err){console.log(err); res.status(500).send(err); }
 		else {res.send(data); }
 	});		
