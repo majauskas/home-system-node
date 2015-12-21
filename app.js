@@ -44,18 +44,6 @@ var server = app.listen(process.env.PORT || 8081, function () {
 	}
 
 	
-//	new CronJob({
-//		  cronTime: '00 13 07 * * 1-5',
-//		  onTick: function() {
-//
-//		  },
-//		  onComplete: function() {},
-//		  startNow: true,
-//		  timeZone: null,
-//		  context: null
-//		});
-	
-		
 	
   var port = server.address().port;
   console.log('app listening at http://%s:%s', host, port);
@@ -1107,6 +1095,68 @@ function checkJobs() {
 }
 
 
+
+
+new CronJob({
+	cronTime : '00 15 13 * * *',
+	onTick : function() {
+
+		var code = "0x22-GPA4";
+		
+		var address = parseInt(code.substring(0, 4), 16);
+		var port = code.substring(7, 8);
+		var pin = code.substring(8);
+							
+		console.log(address, port, pin);
+		var isOn = LightsController.writePin(address, port, pin, 1);
+		console.log("isOn", isOn);
+		database.LIGHTS.update({code : code}, {isOn: true, date: new Date()}, function (err, arg) {});	
+
+		setTimeout(function(code, address, port, pin) {
+			var isOn = LightsController.writePin(address, port, pin, 0);
+			console.log(address, port, pin, "isOn:", isOn);
+			database.LIGHTS.update({code : code}, {isOn: false, date: new Date()}, function (err, arg) {});
+		}, 900000 , code, address, port, pin); //15min
+		
+	},
+	onComplete : function() {
+		
+	},
+	startNow : true,
+	timeZone : null,
+	context : null
+});
+
+
+new CronJob({
+	cronTime : '00 35 13 * * *',
+	onTick : function() {
+
+		var code = "0x22-GPA3";
+		
+		var address = parseInt(code.substring(0, 4), 16);
+		var port = code.substring(7, 8);
+		var pin = code.substring(8);
+							
+		console.log(address, port, pin);
+		var isOn = LightsController.writePin(address, port, pin, 1);
+		console.log("isOn", isOn);
+		database.LIGHTS.update({code : code}, {isOn: true, date: new Date()}, function (err, arg) {});	
+
+		setTimeout(function(code, address, port, pin) {
+			var isOn = LightsController.writePin(address, port, pin, 0);
+			console.log(address, port, pin, "isOn:", isOn);
+			database.LIGHTS.update({code : code}, {isOn: false, date: new Date()}, function (err, arg) {});
+		}, 900000 , code, address, port, pin); //15min
+		
+	},
+	onComplete : function() {
+		
+	},
+	startNow : true,
+	timeZone : null,
+	context : null
+});
 
 
 //************* TESTS ******************
