@@ -283,7 +283,7 @@ function alarmDetection(sensor, areaId) {
 			database.CONFIGURATION.findOne({}).exec(function(err, data) {
 				var auto_off_timer = data.outsideSiren.auto_off_timer;
 //				auto_off_timer = auto_off_timer * 60000;
-				auto_off_timer = 10000;
+				auto_off_timer = 20000;
 				console.log("auto disarm after", auto_off_timer);
 				autoOffTimer = setTimeout(function(areaId) {
 					console.log("auto disarm areaId", areaId, new Date());
