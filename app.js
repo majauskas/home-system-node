@@ -270,8 +270,7 @@ function alarmDetection(sensor, areaId) {
 			
 			database.CONFIGURATION.findOne({}).exec(function(err, data) {
 				var auto_off_timer = data.outsideSiren.auto_off_timer;
-//				auto_off_timer = auto_off_timer * 60000;
-				auto_off_timer = 20000;
+				auto_off_timer = auto_off_timer * 60000;
 				console.log("auto disarm after", auto_off_timer);
 				autoOffTimer = setTimeout(function(areaId) {
 					console.log("auto disarm areaId", areaId, new Date());
@@ -1096,67 +1095,61 @@ function checkJobs() {
 
 
 
+ 
+function autoOnOffLight(cron, offTimeout, code) {
 
-new CronJob({
-	cronTime : '00 15 13 * * *',
-	onTick : function() {
+	new CronJob({
+		cronTime : cron,
+		onTick : function() {
+			
+			var address = parseInt(code.substring(0, 4), 16);
+			var port = code.substring(7, 8);
+			var pin = code.substring(8);
+								
+			console.log(address, port, pin);
+			var isOn = LightsController.writePin(address, port, pin, 1);
+			console.log("isOn", isOn);
+			database.LIGHTS.update({code : code}, {isOn: true, date: new Date()}, function (err, arg) {});	
 
-		var code = "0x22-GPA4";
-		
-		var address = parseInt(code.substring(0, 4), 16);
-		var port = code.substring(7, 8);
-		var pin = code.substring(8);
-							
-		console.log(address, port, pin);
-		var isOn = LightsController.writePin(address, port, pin, 1);
-		console.log("isOn", isOn);
-		database.LIGHTS.update({code : code}, {isOn: true, date: new Date()}, function (err, arg) {});	
+			setTimeout(function(code, address, port, pin) {
+				var isOn = LightsController.writePin(address, port, pin, 0);
+				console.log(address, port, pin, "isOn:", isOn);
+				database.LIGHTS.update({code : code}, {isOn: false, date: new Date()}, function (err, arg) {});
+			}, offTimeout , code, address, port, pin); //15min
+			
+		},
+		onComplete : function() {
+			
+		},
+		startNow : true,
+		timeZone : null,
+		context : null
+	});
+	
+}
 
-		setTimeout(function(code, address, port, pin) {
-			var isOn = LightsController.writePin(address, port, pin, 0);
-			console.log(address, port, pin, "isOn:", isOn);
-			database.LIGHTS.update({code : code}, {isOn: false, date: new Date()}, function (err, arg) {});
-		}, 900000 , code, address, port, pin); //15min
-		
-	},
-	onComplete : function() {
-		
-	},
-	startNow : true,
-	timeZone : null,
-	context : null
-});
+autoOnOffLight("00 00 20 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
+autoOnOffLight("00 01 20 * * *", 60000*15, "0x22-GPA5"); //"Corridoio"
 
 
-new CronJob({
-	cronTime : '00 35 13 * * *',
-	onTick : function() {
+autoOnOffLight("00 01 22 * * *", 60000*10, "0x22-GPA3"); //"Camera da letto 1"
+autoOnOffLight("00 01 22 * * *", 60000*10, "0x22-GPA6"); //"Camera da letto 2"
+autoOnOffLight("00 02 22 * * *", 60000*10, "0x22-GPA5"); //"Corridoio"
 
-		var code = "0x22-GPA3";
-		
-		var address = parseInt(code.substring(0, 4), 16);
-		var port = code.substring(7, 8);
-		var pin = code.substring(8);
-							
-		console.log(address, port, pin);
-		var isOn = LightsController.writePin(address, port, pin, 1);
-		console.log("isOn", isOn);
-		database.LIGHTS.update({code : code}, {isOn: true, date: new Date()}, function (err, arg) {});	
+autoOnOffLight("00 30 22 * * *", 60000*10, "0x22-GPA4"); //"Cameretta"
 
-		setTimeout(function(code, address, port, pin) {
-			var isOn = LightsController.writePin(address, port, pin, 0);
-			console.log(address, port, pin, "isOn:", isOn);
-			database.LIGHTS.update({code : code}, {isOn: false, date: new Date()}, function (err, arg) {});
-		}, 900000 , code, address, port, pin); //15min
-		
-	},
-	onComplete : function() {
-		
-	},
-	startNow : true,
-	timeZone : null,
-	context : null
-});
+
+autoOnOffLight("00 40 23 * * *", 60000*10, "0x22-GPA4"); //"Cameretta"
+autoOnOffLight("00 41 23 * * *", 60000*10, "0x22-GPA5"); //"Corridoio"
+
+
+//autoOnOffLight("00 00 02 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
+//autoOnOffLight("00 01 02 * * *", 60000*15, "0x22-GPA5"); //"Corridoio"
+//
+//autoOnOffLight("00 25 03 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
+//autoOnOffLight("00 26 03 * * *", 60000*15, "0x22-GPA5"); //"Corridoio"
+
+
 
 
 //************* TESTS ******************
