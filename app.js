@@ -77,7 +77,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 									duration = (duration / 3600000); //ore
 									kWh += (record.watt / 1000) * duration;
 								});
-								var cost = kWh * 0.063080;
+								var cost = kWh * 0.16;
 								console.log({kWh: kWh, cost:cost});
 								database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
 							});
@@ -217,7 +217,7 @@ io.sockets.on('connection', function (socket) {
 						duration = (duration / 3600000); //ore
 						kWh += (record.watt / 1000) * duration;
 					});
-					var cost = kWh * 0.063080;
+					var cost = kWh * 0.16;
 					console.log({kWh: kWh, cost:cost});
 					database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
 				});
@@ -1110,11 +1110,32 @@ function autoOnOffLight(cron, offTimeout, code) {
 			var isOn = LightsController.writePin(address, port, pin, 1);
 			console.log("isOn", isOn);
 			database.LIGHTS.update({code : code}, {isOn: true, date: new Date()}, function (err, arg) {});	
-
+			database.LIGHT_HISTORY.findOneAndUpdate({code : code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
+			
 			setTimeout(function(code, address, port, pin) {
+				
 				var isOn = LightsController.writePin(address, port, pin, 0);
 				console.log(address, port, pin, "isOn:", isOn);
 				database.LIGHTS.update({code : code}, {isOn: false, date: new Date()}, function (err, arg) {});
+				
+				
+				database.LIGHT_HISTORY.findOneAndUpdate({code : code, date_off : null}, {date_off : new Date(), watt:60 }, function (err, res) {
+					
+					var date = new Date();
+					var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
+					database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay}}).exec(function(err, records){
+						var kWh = 0;
+						records.forEach(function(record) {
+							var duration = Number(record.date_off - record.date_on); 
+							duration = (duration / 3600000); //ore
+							kWh += (record.watt / 1000) * duration;
+						});
+						var cost = kWh * 0.16;
+						console.log({kWh: kWh, cost:cost});
+						database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
+					});
+				});
+				
 			}, offTimeout , code, address, port, pin); //15min
 			
 		},
@@ -1127,6 +1148,7 @@ function autoOnOffLight(cron, offTimeout, code) {
 	});
 	
 }
+
 
 autoOnOffLight("00 00 20 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
 autoOnOffLight("00 01 20 * * *", 60000*15, "0x22-GPA5"); //"Corridoio"
