@@ -1120,6 +1120,7 @@ function autoOnOffLight(cron, offTimeout, code) {
 				
 				
 				database.LIGHT_HISTORY.findOneAndUpdate({code : code, date_off : null}, {date_off : new Date(), watt:60 }, function (err, res) {
+					if(!res) {return;}
 					
 					var date = new Date();
 					var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -1151,27 +1152,24 @@ function autoOnOffLight(cron, offTimeout, code) {
 
 
 autoOnOffLight("00 00 20 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
-autoOnOffLight("00 01 20 * * *", 60000*15, "0x22-GPA5"); //"Corridoio"
 
 
 autoOnOffLight("00 01 22 * * *", 60000*10, "0x22-GPA3"); //"Camera da letto 1"
 autoOnOffLight("00 01 22 * * *", 60000*10, "0x22-GPA6"); //"Camera da letto 2"
-autoOnOffLight("00 02 22 * * *", 60000*10, "0x22-GPA5"); //"Corridoio"
 
 autoOnOffLight("00 30 22 * * *", 60000*10, "0x22-GPA4"); //"Cameretta"
 
 
 autoOnOffLight("00 40 23 * * *", 60000*10, "0x22-GPA4"); //"Cameretta"
-autoOnOffLight("00 41 23 * * *", 60000*10, "0x22-GPA5"); //"Corridoio"
+//autoOnOffLight("00 41 23 * * *", 60000*10, "0x22-GPA5"); //"Corridoio"
 
 
-//autoOnOffLight("00 00 02 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
-//autoOnOffLight("00 01 02 * * *", 60000*15, "0x22-GPA5"); //"Corridoio"
-//
-//autoOnOffLight("00 25 03 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
-//autoOnOffLight("00 26 03 * * *", 60000*15, "0x22-GPA5"); //"Corridoio"
+autoOnOffLight("00 00 02 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
 
+autoOnOffLight("00 25 03 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
 
+autoOnOffLight("00 50 03 * * *", 60000*10, "0x22-GPA3"); //"Camera da letto 1"
+autoOnOffLight("00 50 03 * * *", 60000*10, "0x22-GPA6"); //"Camera da letto 2"
 
 
 //************* TESTS ******************
