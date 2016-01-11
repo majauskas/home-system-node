@@ -70,7 +70,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 							
 							var date = new Date();
 							var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
-							database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay} }).exec(function(err, records){
+							database.LIGHT_HISTORY.find({code : res.code, date_off: {$gte: firstMonthDay, $ne: null} }).exec(function(err, records){
 								var kWh = 0;
 								records.forEach(function(record) {
 									var duration = Number(record.date_off - record.date_on); 
@@ -210,7 +210,7 @@ io.sockets.on('connection', function (socket) {
 				
 				var date = new Date();
 				var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
-				database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay}}).exec(function(err, records){
+				database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay, $ne: null}}).exec(function(err, records){
 					var kWh = 0;
 					records.forEach(function(record) {
 						var duration = Number(record.date_off - record.date_on); 
@@ -1124,7 +1124,7 @@ function autoOnOffLight(cron, offTimeout, code) {
 					
 					var date = new Date();
 					var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
-					database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay}}).exec(function(err, records){
+					database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay, $ne: null}}).exec(function(err, records){
 						var kWh = 0;
 						records.forEach(function(record) {
 							var duration = Number(record.date_off - record.date_on); 
@@ -1170,4 +1170,12 @@ function autoOnOffLight(cron, offTimeout, code) {
 //		io.sockets.emit("socket-lights", lights);
 //	});
 //}, 5000);
+
+//var waApi = require('node-wa').waApi;
+//var crypto = require('crypto');
+//var password = crypto.createHash('md5').update('C8:85:50:6C:B7:0AC8:85:50:6C:B7:0A').digest("hex");
+////var password = crypto.createHash('md5').update('329051160070235').digest("hex");
+//var wa = new waApi(393473834506, password, { displayName: 'Minde', debug: true });
+//wa.sendMessageWithBody({ content: "Message Content", to: "00393473834506"});
+//
 
