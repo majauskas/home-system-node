@@ -7,10 +7,11 @@ var fs = require('fs');
 var bodyParser = require('body-parser');
 var os = require('os');
 var _later = require('later');
-
+//var _prettyCron = require('prettycron');
 
 var email = require('./lib/email.js');
 var database = require('./lib/database.js');
+var schedulers = require('./lib/schedulers.js');
 var MCP23017 = require('./lib/MCP23017.js');
 var Sound = require('./lib/Sound.js');
 var Siren = require('./lib/Siren.js');
@@ -340,12 +341,7 @@ app.get('/schedulers', function(req, res) {
 	database.SCHEDULERS.find({}).sort('name').exec(function(err, data) { res.send(data); });
 });
 
-app.get('/schedulers', function(req, res) {
-	database.SCHEDULERS.find({}).sort('name').exec(function(err, data) { res.send(data); });
-});
-
 app.put('/schedulers/:id', function(req, res) {
-	
 
 	_later.date.localTime();
 	var s = _later.parse.cron(req.body.cronExpression);
@@ -377,12 +373,16 @@ app.put('/schedulers/:id', function(req, res) {
 			else { res.send({}); }
 		});	
 	}
+	
+	schedulers.execute(database,LightsController);
+	
 });
 
 app.del('/schedulers/:id', function(req, res) {
 	database.SCHEDULERS.findByIdAndRemove(req.params.id, function (err, data) {
 		 res.send({});
 	});
+	schedulers.execute(database,LightsController);
 });
 
 app.get('/lights', function(req, res) {
@@ -971,7 +971,6 @@ function startAutoOnOff() {
 
 var cronAllJobs = [];
 checkJobs();
-
 function checkJobs() {
 
 	
@@ -988,9 +987,6 @@ function checkJobs() {
 		areas.forEach(function(area) {
 			
 			area.schedulers.forEach(function(scheduler) {
-				
-//				console.log(area);
-
 				var id = scheduler.id;
 				var from = scheduler.from.split(":");
 				var to = scheduler.to.split(":");
@@ -1023,7 +1019,6 @@ function checkJobs() {
 			
 			
 			if(area.auto_on_off && area.auto_on_off.scheduler){
-				
 				
 				var scheduler = area.auto_on_off.scheduler;
 				console.log("scheduler",scheduler);
@@ -1077,16 +1072,7 @@ function checkJobs() {
 				
 				cronAllJobs.push({jobFrom: cronJobFrom, jobTo: cronJobTo});
 				
-				
-			}
-			
-//			area.auto_on_off = area.auto_on_off || {};
-//			area.auto_on_off.scheduler = area.auto_on_off.scheduler || {};
-//			
-		
-			
-			
-			
+			}			
 		});		
 		
 		
@@ -1095,61 +1081,71 @@ function checkJobs() {
 
 
 
+
+
+
+schedulers.execute(database, LightsController);
+
+
+
+
+
+
+
  
-function autoOnOffLight(cron, offTimeout, code) {
-
-	new CronJob({
-		cronTime : cron,
-		onTick : function() {
-			
-			var address = parseInt(code.substring(0, 4), 16);
-			var port = code.substring(7, 8);
-			var pin = code.substring(8);
-								
-			console.log(address, port, pin);
-			var isOn = LightsController.writePin(address, port, pin, 1);
-			console.log("isOn", isOn);
-			database.LIGHTS.update({code : code}, {isOn: true, date: new Date()}, function (err, arg) {});	
-			database.LIGHT_HISTORY.findOneAndUpdate({code : code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
-			
-			setTimeout(function(code, address, port, pin) {
-				
-				var isOn = LightsController.writePin(address, port, pin, 0);
-				console.log(address, port, pin, "isOn:", isOn);
-				database.LIGHTS.update({code : code}, {isOn: false, date: new Date()}, function (err, arg) {});
-				
-				
-				database.LIGHT_HISTORY.findOneAndUpdate({code : code, date_off : null}, {date_off : new Date(), watt:60 }, function (err, res) {
-					if(!res) {return;}
-					
-					var date = new Date();
-					var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
-					database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay, $ne: null}}).exec(function(err, records){
-						var kWh = 0;
-						records.forEach(function(record) {
-							var duration = Number(record.date_off - record.date_on); 
-							duration = (duration / 3600000); //ore
-							kWh += (record.watt / 1000) * duration;
-						});
-						var cost = kWh * 0.16;
-						console.log({kWh: kWh, cost:cost});
-						database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
-					});
-				});
-				
-			}, offTimeout , code, address, port, pin); //15min
-			
-		},
-		onComplete : function() {
-			
-		},
-		startNow : true,
-		timeZone : null,
-		context : null
-	});
-	
-}
-
+//function autoOnOffLight(cron, offTimeout, code) {
+//
+//	new CronJob({
+//		cronTime : cron,
+//		onTick : function() {
+//			
+//			var address = parseInt(code.substring(0, 4), 16);
+//			var port = code.substring(7, 8);
+//			var pin = code.substring(8);
+//								
+//			console.log(address, port, pin);
+//			var isOn = LightsController.writePin(address, port, pin, 1);
+//			console.log("isOn", isOn);
+//			database.LIGHTS.update({code : code}, {isOn: true, date: new Date()}, function (err, arg) {});	
+//			database.LIGHT_HISTORY.findOneAndUpdate({code : code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
+//			
+//			setTimeout(function(code, address, port, pin) {
+//				
+//				var isOn = LightsController.writePin(address, port, pin, 0);
+//				console.log(address, port, pin, "isOn:", isOn);
+//				database.LIGHTS.update({code : code}, {isOn: false, date: new Date()}, function (err, arg) {});
+//				
+//				
+//				database.LIGHT_HISTORY.findOneAndUpdate({code : code, date_off : null}, {date_off : new Date(), watt:60 }, function (err, res) {
+//					if(!res) {return;}
+//					
+//					var date = new Date();
+//					var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
+//					database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay, $ne: null}}).exec(function(err, records){
+//						var kWh = 0;
+//						records.forEach(function(record) {
+//							var duration = Number(record.date_off - record.date_on); 
+//							duration = (duration / 3600000); //ore
+//							kWh += (record.watt / 1000) * duration;
+//						});
+//						var cost = kWh * 0.16;
+//						console.log({kWh: kWh, cost:cost});
+//						database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
+//					});
+//				});
+//				
+//			}, offTimeout , code, address, port, pin); //15min
+//			
+//		},
+//		onComplete : function() {
+//			
+//		},
+//		startNow : true,
+//		timeZone : null,
+//		context : null
+//	});
+//	
+//}
 
 //autoOnOffLight("00 00 20 * * *", 60000*15, "0x22-GPA4"); //"Cameretta"
 //autoOnOffLight("00 01 22 * * *", 60000*10, "0x22-GPA3"); //"Camera da letto 1"
@@ -1178,4 +1174,13 @@ function autoOnOffLight(cron, offTimeout, code) {
 //var wa = new waApi(393473834506, password, { displayName: 'Minde', debug: true });
 //wa.sendMessageWithBody({ content: "Message Content", to: "00393473834506"});
 //
+
+
+
+
+//console.log("_prettyCron",_prettyCron.toString("* 16-18 * * *"));
+
+
+
+
 

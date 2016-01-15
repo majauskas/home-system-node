@@ -71,12 +71,17 @@ $(document).on("pagecreate","#SCHEDULER-PAGE", function(){
 		type : 'GET',
 		url : "/schedulers",
 		success: function(response) {
-			APPLICATION.schedulers = response;
 			
 			$("#listview-schedulers").empty();
-			$.each(response, function (i, obj) { obj.target = JSON.stringify(obj); });
+			$.each(response, function (i, obj) { 
+				obj.commands = obj.commands || []; 
+				obj.target = JSON.stringify(obj); 
+			});
 			$("#template-schedulers").tmpl( response ).appendTo( "#listview-schedulers" );		
 			$("#listview-schedulers").listview("refresh");
+			
+			APPLICATION.schedulers = response;
+			console.log(response);
 			
         }
 	});	
@@ -108,8 +113,6 @@ $(document).on("pagecreate","#EDIT-SCHEDULER-PAGE", function(){
 		
 	}else{
 		data={commands:[]};
-		
-		
 	}
 	
 
@@ -168,10 +171,10 @@ $(document).on("change","#EDIT-SCHEDULER-PAGE .cmbAction", function(){
 
 	
 	if(!value && !deviceValue){
-			data.commands = $.grep(data.commands, function(obj, i) {
-				return (parseInt(obj.id) !== id);
-			});	
-			$.each(data.commands, function (i, obj) { obj.id = i; });
+		data.commands = $.grep(data.commands, function(obj, i) {
+			return (parseInt(obj.id) !== id);
+		});	
+		$.each(data.commands, function (i, obj) { obj.id = i; });
 	}
 	
 	if(value && deviceValue){
