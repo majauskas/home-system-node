@@ -1087,11 +1087,11 @@ function checkJobs() {
 schedulers.execute(database, LightsController);
 
 
-var address = parseInt("0x22", 16);
-setInterval(function() {
-	var isOn = LightsController.switchPin(address, "A", 1);
-	console.log(address, "isOn", isOn);
-},2000);
+//var address = parseInt("0x22", 16);
+//setInterval(function() {
+//	var isOn = LightsController.switchPin(address, "A", 1);
+//	console.log(address, "isOn", isOn);
+//},2000);
 
 
  
