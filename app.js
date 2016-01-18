@@ -68,6 +68,7 @@ var server = app.listen(process.env.PORT || 8081, function () {
 						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
 					} else{
 						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
+							if(!res) {return;}
 							
 							var date = new Date();
 							var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -208,7 +209,7 @@ io.sockets.on('connection', function (socket) {
 			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
 		} else{
 			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
-				
+				if(!res) {return;}
 				var date = new Date();
 				var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
 				database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay, $ne: null}}).exec(function(err, records){
@@ -1175,14 +1176,4 @@ schedulers.execute(database, LightsController);
 ////var password = crypto.createHash('md5').update('329051160070235').digest("hex");
 //var wa = new waApi(393473834506, password, { displayName: 'Minde', debug: true });
 //wa.sendMessageWithBody({ content: "Message Content", to: "00393473834506"});
-//
-
-
-
-
-//console.log("_prettyCron",_prettyCron.toString("* 16-18 * * *"));
-
-
-
-
 
