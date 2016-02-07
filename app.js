@@ -824,10 +824,10 @@ app.post('/433mhz/:binCode', function(req, res) {
 		if(code === 32533){ //Porta Ingresso
 			
 			console.log(lastTime, "Porta Ingresso aperta");
-			var minutesOgo = new Date();
-			minutesOgo.setMinutes(minutesOgo.getMinutes() - 1);
+			var oneMinOgo = new Date();
+			oneMinOgo.setMinutes(oneMinOgo.getMinutes() - 1);
 			
-			database.PIR_SENSOR.find({date: {"$gte": minutesOgo}}).exec(function(err, sensors) {
+			database.PIR_SENSOR.find({code: { $in: [ "0x20-GPA3", "0x20-GPA2" ] }, date: {"$lt": oneMinOgo}}).exec(function(err, sensors) {
 				if(!sensors || sensors.length === 0) {return;}
 				
 				
