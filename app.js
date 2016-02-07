@@ -819,6 +819,33 @@ app.post('/433mhz/:binCode', function(req, res) {
 			}
 		});	
 		
+		
+		//Auto Lights On in the evening when door is opened
+		if(code === 32533){ //Porta Ingresso
+			
+			console.log(lastTime, "Porta Ingresso aperta");
+			var minutesOgo = new Date();
+			minutesOgo.setMinutes(minutesOgo.getMinutes() - 1);
+			
+			database.PIR_SENSOR.find({date: {"$gte": minutesOgo}}).exec(function(err, sensors) {
+				if(!sensors || sensors.length === 0) {return;}
+				
+				
+				LightsController.writePin(parseInt("0x22", 16), "B", "1", 1); //0x22-GPB1 Luce Sala 1
+				database.LIGHTS.update({code : "0x22-GPB1"}, {isOn: true, date: new Date()}, function (err, arg) {});	
+				console.log("Luce Sala 1 Auto On ", new Date());
+				
+				setTimeout(function() {
+					database.LIGHTS.find({}).sort('name').exec(function(err, lights){
+						io.sockets.emit("socket-lights", lights);
+					});
+				}, 50);
+				
+				
+			});
+			
+		}
+		
 	}
 
 	res.send();
