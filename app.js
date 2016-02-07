@@ -64,30 +64,28 @@ var server = app.listen(process.env.PORT || 8081, function () {
 					target.isOn = LightsController.switchPin(address, port, pin);
 					target.save(function (err) {});
 					
-					if(target.isOn === true){
-						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
-					} else{
-						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
-							if(!res) {return;}
-							
-							var date = new Date();
-							var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
-							database.LIGHT_HISTORY.find({code : res.code, date_off: {$gte: firstMonthDay, $ne: null} }).exec(function(err, records){
-								var kWh = 0;
-								records.forEach(function(record) {
-									var duration = Number(record.date_off - record.date_on); 
-									duration = (duration / 3600000); //ore
-									kWh += (record.watt / 1000) * duration;
-								});
-								var cost = kWh * 0.16;
-								console.log({kWh: kWh, cost:cost});
-								database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
-							});
-						});
-					}
+//					if(target.isOn === true){
+//						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
+//					} else{
+//						database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
+//							if(!res) {return;}
+//							
+//							var date = new Date();
+//							var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
+//							database.LIGHT_HISTORY.find({code : res.code, date_off: {$gte: firstMonthDay, $ne: null} }).exec(function(err, records){
+//								var kWh = 0;
+//								records.forEach(function(record) {
+//									var duration = Number(record.date_off - record.date_on); 
+//									duration = (duration / 3600000); //ore
+//									kWh += (record.watt / 1000) * duration;
+//								});
+//								var cost = kWh * 0.16;
+//								console.log({kWh: kWh, cost:cost});
+//								database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
+//							});
+//						});
+//					}
 					
-					
-//					database.EVENT.create({code:"",binCode:"", date: new Date(), device: {provider:"wall-trigger", name: "Light " + target.name +" " + ((target.isOn === true) ? "On":"Off"), isOn: target.isOn }}, function (err, data) {});
 				});
 				
 				setTimeout(function() {
@@ -205,26 +203,26 @@ io.sockets.on('connection', function (socket) {
 		LightsController.writePin(address, gpio, pin, value);
 		
 		
-		if(target.isOn === true){
-			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
-		} else{
-			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
-				if(!res) {return;}
-				var date = new Date();
-				var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
-				database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay, $ne: null}}).exec(function(err, records){
-					var kWh = 0;
-					records.forEach(function(record) {
-						var duration = Number(record.date_off - record.date_on); 
-						duration = (duration / 3600000); //ore
-						kWh += (record.watt / 1000) * duration;
-					});
-					var cost = kWh * 0.16;
-					console.log({kWh: kWh, cost:cost});
-					database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
-				});
-			});
-		}
+//		if(target.isOn === true){
+//			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_on : new Date()}, {}, {upsert : true}, function (err, res) {});
+//		} else{
+//			database.LIGHT_HISTORY.findOneAndUpdate({code : target.code, date_off : null}, {date_off : new Date(), watt:target.watt }, function (err, res) {
+//				if(!res) {return;}
+//				var date = new Date();
+//				var firstMonthDay = new Date(date.getFullYear(), date.getMonth(), 1);
+//				database.LIGHT_HISTORY.find({code : res.code, date_off: {"$gte": firstMonthDay, $ne: null}}).exec(function(err, records){
+//					var kWh = 0;
+//					records.forEach(function(record) {
+//						var duration = Number(record.date_off - record.date_on); 
+//						duration = (duration / 3600000); //ore
+//						kWh += (record.watt / 1000) * duration;
+//					});
+//					var cost = kWh * 0.16;
+//					console.log({kWh: kWh, cost:cost});
+//					database.LIGHTS.update({code : res.code}, {kWh: kWh, cost:cost}, function (err, arg) {});	
+//				});
+//			});
+//		}
 		
 		
 		database.LIGHTS.update({code : code}, {isOn: target.isOn, date: new Date()}, function (err, arg) {
