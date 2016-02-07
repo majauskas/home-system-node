@@ -1205,29 +1205,3 @@ schedulers.execute(database, LightsController);
 
 
 
-
-
-
-
-
-
-var ds18b20 = require('ds18b20');
-ds18b20.sensors(function(err, ids) {
-	console.log("got sensor IDs",err,ids);
-});
-
-// ... async call
-ds18b20.temperature('28-0415a44620ff', function(err, value) {
-  console.log('async Current temperature is', value);
-});
-
-// ... or sync call
-console.log('sync Current temperature is' + ds18b20.temperatureSync('28-0415a44620ff'));
-
-// default parser is the decimal one. You can use the hex one by setting an option
-ds18b20.temperature('28-0415a44620ff', {parser: 'hex'}, function(err, value) {
-  console.log('async Current temperature is', value);
-});
-
-console.log('sync Current temperature is' + ds18b20.temperatureSync('28-0415a44620ff', {parser: 'hex'}));
-
