@@ -827,7 +827,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 			var oneMinOgo = new Date();
 			oneMinOgo.setMinutes(oneMinOgo.getMinutes() - 1);
 			
-			database.PIR_SENSOR.find({code: { $in: [ "0x20-GPA3", "0x20-GPA2" ] }, date: {"$lt": oneMinOgo}}).exec(function(err, sensors) {
+			database.PIR_SENSOR.find({code: { $in: [ "0x20-GPA3" ] }, date: {"$lt": oneMinOgo}}).exec(function(err, sensors) {
 				if(!sensors || sensors.length === 0) {return;}
 				
 				
