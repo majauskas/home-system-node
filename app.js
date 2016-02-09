@@ -829,7 +829,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 			
 			database.PIR_SENSOR.find({code: { $in: [ "0x20-GPA3" ] }, date: {"$lt": oneMinOgo}}).exec(function(err, sensors) {
 				if(!sensors || sensors.length === 0) {return;}
-				
+				 
 				
 				LightsController.writePin(parseInt("0x22", 16), "B", "1", 1); //0x22-GPB1 Luce Sala 1
 				database.LIGHTS.update({code : "0x22-GPB1"}, {isOn: true, date: new Date()}, function (err, arg) {});	
