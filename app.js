@@ -19,6 +19,7 @@ var LightsController = require('./lib/LightsController.js');
 var CronJob = require('cron').CronJob;
 var request = require('request');
 var child_process = require('child_process');
+var SunCalc = require('suncalc');
 var exec = child_process.exec;
 //var arp = null; try { arp = require('arp-a'); } catch (e) {}
 
@@ -822,8 +823,14 @@ app.post('/433mhz/:binCode', function(req, res) {
 		
 		//Auto Lights On in the evening when door is opened
 		if(code === 32533){ //Porta Ingresso
-			
 			console.log(lastTime, "Porta Ingresso aperta");
+			
+			var now = new Date();
+			var sunlightTimes = SunCalc.getTimes(now, 8.77879, 45.673938);
+			if(!(now > sunlightTimes.night && now < sunlightTimes.sunriseEnd) ){
+				return;
+			}
+			
 			var oneMinOgo = new Date();
 			oneMinOgo.setMinutes(oneMinOgo.getMinutes() - 1);
 			
@@ -1201,7 +1208,5 @@ schedulers.execute(database, LightsController);
 ////var password = crypto.createHash('md5').update('329051160070235').digest("hex");
 //var wa = new waApi(393473834506, password, { displayName: 'Minde', debug: true });
 //wa.sendMessageWithBody({ content: "Message Content", to: "00393473834506"});
-
-
 
 
