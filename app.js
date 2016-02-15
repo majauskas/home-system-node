@@ -827,9 +827,12 @@ app.post('/433mhz/:binCode', function(req, res) {
 			
 			var now = new Date();
 			var sunlightTimes = SunCalc.getTimes(now, 8.77879, 45.673938);
-			console.log("TEST-AUTO-LIGHT","now:",now,"night:",sunlightTimes.night,"sunriseEnd:",sunlightTimes.sunriseEnd);
-			console.log("if(!(now > sunlightTimes.night && now < sunlightTimes.sunriseEnd) )");
-			if(!(now > sunlightTimes.night && now < sunlightTimes.sunriseEnd) ){
+			var sunriseEnd = sunlightTimes.sunriseEnd;
+			sunriseEnd = sunriseEnd.setDate(act.getDate()+1);
+			
+			console.log("TEST-AUTO-LIGHT","now:\t",now,"night:\t",sunlightTimes.night,"sunriseEnd:\t",sunriseEnd);
+			console.log("if(!(now > sunlightTimes.night && now < sunriseEnd) )");
+			if(!(now > sunlightTimes.night && now < sunriseEnd) ){
 				return;
 			}
 			console.log("Light ON");
