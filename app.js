@@ -828,7 +828,7 @@ app.post('/433mhz/:binCode', function(req, res) {
 			var now = new Date();
 			var sunlightTimes = SunCalc.getTimes(now, 8.77879, 45.673938);
 			var sunriseEnd = sunlightTimes.sunriseEnd;
-			sunriseEnd = sunriseEnd.setDate(act.getDate()+1);
+			sunriseEnd = sunriseEnd.setDate(sunriseEnd.getDate()+1);
 			
 			console.log("TEST-AUTO-LIGHT","now:\t",now,"night:\t",sunlightTimes.night,"sunriseEnd:\t",sunriseEnd);
 			console.log("if(!(now > sunlightTimes.night && now < sunriseEnd) )");
