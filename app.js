@@ -827,12 +827,15 @@ app.post('/433mhz/:binCode', function(req, res) {
 			
 			var now = new Date();
 			var sunlightTimes = SunCalc.getTimes(now, 8.77879, 45.673938);
-			var sunriseEnd = sunlightTimes.sunriseEnd;
-			sunriseEnd = sunriseEnd.setDate(sunriseEnd.getDate()+1);
+
+			var nightStart = new Date();
+			nightStart.setHours(sunlightTimes.night.getHours(),sunlightTimes.night.getMinutes());
+			var nightEnd = new Date();
+			nightEnd.setHours(sunlightTimes.nightEnd.getHours(),sunlightTimes.nightEnd.getMinutes());
+
 			
-			console.log("TEST-AUTO-LIGHT","now:\t",now,"night:\t",sunlightTimes.night,"sunriseEnd:\t",sunriseEnd);
-			console.log("if(!(now > sunlightTimes.night && now < sunriseEnd) )");
-			if(!(now > sunlightTimes.night && now < sunriseEnd) ){
+			console.log("AUTO-LIGHTS-ON","now:\t",now,"nightStart:\t",nightStart,"nightEnd:\t",nightEnd);
+			if(!(  (now<nightStart&&now<nightEnd) || (now>nightEnd&&now>nightStart) )){
 				return;
 			}
 			console.log("Light ON");
@@ -1213,5 +1216,3 @@ schedulers.execute(database, LightsController);
 ////var password = crypto.createHash('md5').update('329051160070235').digest("hex");
 //var wa = new waApi(393473834506, password, { displayName: 'Minde', debug: true });
 //wa.sendMessageWithBody({ content: "Message Content", to: "00393473834506"});
-
-
