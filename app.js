@@ -280,7 +280,7 @@ function alarmDetection(sensor, areaId) {
 				}, auto_off_timer, areaId);
 			});	
 			
-	}, 15000, sensor);
+	}, 45000, sensor);
 	
 	console.log("Avviso Allarme. sensor:", sensor);
 	database.AREA.findByIdAndUpdate(areaId, {'$set':  {'alarmActivate.state': true, 'alarmActivate.sensor.name': sensor.name }}, function (err, data) {});	
