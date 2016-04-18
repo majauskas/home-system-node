@@ -141,6 +141,14 @@ app.get('/home-system', function(req, res) {
 });
 
 
+app.get('/tablet', function(req, res) {
+	fs.readFile(__dirname+'/public/tablet.html', function(error,data) {
+        res.writeHead(200,{'Content-Type': 'text/html'});
+        res.end(data);
+    });
+});
+
+
 
 
 

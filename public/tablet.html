@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+
+<!-- <html manifest="cache.manifest"> -->
+<!-- <html manifest="cache.manifest" type="text/cache-manifest"> -->
+<html>
+<head> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
+	
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<link rel="apple-touch-icon" href="images/security.png"/>
+	<link  rel="apple-touch-startup-image" href="images/security.png"/>		
+
+	<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
+	
+
+
+
+	
+		
+	<link rel="stylesheet" href="css/main.css" />
+	
+
+	<script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
+
+	
+	<script type="text/javascript" src="jquery/jquery.tmpl.min.js"></script>
+	<script type="text/javascript" src="js/socket.io.js"></script> 
+	
+	
+	<script type="text/javascript" src="jquery/jquery.mobile.iscroll.js"></script>
+    <script type="text/javascript" src="jquery/jquery.mobile.iscrollview.js"></script>
+    <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview.css"/>
+    <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview-pull.css"/>	
+
+
+	
+		    
+
+	<script type="text/javascript" src="js/cons.js" charset="iso-8859-1"></script>		
+	<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
+	<script type="text/javascript" src="js/home-page.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/alarm.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/pir-sensors.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/wifi-sensors.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/lan-devices.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/configuration.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/alarm-auto-on-off.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/zone.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/light-controllers.js" charset="iso-8859-1"></script>
+	<script type="text/javascript" src="js/schedulers.js" charset="iso-8859-1"></script>
+	
+	
+	
+	<script type="text/javascript">
+			$(function() {
+				$("body>[data-role='panel']").panel().trigger( "create" );
+			});
+	</script>
+
+
+	
+</head>
+
+	<body>
+
+
+<div id="HOME-PAGE" data-role="page" class="ui-page-active">
+
+
+
+	<div data-role="header" data-position="fixed">
+		<img style="top:5px;" src="images/security.png" width="50px" height="50px" class="ui-btn-left" />	
+		<h1>Home</h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	
+<div class="ui-content" style="padding: 5px"> 	
+ 
+ 		<fieldset id="fsSecurity" style="display: none">
+			<legend><table><tr><td><img src="images/Armor-32.png"/></td><td style="color: red">&nbsp;Sicurezza</td></tr></table></legend>			
+					<table width="100%" style="border-collapse: collapse" id="controlgroup-alarm"></table>
+						<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
+				<tr>
+					<td width="60%" style="font-weight: bold; text-shadow: none; color: white">${name}</td>
+					<td width="40%" style="text-align: right;">
+						<input type="check" data-role="flipswitch" id="${_id}" {{if (isActivated === true)}}checked{{/if}}  data-theme="b">
+					</td>
+				</tr>
+				</script>
+		</fieldset>			
+		<br>
+ 
+ 		<fieldset id="fsIlluminazione" style="display: none">
+			 <div class="menu">
+				<ul id="controlgroup-lights"></ul>
+				<script id="template-lights" type="text/x-jquery-tmpl">
+					<li data='${target}'><a><img src="images/light_{{if (isOn)}}on{{else}}off{{/if}}.png"/>{{if (name)}}${name}{{else}}${code}{{/if}}</a></li>
+				</script>
+			 </div> 			
+
+		</fieldset>	
+
+ 
+<!--     <div class="ui-grid-c"> -->
+<!--        <div class="ui-block-a"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Sala1</p></a> -->
+<!-- 	  </div> -->
+<!--        <div class="ui-block-b"> -->
+<!-- 	     <a><img src="images/light_off.png"/><p>Sala2</p></a> -->
+<!-- 	  </div> -->
+<!-- 	  <div class="ui-block-c"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Cucina1</p></a> -->
+<!-- 	  </div> -->
+<!-- 	  <div class="ui-block-d"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Cucina2</p></a> -->
+<!-- 	  </div> -->
+<!--     </div> -->
+ 
+ 
+ 
+ 
+<!--      <div class="ui-grid-c"> -->
+<!--        <div class="ui-block-a"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Sala1</p></a> -->
+<!-- 	  </div> -->
+<!--        <div class="ui-block-b"> -->
+<!-- 	     <a><img src="images/light_off.png"/><p>Sala2</p></a> -->
+<!-- 	  </div> -->
+<!-- 	  <div class="ui-block-c"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Cucina1</p></a> -->
+<!-- 	  </div> -->
+<!-- 	  <div class="ui-block-d"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Cucina2</p></a> -->
+<!-- 	  </div> -->
+<!--     </div>    -->
+
+<!--     <div class="ui-grid-c"> -->
+<!--        <div class="ui-block-a"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Sala1</p></a> -->
+<!-- 	  </div> -->
+<!--        <div class="ui-block-b"> -->
+<!-- 	     <a><img src="images/light_off.png"/><p>Sala2</p></a> -->
+<!-- 	  </div> -->
+<!-- 	  <div class="ui-block-c"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Cucina1</p></a> -->
+<!-- 	  </div> -->
+<!-- 	  <div class="ui-block-d"> -->
+<!-- 	     <a><img src="images/light_on.png"/><p>Cucina2</p></a> -->
+<!-- 	  </div> -->
+<!--     </div> -->
+    
+
+	</div>	 
+
+</div>	 
+		 
+<div id="SENSORI-PIR-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Sensori PIR<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+		<div data-role="main" class="ui-content" style="text-align: center;">
+			
+			<ul data-role="listview" data-inset="false" id="listview-pir-sensors"></ul>	
+			<script id="template-pir-sensors" type="text/x-jquery-tmpl">
+					<li data-icon='sensor' data='${target}' class="ui-nodisc-icon"><a>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>											
+						<p class='ui-li-aside' style='text-align: center;'>{{if (state === 01 && name )}}<font style='color:red; font-weight: bold;'>ON</font></br>{{/if}}</p>
+						<p>${date}</p>
+					</a></li>
+		</script>
+		</div>
+		
+
+</div> 			 
+<div id="EDIT-PIR-SENSOR-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#SENSORI-PIR-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Modifica Sensore</h1>
+		<a id="btPirSensorConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>	
+	</div>
+	
+	<div class="ui-content">
+		<fieldset>
+			<legend>Sensore Pir</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Code:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="code"></td>
+						</tr>				
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
+	</div>
+	
+  	<br/><br/><br/><br/>
+	<div class="btDownContainer">
+		<a id="btPirSensorDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina</a>
+	</div> 		
+</div> 
+
+
+
+
+<div id="SENSORI-WIFI-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Sensori Wifi<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+		<div data-role="main" class="ui-content" style="text-align: center;">
+			<ul data-role="listview" data-inset="false" id="listview-wifi-sensors"></ul>	
+			<script id="template-wifi-sensors" type="text/x-jquery-tmpl">
+					<li data-icon='wifi' data='${target}' class="ui-nodisc-icon"><a>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>												
+						<p class='ui-li-aside'></br><img src='images/{{if (isOpen) }}door_open.png{{else}}door_close.png{{/if}}'/>{{if (isBatteryLow == true)}}<img style='margin-left:10px' src='images/Battery-Low-24-FF0000.png'/>{{/if}}</p>
+						<p>${date}</p>
+					</a></li>
+			</script>
+		</div>
+
+	  	<br/><br/><br/><br/>
+		<div class="container-b">
+			<a id="btSearchWifiSensors" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Aggiungi Sensore</a>
+		</div> 	
+</div> 				
+
+
+
+
+
+<div id="EDIT-WIFI-SENSOR-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a id="btIndietro" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Modifica Sensore</h1>
+		<a id="btWiFiSensorConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>	
+	</div>
+	
+	<div class="ui-content">
+
+		<fieldset>
+			<legend>Sensore Pir</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Code:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="code"></td>
+						</tr>				
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
+	</div>
+	
+	
+  	<br/><br/><br/><br/>
+	<div class="btDownContainer">
+		<a id="btWiFiSensorDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina</a>
+	</div> 		
+	
+</div> 
+
+
+
+
+
+
+<div id="AREAS-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Zone<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+		
+	<div data-role="main" class="ui-content" style="text-align: center;">
+		<ul data-role="listview" data-inset="false" id="listview-areas" class="ui-nodisc-icon"></ul>	
+		<script id="template-areas" type="text/x-jquery-tmpl">
+					<li data-icon='node' data='${target}'><a>
+						<h2>{{if (name)}}${name}{{else}}${code}{{/if}}</h2>												
+					</a></li>
+		</script>
+	</div>
+	<div class="container-b">
+		<a id="btAddNewArea" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Nuova Zona</a>
+	</div>	
+</div>
+
+
+
+<div id="NEW-AREA-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#AREAS-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Nuova Zona</h1>
+		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>
+	</div>
+	
+	<div class="ui-content">
+		<fieldset>
+			<legend>Zona</legend>
+				<table width="100%" style="border-collapse: collapse">				
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
+	</div>
+</div> 
+
+<div id="EDIT-AREA-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#AREAS-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Modifica Zona</h1>
+		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>		
+	</div>
+	
+	<div class="ui-content">
+
+		<fieldset>
+			<legend>Zona</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
+		<p></p>
+		<fieldset>
+			<legend>Sensori Pir</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-pirsensors"></table>
+				<script id="template-controlgroup-pirsensors" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" code="${code}" {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>
+		<fieldset>
+			<legend>Sensori Wifi</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-wifisensors"></table>
+				<script id="template-controlgroup-wifisensors" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" code="${code}" {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>
+		<br>
+		<fieldset>
+			<legend><table><tr><td><img src="images/Clock-01-24.png"/></td><td style="color:yellow">&nbsp;Programazione</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse" id="scheduler-area"></table>
+					<script id="template-scheduler-area" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="20%">
+								<input data-mini="true" type="time" class="inFrom" value="${from}" index="${id}">
+							</td>
+							<td width="20%">
+								<input data-mini="true" type="time" class="inTo" value="${to}" index="${id}">
+							</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" class="cmbScheduler" index="${id}" id="cmbScheduler${id}">
+										<option value=""></option>
+										<option value="1-7">Tutti Giorni</option>
+										<option value="1-5">Lun - Ven</option>
+										<option value="6-7">Sab - Dom</option>
+										<option value="Off">Off</option>
+										<option value="delete">Rimuovi</option>											
+									</select>
+							</td>	
+						</tr>
+					</script>					
+					
+		</fieldset>	
+		<br>
+
+		<fieldset>
+			<legend><table><tr><td><img src="images/Clock-01-24.png"/></td><td style="color:yellow">&nbsp;Auto On/Off</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse">
+					<tr>
+							<td width="20%">
+								<input data-mini="true" type="time" id="inFromAutoOnOff" >
+							</td>
+							<td width="20%">
+								<input data-mini="true" type="time" id="inToAutoOnOff">
+							</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" id="cmbSchedulerAutoOnOff">
+										<option value=""></option>
+										<option value="1-7">Tutti Giorni</option>
+										<option value="1-5">Lun - Ven</option>
+										<option value="6-7">Sab - Dom</option>
+										<option value="Off" style="color:red;">Off</option>
+									</select>
+							</td>	
+						</tr>				
+				</table>
+				
+				<table width="100%" style="border-collapse: collapse" id="auto-on-off-area"></table>
+					<script id="template-auto-on-off-area" type="text/x-jquery-tmpl">
+						<tr>
+							<td style="text-align: left;">
+									<select data-mini="true" class="cmbAutoOnOff" index="${id}" id="cmbAutoOnOff${id}">
+										<option value=""></option>
+										<option value="delete" style="color:red; font-weight: bold;">Rimuovi</option>
+										<optgroup label="&nbsp;">
+									</select>
+							</td>	
+						</tr>
+					</script>					
+					
+		</fieldset>			
+		
+	</div>
+  	<br/><br/><br/><br/>
+	<div class="btDownContainer">
+		<a id="btDeleteArea" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina</a>
+	</div> 			
+ 		
+</div>
+
+
+<div id="EVENTS-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Eventi<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div data-role="main" class="ui-content wrapper" style="text-align: center; width: auto;" data-iscroll>
+        <div class="iscroll-pulldown">
+          <span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span>
+        </div>	
+		<ul data-role="listview" data-inset="false" id="listview-events" class="ui-nodisc-icon swipe-delete"></ul>	
+		<script id="template-events" type="text/x-jquery-tmpl">
+					<li data-icon='{{if (device.isLock != null)}}remote{{else}}wifi{{/if}}' class="ui-nodisc-icon" id='${_id}'>
+					<div class='behind'>
+                            <a href='#' class='ui-btn delete-btn'>Delete</a>
+					</div>
+					<a>
+						<p>{{if (device != null)}} ${device.name}{{else}} ${code}{{/if}}</p>
+					
+						<p>${date}</p>						
+						{{if (device != null)}}
+							<p class='ui-li-aside'></br>
+								{{if (device.isOpen == false)}}<img src='images/door_close.png'/>{{/if}}
+								{{if (device.isOpen == true)}}<img src='images/door_open.png'/>{{/if}}
+								{{if (device.isBatteryLow == true)}}<img style='margin-left:10px' src='images/Battery-Low-24-FF0000.png'>{{/if}}
+								{{if (device.isLock == true)}}<img style='margin-left:10px' src='images/Lock-24-FF0000.png'>{{/if}}
+								{{if (device.isLock == false)}}<img style='margin-left:10px' src='images/Lock-Open-24-04C263.png'>{{/if}}
+							</p>
+						{{/if}}
+					</a></li>
+		</script>
+	</div>
+</div>
+
+
+<div id="REMOTE-CONTROL-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Telecomandi<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div data-role="main" class="ui-content wrapper" style="text-align: center;" data-iscroll>
+		<div class="iscroll-pulldown"><span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span></div>	
+		<ul data-role="listview" data-inset="false" id="listview-remote-controls"></ul>	
+		<script id="template-remote-controls" type="text/x-jquery-tmpl">
+					<li data-icon='remote' data='${target}' class="ui-nodisc-icon"><a>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>												
+					</a></li>
+		</script>
+	</div>
+		<div class="container-b">
+		<a id="btSearchRemoteControls" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Aggiungi Telecomando</a>
+	</div>	
+</div> 				
+
+
+
+
+<div id="EDIT-REMOTE-CONTROL-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a id="btIndietro" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Telecomando</h1>
+		<a id="btConfirm" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>
+	</div>
+	<div class="ui-content">
+		<fieldset>
+			<legend>Telecomando</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Code:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="code"></td>
+						</tr>				
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
+		<p></p>
+		<fieldset>
+			<legend>Zone</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-areas"></table>
+				<script id="template-controlgroup-areas" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">${name}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" id="${_id}" {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>		
+
+	</div>
+
+  	<br/><br/>
+	<div class="btDownContainer">
+		<a id="btDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina Telecomando</a>
+	</div> 	
+	
+</div> 
+
+
+<div id="LAN-DEVICE-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Dispositivi<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div class="ui-content">
+			<ul data-role="listview" data-inset="false" id="listview-lan-devices"></ul>	
+			<script id="template-lan-devices" type="text/x-jquery-tmpl">
+					<li data-icon='{{if (exists)}}wifisi{{else}}wifino{{/if}}' data='${target}' class="ui-nodisc-icon"><a>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${manufacturer}{{/if}}</font></h2>
+						<p class='ui-li-aside'>${mac}<br>${ip}</p>
+						<p>${lastLogin}</p>
+					</a></li>
+					{{if (divider)}}<li data-role="list-divider">Disconessi</li>{{/if}}
+			</script>
+				
+		<br>
+	</div>
+</div> 
+<div id="EDIT-LAN-DEVICE-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a id="btIndietro" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Modifica Dispositivo</h1>
+		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>	
+	</div>
+	
+	<div class="ui-content">
+		<fieldset>
+			<legend>Dispositivo Di Rete</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">MAC:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="mac"></td>
+						</tr>
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Manufacturer:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="manufacturer"></td>
+						</tr>	
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nmap Name:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="nmapname"></td>
+						</tr>	
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Nome:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
+		<br>
+		<fieldset>
+			<legend><table><tr><td><img src="images/Clock-01-24.png"/></td><td style="color:yellow">&nbsp;Auto On/Off</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse" id="autoonoff-area"></table>
+				<script id="template-autoonoff-area" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">${name}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" id="${_id}" {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>			
+		
+	</div>
+  	<br/><br/><br/><br/>
+	<div class="btDownContainer">
+		<a id="btDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina</a>
+	</div> 		
+</div> 
+
+
+
+
+
+
+<div id="LIGHT-CONTROLLERS-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Light Controllers<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div data-role="main" class="ui-content" style="text-align: center;">
+		<ul data-role="listview" data-inset="false" id="listview-light-controllers"></ul>	
+		<script id="template-light-controllers" type="text/x-jquery-tmpl">
+					<li data-icon='switch' data='${target}' class="ui-nodisc-icon"><a>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>												
+					</a></li>
+		</script>
+	</div>
+</div> 				
+
+
+
+
+<div id="EDIT-LIGHT-CONTROLLERS-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a id="btIndietro" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Controller</h1>
+		<a id="btConfirm" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>
+	</div>
+	<div class="ui-content">
+		<fieldset>
+			<legend>Controller</legend>
+				<table width="100%" style="border-collapse: collapse">
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Code:</td>
+							<td width="60%" style=" text-shadow: none; color: white" id="code"></td>
+						</tr>				
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Name:</td>
+							<td width="60%" style="text-align: right;">
+								<input name="name" id="name">
+							</td>
+						</tr>
+				</table>
+		</fieldset>
+		<p></p>
+		<fieldset>
+			<legend>Lights</legend>
+				<table width="100%" style="border-collapse: collapse" id="controlgroup-controller-lights"></table>
+				<script id="template-controller-lights" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">{{if (name)}}${name}{{else}}${code}{{/if}}</td>
+							<td width="40%" style="text-align: right;">
+								<input type="check" data-role="flipswitch" code='${code}' {{if (checked)}}checked{{/if}}  data-theme="b">
+							</td>
+						</tr>
+				</script>
+		</fieldset>
+			
+
+	</div>
+
+  	<br/><br/>
+	<div class="btDownContainer">
+		<a id="btDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina Telecomando</a>
+	</div> 	
+	
+</div> 
+
+
+<div id="SCHEDULER-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Schedulers<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div data-role="main" class="ui-content" style="text-align: center;">
+		<ul data-role="listview" data-inset="false" id="listview-schedulers"></ul>	
+		<script id="template-schedulers" type="text/x-jquery-tmpl">
+					<li data-icon='scheduler' data='${target}' class="ui-nodisc-icon"><a>
+						<h2><font style='white-space:normal;'>{{if (name)}}${name}{{else}}${code}{{/if}}</font></h2>
+						<p class='ui-li-aside'>${nextOccurrence}</p>						
+						<p>${lastOccurrence}</p>
+						<span class="ui-li-count" style="background-color:{{if (isEnabled)}}#71db71{{else}}#ff1a1a{{/if}}; color: white; text-shadow: 0 0px 0 #eee; margin-right: 25px;">{{if (isEnabled)}}enabled{{else}}disabled{{/if}}</span>	
+					</a></li>
+		</script>
+	</div>
+		<div class="container-b">
+		<a id="btAddScheduler" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Add Scheduler</a>
+	</div>	
+</div> 
+
+
+<div id="EDIT-SCHEDULER-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a id="btIndietro" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-carat-l"></a>
+		<h1>Scheduler</h1>
+		<a id="btConferma" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-check"></a>
+	</div>
+	
+	<div class="ui-content">
+		
+		<fieldset>
+			<legend><table><tr><td><img src="images/scheduler.png" width="40px" height="40px"/></td><td style="color:yellow">&nbsp;Scheduler</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse">	
+
+						<tr>
+							<td width="60%" style="font-weight: bold; text-shadow: none; color: white">Enabled</td>
+							<td width="40%" style="text-align: center;">
+								<input type="check" data-role="flipswitch" id="isSchedulerEnabled" data-theme="b">
+							</td>
+						</tr>
+						
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Name:</td>
+							<td width="60%" style="text-align: right;">
+								<input data-mini="true" name="name" id="name">
+							</td>
+						</tr>
+						
+						<tr>
+							<td width="40%" style="font-weight: bold; text-shadow: none; color: white">Minute:</td>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" id="cmbCronMinute">
+										<option value="*">Every</option>
+										<option value="00">00</option>
+										<option value="01">01</option>
+										<option value="02">02</option>
+										<option value="03">03</option>
+										<option value="04">04</option>
+										<option value="05">05</option>
+										<option value="06">06</option>
+										<option value="07">07</option>
+										<option value="08">08</option>
+										<option value="09">09</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+										<option value="24">24</option>
+										<option value="25">25</option>
+										<option value="26">26</option>
+										<option value="27">27</option>
+										<option value="28">28</option>
+										<option value="29">29</option>
+										<option value="30">30</option>
+										<option value="31">31</option>
+										<option value="32">32</option>
+										<option value="33">33</option>
+										<option value="34">34</option>
+										<option value="35">35</option>
+										<option value="36">36</option>
+										<option value="37">37</option>
+										<option value="38">38</option>
+										<option value="39">39</option>
+										<option value="40">40</option>
+										<option value="41">41</option>
+										<option value="42">42</option>
+										<option value="43">43</option>
+										<option value="44">44</option>
+										<option value="45">45</option>
+										<option value="46">46</option>
+										<option value="47">47</option>
+										<option value="48">48</option>
+										<option value="49">49</option>
+										<option value="50">50</option>
+										<option value="51">51</option>
+										<option value="52">52</option>
+										<option value="53">53</option>
+										<option value="54">54</option>
+										<option value="55">55</option>
+										<option value="56">56</option>
+										<option value="57">57</option>
+										<option value="58">58</option>
+										<option value="59">59</option>
+									</select>										
+							</td>
+						</tr>
+						
+
+						<tr>
+							<td style="font-weight: bold; text-shadow: none; color: white">Hour:</td>
+							<td style="text-align: left;">
+									<select data-mini="true" id="cmbCronHour">
+										<option value="*">Every</option>
+										<option value="00">00</option>
+										<option value="01">01</option>
+										<option value="02">02</option>
+										<option value="03">03</option>
+										<option value="04">04</option>
+										<option value="05">05</option>
+										<option value="06">06</option>
+										<option value="07">07</option>
+										<option value="08">08</option>
+										<option value="09">09</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+									</select>										
+							</td>
+						</tr>						
+
+
+						<tr>
+							<td style="font-weight: bold; text-shadow: none; color: white">Day of month:</td>
+							<td style="text-align: left;">
+									<select data-mini="true" id="cmbCronDay">
+										<option value="*">Every</option>
+										<option value="01">01</option>
+										<option value="02">02</option>
+										<option value="03">03</option>
+										<option value="04">04</option>
+										<option value="05">05</option>
+										<option value="06">06</option>
+										<option value="07">07</option>
+										<option value="08">08</option>
+										<option value="09">09</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+										<option value="24">24</option>
+										<option value="25">25</option>
+										<option value="26">26</option>
+										<option value="27">27</option>
+										<option value="28">28</option>
+										<option value="29">29</option>
+										<option value="30">30</option>
+										<option value="31">31</option>									
+									</select>										
+							</td>
+						</tr>
+						
+						
+						<tr>
+							<td style="font-weight: bold; text-shadow: none; color: white">Month:</td>
+							<td style="text-align: left;">
+									<select data-mini="true" id="cmbCronMonth">
+										<option value="*">Every</option>
+										<option value="1">January</option>
+										<option value="2">February</option>
+										<option value="3">March</option>
+										<option value="4">April</option>
+										<option value="5">May</option>
+										<option value="6">June</option>
+										<option value="7">July</option>
+										<option value="8">August</option>
+										<option value="9">September</option>
+										<option value="10">October</option>
+										<option value="11">November</option>
+										<option value="12">December</option>									
+									</select>										
+							</td>
+						</tr>
+						
+						<tr>
+							<td style="font-weight: bold; text-shadow: none; color: white">Day of week:</td>
+							<td style="text-align: left;">
+									<select data-mini="true" id="cmbCronWeekDay">
+										<option value="*">Every</option>
+										<option value="1">Monday</option>
+										<option value="2">Tuesday</option>
+										<option value="3">Wednesday</option>
+										<option value="4">Thursday</option>
+										<option value="5">Friday</option>
+										<option value="6">Saturday</option>
+										<option value="7">Sunday</option>
+										<option value="6-7">Weekend</option>
+										<option value="1-5">Work Days</option>									
+									</select>										
+							</td>
+						</tr>
+				</table>
+		</fieldset>		
+		
+		<fieldset>
+			<legend><table><tr><td></td><td style="color:yellow">&nbsp;Commands</td></tr></table></legend>
+				<table width="100%" style="border-collapse: collapse" id="scheduler-device"></table>
+					<script id="template-scheduler-device" type="text/x-jquery-tmpl">
+						<tr>
+							<td width="60%" style="text-align: left;">
+									<select data-mini="true" index="${id}" id="cmbDevice${id}" class="cmbDevice">
+										<option value=""></option>
+									</select>
+							</td>
+							<td width="37%" style="text-align: left;">
+									<select data-mini="true" index="${id}" id="cmbAction${id}" class="cmbAction">
+										<option value=""></option>
+										<option value="on">Switch On</option>	
+										<option value="off">Switch Off</option>									
+									</select>
+							</td>
+							<td width="3%"><img src="images/light_on.png" width="40px" height="40px" id="imgCommand${id}"/></td>
+						</tr>
+ 					</script> 
+		</fieldset>				
+		
+	</div>
+  	<br/><br/><br/><br/>
+	<div class="btDownContainer">		
+		<a id="btDelete" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">Elimina</a>
+	</div> 	
+
+
+		
+</div> 
+
+
+
+
+<div id="CONFIGURATION-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Audio<br><font style="white-space:normal;font-size: .7em; font-weight:normal;"></font></h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+	<div class="ui-content">
+
+		<fieldset>
+			<legend><table><tr><td style="color: white">Siren Timer(min)</td><td><img style="padding-left: 10px" src="images/siren.png" width="40px" height="40px"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+					<input type="range" name="slider-siren-timer" id="slider-siren-timer" value="" step="1" min="0" max="30" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>	
+		<br>
+		<fieldset>
+			<legend><table><tr><td style="color: white">Siren Volume(%)</td><td><img style="padding-left: 10px" src="images/Volume-Slider-32.png"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+					<input type="range" name="slider-siren-volume" id="slider-siren-volume" value="" step="1" min="0" max="100" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>	
+		<br> 
+		<fieldset>
+			<legend><table><tr><td style="color: white">Voice Volume(%)</td><td><img style="padding-left: 10px" src="images/Volume-Slider-32.png"/></td></tr></table></legend>
+			<table width="100%" style="border-collapse: collapse">
+				<tr>
+					<input type="range" name="slider-voice-volume" id="slider-voice-volume" value="90" step="1" min="0" max="100" data-theme="b" data-track-theme="a" data-popup-enabled="true" data-highlight="true">
+				</tr>
+			</table>	
+		</fieldset>	
+	</div>
+
+</div> 
+
+
+
+<div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="a">
+	<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
+		<li data-icon="sensor"><a href="#SENSORI-PIR-PAGE">PIR Sensors</a></li>
+		<li data-icon="wifi"><a href="#SENSORI-WIFI-PAGE">WiFi Sensors</a></li>
+	    <li data-icon="node"><a href="#AREAS-PAGE">Areas</a></li>
+	    <li data-icon="remote"><a href="#REMOTE-CONTROL-PAGE">Remote Controllers</a></li>
+	    <li data-icon="listbox"><a href="#EVENTS-PAGE">Events</a></li>
+	    <li data-icon="switch"><a href="#LIGHT-CONTROLLERS-PAGE">Light Controllers</a></li>
+	    <li data-icon="options"><a href="#CONFIGURATION-PAGE">Configuration</a></li>
+	    <li data-icon="network"><a href="#LAN-DEVICE-PAGE">Network Devices</a></li>
+	    <li data-icon="scheduler"><a href="#SCHEDULER-PAGE">Scheduler</a></li>
+	</ul>
+</div> 
+
+
+
+</body></html>

@@ -129,4 +129,27 @@ function renderLights(response){
 		
 	}); 
 	
+	
+	
+	
+	
+	//for tablet big img click
+	$("#fsIlluminazione li").unbind("click").on("click", function (){
+		var data = jQuery.parseJSON($(this).attr("data"));
+		if(data.isOn === true){
+			data.isOn = false;
+			$(this).find('img').attr("src","images/light_off.png");
+		}else{
+			data.isOn = true;
+			$(this).find('img').attr("src","images/light_on.png");
+		}
+		$(this).attr("data",JSON.stringify(data));
+		
+		socket.emit('SOCKET-SWITHC-LIGHT', data);
+		
+	}); 
+	
+	
+	
+	
 }
