@@ -49,8 +49,6 @@
 	<script type="text/javascript" src="js/light-controllers.js" charset="iso-8859-1"></script>
 	<script type="text/javascript" src="js/schedulers.js" charset="iso-8859-1"></script>
 	
-	
-	
 	<script type="text/javascript">
 			$(function() {
 				$("body>[data-role='panel']").panel().trigger( "create" );
@@ -59,30 +57,27 @@
 	
 	
 	<script type="text/javascript">
-$(document).ready(function() {
-// Create two variable with the names of the months and days in an array
-var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]; 
-var dayNames= ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-
-var newDate = new Date();
-newDate.setDate(newDate.getDate());
-$('#clockDate').html(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
-
-
-setInterval( function() {
-	var seconds = new Date().getSeconds();
-	seconds = ( seconds < 10 ? "0" : "" ) + seconds;
-	var hours = new Date().getHours();
-	hours = ( hours < 10 ? "0" : "" ) + hours;
-	var minutes = new Date().getMinutes();
-	minutes = ( minutes < 10 ? "0" : "" ) + minutes;
-
-	$("#clockTime").html(hours+":"+minutes+":"+seconds);
-	},1000);
-	
-});
+		$(document).ready(function() {
+		// Create two variable with the names of the months and days in an array
+		var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]; 
+		var dayNames= ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+		
+		var newDate = new Date();
+		newDate.setDate(newDate.getDate());
+		$('#clockDate').html(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
+		
+		
+		setInterval( function() {
+			var hours = new Date().getHours();
+			hours = ( hours < 10 ? "0" : "" ) + hours;
+			var minutes = new Date().getMinutes();
+			minutes = ( minutes < 10 ? "0" : "" ) + minutes;
+		
+			$("#clockTime").html(hours+":"+minutes);
+			},30000);
+			
+		});
 </script>
-	
 	
 </head>
 
