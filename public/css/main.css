@@ -2,7 +2,7 @@
 /*----------------------menu-------------------------*/
 .menu{width:100%;padding:0px 0px 0px 0;text-align:center;}
 .menu ul{list-style:none;padding:0px;margin:0px;display:inline;line-height:20px;}
-.menu ul li{list-style:none;display:inline-block;width:75px; height:100px; margin:20px 50px 5px 6px; vertical-align: top;}
+.menu ul li{list-style:none;display:inline-block;width:85px; height:100px; margin:20px 50px 5px 6px; vertical-align: top;}
 .menu ul li a{ font-size:14px; font-weight:bold; color:#302f2f; text-decoration:none; text-shadow: none; color: white}
 .menu ul li a img{padding:0px; width:56px; height:56px;}
 
