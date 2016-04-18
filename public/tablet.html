@@ -35,10 +35,6 @@
     <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview.css"/>
     <link rel="stylesheet" href="jquery/jquery.mobile.iscrollview-pull.css"/>	
 
-<script type="text/javascript" src="jquery/jquery.popmenu.js"></script>
-
-	
-		    <link rel="stylesheet" href="css/font-awesome.min.css"/>
 
 	<script type="text/javascript" src="js/cons.js" charset="iso-8859-1"></script>		
 	<script type="text/javascript" src="js/util.js" charset="iso-8859-1"></script>	
@@ -60,64 +56,21 @@
 				$("body>[data-role='panel']").panel().trigger( "create" );
 			});
 	</script>
-<script>
-        $(function(){
-            $('#demo_box').popmenu();
-//             $('#demo_box_2').popmenu({'background':'#e67e22','focusColor':'#c0392b','borderRadius':'0'});
-//             $('#demo_box_3').popmenu({'width': '200px', 'background':'#223','focusColor':'#ee5','borderRadius':'10px', 'top': '70', 'left': '-40', 'color':'#1265fe','border':'3px solid #0035fe'});
-        })
-    </script>
-    <style>
-
-        #demo_box{
-            width: 480px;
-        }
-        .fa{
-            font-size: 40px;
-            line-height: 70px;
-        }
-        .fa-bars{
-            color: #3498db;
-        }
-        pre{
-            font-family: Consolas,Liberation Mono,Courier,monospace;
-            font-size: 13px;
-        }
-        @media screen and (orientation: portrait){
-            pre{
-                overflow-x: scroll;
-            }
-        }
-    </style>
 	
 </head>
 
 	<body>
 
 
-<div id="HOME-PAGE" data-role="page" class="ui-page-active">
+<div id="HOME-PAGE" data-role="page" class="ui-page-active" data-theme="a">
 
 
 
-	<div data-role="header" data-position="fixed">
-	        <div id="demo_box">
-            <span class="pop_ctrl" style="margin-bottom:-50px; margin-top:-50px; margin-left:5px"><i class="fa fa-bars"></i></span>
-            <ul id="demo_ul">
-                <li class="demo_li"><a href="#"><div><i class="fa fa-home"></i></div><div>Home</div></a></li>
-                <li class="demo_li"><a href="#"><div><i class="fa fa-cloud"></i></div><div>Cloud</div></a></li>
-                <li class="demo_li"><div><i class="fa fa-cog"></i></div><div>settings</div></li>
-                <li class="demo_li"><div><i class="fa fa-envelope"></i></div><div>E-mail</div></li>
-                <li class="demo_li"><div><i class="fa fa-clock-o"></i></div><div>Clock</div></li>
-                <li class="demo_li"><div><i class="fa fa-folder"></i></div><div>Files</div></li>
-                <li class="demo_li"><div><i class="fa fa-heart-o"></i></div><div>Favourites</div></li>
-                <li class="demo_li"><div><i class="fa fa-mobile"></i></div><div>Mobile</div></li>
-                <li class="demo_li"><div><i class="fa fa-power-off"></i></div><div>Exit</div></li>
-            </ul>
-        </div>
+<!-- 	<div data-role="header" data-position="fixed"> -->
 <!-- 		<img style="top:5px;" src="images/security.png" width="50px" height="50px" class="ui-btn-left" />	 -->
-		<h1>Home</h1>
-		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
-	</div>
+<!-- 		<h1>Home</h1> -->
+<!-- 		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a> -->
+<!-- 	</div> -->
 	
 <div class="ui-content" style="padding: 5px"> 	
 
@@ -125,7 +78,7 @@
         
         
  		<fieldset id="fsSecurity" style="display: none">
-			<legend><table><tr><td><img src="images/Armor-32.png"/></td><td style="color: red">&nbsp;Sicurezza</td></tr></table></legend>			
+			<legend><table><tr><td style="color: red">&nbsp;Sicurezza</td></tr></table></legend>			
 					<table width="100%" style="border-collapse: collapse" id="controlgroup-alarm"></table>
 						<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
 				<tr>
@@ -139,6 +92,7 @@
 		<br>
  
  		<fieldset id="fsIlluminazione" style="display: none">
+ 			 <legend><table><tr><td style="color:yellow">&nbsp;Illuminazione</td></tr></table></legend>
 			 <div class="menu">
 				<ul id="controlgroup-lights"></ul>
 				<script id="template-lights" type="text/x-jquery-tmpl">

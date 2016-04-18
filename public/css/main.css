@@ -2,9 +2,9 @@
 /*----------------------menu-------------------------*/
 .menu{width:100%;padding:0px 0px 0px 0;text-align:center;}
 .menu ul{list-style:none;padding:0px;margin:0px;display:inline;line-height:20px;}
-.menu ul li{list-style:none;display:inline-block;width:95px; height:125px; margin:40px 50px 5px 6px; vertical-align: top;}
-.menu ul li a{ font-size:20px; font-weight:bold; color:#302f2f; text-decoration:none; text-shadow: none; color: white}
-.menu ul li a img{padding:0px; width:96px; height:96px;}
+.menu ul li{list-style:none;display:inline-block;width:65px; height:125px; margin:40px 50px 5px 6px; vertical-align: top;}
+.menu ul li a{ font-size:14px; font-weight:bold; color:#302f2f; text-decoration:none; text-shadow: none; color: white}
+.menu ul li a img{padding:0px; width:66px; height:66px;}
 
 .ui-page-theme-a {
   background-image: url('../images/carbon_fibre.png');
