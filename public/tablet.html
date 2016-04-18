@@ -57,6 +57,33 @@
 			});
 	</script>
 	
+	
+	<script type="text/javascript">
+$(document).ready(function() {
+// Create two variable with the names of the months and days in an array
+var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]; 
+var dayNames= ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+
+var newDate = new Date();
+newDate.setDate(newDate.getDate());
+$('#clockDate').html(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
+
+
+setInterval( function() {
+	var seconds = new Date().getSeconds();
+	seconds = ( seconds < 10 ? "0" : "" ) + seconds;
+	var hours = new Date().getHours();
+	hours = ( hours < 10 ? "0" : "" ) + hours;
+	var minutes = new Date().getMinutes();
+	minutes = ( minutes < 10 ? "0" : "" ) + minutes;
+
+	$("#clockTime").html(hours+":"+minutes+":"+seconds);
+	},1000);
+	
+});
+</script>
+	
+	
 </head>
 
 	<body>
@@ -74,10 +101,9 @@
 	
 <div class="ui-content" style="padding: 5px"> 	
 
-
-        
-        
- 		<fieldset id="fsSecurity" style="display: none">
+    <div class="ui-grid-b">
+       <div class="ui-block-a">
+	      		<fieldset id="fsSecurity" style="display: none">
 			<legend><table><tr><td style="color: red">&nbsp;Sicurezza</td></tr></table></legend>			
 					<table width="100%" style="border-collapse: collapse" id="controlgroup-alarm"></table>
 						<script id="template-controlgroup-alarm" type="text/x-jquery-tmpl">
@@ -88,8 +114,28 @@
 					</td>
 				</tr>
 				</script>
-		</fieldset>			
-		<br>
+		</fieldset>		
+	  </div>
+       <div class="ui-block-b">
+       
+	  </div>
+ 	  <div class="ui-block-c">
+ 	  
+				<table width="100%" style="border-collapse: collapse; text-align:center; margin-top:30px">
+						<tr><td id="clockDate" style="font-size:16px; font-weight:bold; text-decoration:none; text-shadow: none; color: white"></td>
+						</tr>				
+						<tr>
+							<td id="clockTime" style="font-size:76px; font-weight:bold; text-decoration:none; text-shadow: none; color: white"></td>
+						</tr>
+				</table>       
+       
+
+
+	  </div>
+    </div>
+        <br/>
+        
+	
  
  		<fieldset id="fsIlluminazione" style="display: none">
  			 <legend><table><tr><td style="color:yellow">&nbsp;Illuminazione</td></tr></table></legend>
@@ -102,54 +148,7 @@
 
 		</fieldset>	
 
- 
-<!--     <div class="ui-grid-c"> -->
-<!--        <div class="ui-block-a"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Sala1</p></a> -->
-<!-- 	  </div> -->
-<!--        <div class="ui-block-b"> -->
-<!-- 	     <a><img src="images/light_off.png"/><p>Sala2</p></a> -->
-<!-- 	  </div> -->
-<!-- 	  <div class="ui-block-c"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Cucina1</p></a> -->
-<!-- 	  </div> -->
-<!-- 	  <div class="ui-block-d"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Cucina2</p></a> -->
-<!-- 	  </div> -->
-<!--     </div> -->
- 
- 
- 
- 
-<!--      <div class="ui-grid-c"> -->
-<!--        <div class="ui-block-a"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Sala1</p></a> -->
-<!-- 	  </div> -->
-<!--        <div class="ui-block-b"> -->
-<!-- 	     <a><img src="images/light_off.png"/><p>Sala2</p></a> -->
-<!-- 	  </div> -->
-<!-- 	  <div class="ui-block-c"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Cucina1</p></a> -->
-<!-- 	  </div> -->
-<!-- 	  <div class="ui-block-d"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Cucina2</p></a> -->
-<!-- 	  </div> -->
-<!--     </div>    -->
 
-<!--     <div class="ui-grid-c"> -->
-<!--        <div class="ui-block-a"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Sala1</p></a> -->
-<!-- 	  </div> -->
-<!--        <div class="ui-block-b"> -->
-<!-- 	     <a><img src="images/light_off.png"/><p>Sala2</p></a> -->
-<!-- 	  </div> -->
-<!-- 	  <div class="ui-block-c"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Cucina1</p></a> -->
-<!-- 	  </div> -->
-<!-- 	  <div class="ui-block-d"> -->
-<!-- 	     <a><img src="images/light_on.png"/><p>Cucina2</p></a> -->
-<!-- 	  </div> -->
-<!--     </div> -->
     
 
 	</div>	 
