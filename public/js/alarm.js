@@ -282,12 +282,27 @@ socket.on('433MHZ', function (device) {
 		});	
 	}
 	
+	
+	
 });
 
 function AlarmDetection (device, areaId){
-	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
-		socket.emit('disarm', areaId);
+	
+	var password = "";
+	UTILITY.keypad("Sicurezza violata!", function(number) {
+		password += number;
+
+		if(password.indexOf("2244") > -1){
+			UTILITY.hideKeyPad();
+			password ="";
+			socket.emit('disarm', areaId);
+		}
+		
 	}, null,"Atenzione");
+	
+//	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
+//		socket.emit('disarm', areaId);
+//	}, null,"Atenzione");
 }
 
 

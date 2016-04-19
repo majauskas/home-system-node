@@ -58,7 +58,7 @@ var UTILITY = new initutil();function initutil() {
     this.hideAreYouSurePopup = function() {
     	$('#conferma-popup').remove();
     }; 
-    
+
     
     this.errorPopup = function(error) {	
     	setTimeout(function() {
@@ -112,6 +112,30 @@ var UTILITY = new initutil();function initutil() {
     };    
     
  
+    
+    this.keypad = function(headerMsg, callback) {	
+
+    	var page = $.mobile.activePage;
+    	var popup = $('<div class="customPopup" id="keypad-popup" data-dismissible="false" data-role="popup" data-theme="f" data-shadow="true" data-overlay-theme="a" style="max-width: 600px; width: 600px"></div>').appendTo( page );
+		if(headerMsg){
+			$('<div data-role="header"><h1 class="keypad-popup-header">'+headerMsg+'</h1> </div>').appendTo( popup );	
+		}   
+		
+    	var content = $('<div data-role="content" class="ui-corner-bottom ui-content" data-theme="b">  <table>  <tr>  <td><a data-role="button" data-theme="b" class="numero">1</a></td>  <td><a data-role="button" data-theme="b" class="numero">2</a></td>  <td><a data-role="button" data-theme="b" class="numero">3</a></td>  </tr>  <tr>  <td><a data-role="button" data-theme="b" class="numero">4</a></td>  <td><a data-role="button" data-theme="b" class="numero">5</a></td>  <td><a data-role="button" data-theme="b" class="numero">6</a></td>  </tr>  <tr>  <td><a data-role="button" data-theme="b" class="numero">7</a></td>  <td><a data-role="button" data-theme="b" class="numero">8</a></td>  <td><a data-role="button" data-theme="b" class="numero">9</a></td>  </tr>  <tr>  <td><a data-role="button" data-theme="e" class="numero">-</a></td>  <td><a data-role="button" data-theme="b" class="numero">0</a></td>  <td><a data-role="button" data-theme="e" class="numero">+</a></td>  </tr>  </table></div>').appendTo( popup );
+    	popup.popup();
+    	page.page('destroy').page();	
+    	$('#keypad-popup').popup("open");
+    	
+    	$("#keypad-popup .numero").unbind("click").on("click", function() {
+    		callback($(this).text());
+//    		$(this).off("click");
+    	});	
+};    
+    
+	this.hideKeyPad = function() {
+		$('#keypad-popup').remove();
+	}; 
+    
     this.httpError = function(error) {	
     	
     	if(error.responseJSON === undefined ){
