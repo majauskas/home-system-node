@@ -111,8 +111,30 @@
 	
 		$("#clockTime").html(hours+":"+minutes);
 	};
+
+
+	$("#TEST-PAGE").on("click", "#btstartAvvisoallarme", function (event) {
+		MyJavaInterface.startAvvisoallarme();
+	});	
+
+	$("#TEST-PAGE").on("click", "#btstopAvvisoallarme", function (event) {
+		MyJavaInterface.stopAvvisoallarme();
+	});	
 	
   });
+
+
+  function myCallbackFunction(dataString) {
+	  var password = "";
+		UTILITY.keypad(dataString, function(number) {
+			password += number;
+			if(password.indexOf("2244") > -1){
+				password ="";
+			}
+		});
+	  
+	}
+	
   </script>
 	
 </head>
@@ -1027,6 +1049,23 @@
 </div> 
 
 
+
+<div id="TEST-PAGE" data-role="page">
+	<div data-role="header" data-position="fixed">
+		<a href="#HOME-PAGE" class="ui-btn ui-btn-left ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-home"></a>
+		<h1>Test</h1>
+		<a href="#menu-panel" class="ui-btn ui-btn-right ui-alt-icon ui-nodisc-icon ui-corner-all ui-btn-icon-notext ui-icon-bars"></a>
+	</div>
+
+		<div class="btDownContainer">		
+		<a id="btstartAvvisoallarme" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">startAvvisoallarme</a>
+		<a id="btstopAvvisoallarme" class="ui-btn ui-icon-minus ui-btn-icon-left ui-corner-all" style="font-weight: bold; text-shadow: none; color: white">stopAvvisoallarme</a>
+	</div> 
+
+</div> 
+
+
+
 <div id="menu-panel" data-role="panel" data-position="right" data-display="overlay" data-theme="b">
 	<ul data-role="listview" data-inset="false" class="ui-nodisc-icon">
 		<li data-icon="sensor"><a href="#SENSORI-PIR-PAGE">PIR Sensors</a></li>
@@ -1038,6 +1077,7 @@
 	    <li data-icon="options"><a href="#CONFIGURATION-PAGE">Configuration</a></li>
 	    <li data-icon="network"><a href="#LAN-DEVICE-PAGE">Network Devices</a></li>
 	    <li data-icon="scheduler"><a href="#SCHEDULER-PAGE">Scheduler</a></li>
+	    <li data-icon="scheduler"><a href="#TEST-PAGE">Test</a></li>
 	</ul>
 </div> 
 
