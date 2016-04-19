@@ -103,31 +103,15 @@
 		newDate.setDate(newDate.getDate());
 		$('#clockDate').html(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
 					
-		
-		var hours = new Date().getHours();
+		var date = new Date();
+		var hours = date.getHours();
 		hours = ( hours < 10 ? "0" : "" ) + hours;
-		var minutes = new Date().getMinutes();
+		var minutes = date.getMinutes();
 		minutes = ( minutes < 10 ? "0" : "" ) + minutes;
 	
 		$("#clockTime").html(hours+":"+minutes);
 	};
-
-
-
-// 	setTimeout(function() {
-
-// 		var password = "";
-// 		UTILITY.keypad("Sicurezza violata!", function(number) {
-// 			password += number;
-
-// 			if(password.indexOf("2244") > -1){
-// 					UTILITY.hideKeyPad();
-// 					password ="";
-// 			}
-			
-// 		}, null,"Atenzione");
-// 	}, 1000);
-
+	
   });
   </script>
 	

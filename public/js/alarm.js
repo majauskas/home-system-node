@@ -196,7 +196,11 @@ var socket = io.connect();
 
 socket.on('SOCKET-CHANGE-ALARM-STATE', function (data) {
 	
-	UTILITY.hideAreYouSurePopup();
+	if(UTILITY.iPhone){
+		UTILITY.hideAreYouSurePopup();
+	}else{
+		UTILITY.hideKeyPad();
+	}
 	
 	$("#"+data._id).prop('checked', data.isActivated).flipswitch('refresh');
 	
@@ -283,26 +287,29 @@ socket.on('433MHZ', function (device) {
 	}
 	
 	
-	
 });
 
 function AlarmDetection (device, areaId){
 	
-	var password = "";
-	UTILITY.keypad("Sicurezza violata!", function(number) {
-		password += number;
 
-		if(password.indexOf("2244") > -1){
-			UTILITY.hideKeyPad();
-			password ="";
-			socket.emit('disarm', areaId);
-		}
-		
-	}, null,"Atenzione");
 	
-//	UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
-//		socket.emit('disarm', areaId);
-//	}, null,"Atenzione");
+	
+	if(UTILITY.iPhone){
+		UTILITY.areYouSure("Sicurezza violata!<br>"+ device.name+"<br>Disattiva allarme?", function() {
+			socket.emit('disarm', areaId);
+		}, null,"Atenzione");
+	}else{
+		var password = "";
+		UTILITY.keypad("Sicurezza violata! "+device.name, function(number) {
+			password += number;
+			if(password.indexOf("2244") > -1){
+				password ="";
+				socket.emit('disarm', areaId);
+			}
+		});
+	}
+	
+
 }
 
 
