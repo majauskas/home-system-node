@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 15-01-2016 18:00
+# Cache manifest version 20-04-2016 09:00
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -46,6 +46,8 @@ jquery/jquery.mobile.iscroll.js
 jquery/jquery.mobile.iscrollview-pull.css
 jquery/jquery.mobile.iscrollview.css
 jquery/jquery.mobile.iscrollview.js
+jquery/flatWeatherPlugin.css
+jquery/jquery.flatWeatherPlugin.js
 js/socket.io.js 
 js/util.js	
 js/alarm.js
@@ -91,6 +93,8 @@ images/sensor.png
 images/speaker.png
 images/siren.png
 images/options.png
+fonts/weathericons-regular-webfont.ttf
+fonts/weathericons-regular-webfont.woff
  
 
 
