@@ -159,35 +159,53 @@ $(function() {
 
 var isUpdatedRemoteControlArea;
 function OnOffRemoteAreas(){
-	isUpdatedRemoteControlArea = true;
-	var data = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
 	
-	$("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").off("change");
-	var id =  $(this).attr("id"); 
-
-	$("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").each(function( index, obj ) {
-		if($(this).attr("id") !== id){
-			$(this).prop('checked', false).flipswitch('refresh');
-		}
-	});	
 	
-	var activeArea;
-	var id =  $(this).attr("id"); 
-	if($(this).prop("checked")){
-		activeArea = id;
+	if(UTILITY.iPhone){
+		internalFuntion();
 	}else{
-		activeArea = null;
+
+		UTILITY.countdown("Allarme sarà attivato tra ", 60, function() {
+			internalFuntion();
+		});
+		
 	}
 	
-	$.ajax({
-		global: false,
-		type: "PUT", url: "RemoteControl/activeArea/"+data._id,
-		dataType : "json",
-		data : { activeArea : activeArea },
-		error: UTILITY.httpError
-	});	
 	
-	setTimeout(function() { $("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").unbind("change").on("change",OnOffRemoteAreas); },10);	
+	
+	function internalFuntion(){	
+	
+		isUpdatedRemoteControlArea = true;
+		var data = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
+		
+		$("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").off("change");
+		var id =  $(this).attr("id"); 
+	
+		$("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").each(function( index, obj ) {
+			if($(this).attr("id") !== id){
+				$(this).prop('checked', false).flipswitch('refresh');
+			}
+		});	
+		
+		var activeArea;
+		var id =  $(this).attr("id"); 
+		if($(this).prop("checked")){
+			activeArea = id;
+		}else{
+			activeArea = null;
+		}
+		
+		$.ajax({
+			global: false,
+			type: "PUT", url: "RemoteControl/activeArea/"+data._id,
+			dataType : "json",
+			data : { activeArea : activeArea },
+			error: UTILITY.httpError
+		});	
+		
+		setTimeout(function() { $("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").unbind("change").on("change",OnOffRemoteAreas); },10);	
+		
+	}
 	
 }	
 

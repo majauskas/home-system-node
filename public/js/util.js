@@ -114,16 +114,15 @@ var UTILITY = new initutil();function initutil() {
     };    
     
  
-    
+//------------- keypad -----------------------------------   
     this.keypad = function(headerMsg, callback) {	
-
     	var page = $.mobile.activePage;
     	var popup = $('<div class="customPopup" id="keypad-popup" data-dismissible="false" data-role="popup" data-shadow="true" data-overlay-theme="a" style="max-width: 500px; width: 500px"></div>').appendTo( page );
 		if(headerMsg){
 			$('<div data-role="header"><h1 class="keypad-popup-header">'+headerMsg+'</h1> </div>').appendTo( popup );	
 		}   
 		
-    	var content = $('<div data-role="content" class="ui-corner-bottom ui-content" data-theme="b">  <table>  <tr>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">1</a></td>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">2</a></td>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">3</a></td>  </tr>  <tr>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">4</a></td>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">5</a></td>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">6</a></td>  </tr>  <tr>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">7</a></td>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">8</a></td>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">9</a></td>  </tr>  <tr>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">-</a></td>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">0</a></td>  <td style="min-width: 70px"><a class="ui-btn ui-corner-all numero">+</a></td>  </tr>  </table></div>').appendTo( popup );
+    	var content = $('<div data-role="content" class="ui-corner-bottom ui-content" data-theme="b">  <table>  <tr>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">1</a></td>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">2</a></td>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">3</a></td>  </tr>  <tr>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">4</a></td>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">5</a></td>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">6</a></td>  </tr>  <tr>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">7</a></td>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">8</a></td>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">9</a></td>  </tr>  <tr>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">-</a></td>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">0</a></td>  <td style="min-width: 70px">  <a href="javascript:void(0)" class="ui-btn ui-corner-all numero">+</a></td>  </tr>  </table> </div>').appendTo( popup );
     	popup.popup();
     	page.page('destroy').page();	
     	$('#keypad-popup').popup("open");
@@ -132,11 +131,55 @@ var UTILITY = new initutil();function initutil() {
     		callback($(this).text());
     	});	
     };    
-    
 	this.hideKeyPad = function() {
 		$('#keypad-popup').remove();
 	}; 
     
+	
+	
+//------------- countdown -----------------------------------
+    this.countdown = function(headerMsg, timeseconds, callback) {	
+    	var page = $.mobile.activePage;
+    	var popup = $('<div class="customPopup" id="countdown-popup" data-dismissible="false" data-role="popup" data-shadow="true" data-overlay-theme="a" style="max-width: 500px; width: 500px"></div>').appendTo( page );
+		if(headerMsg){
+			$('<div data-role="header"><h1 class="countdown-popup-header">'+headerMsg+'</h1> </div>').appendTo( popup );	
+		}   
+		
+    	var content = $('<div style="text-align: center;" data-role="content" data-theme="b">  <table width="100%">  <tr>  <td id="countdown-time" style="font-size:76px; font-weight:bold; text-decoration:none; text-shadow: none; color: white">'+timeseconds+'</td>  </tr>  <tr style="text-align: center; width: 100%;">  <td style="text-align: center; width: 100%;">  <a style="max-width: 120px; width: 120px" href="javascript:void(0)" class="ui-btn ui-corner-all annulla" data-icon="delete">Annulla</a>  </td>  </tr>  </table>  </div>').appendTo( popup );
+    	popup.popup();
+    	page.page('destroy').page();	
+    	$('#countdown-popup').popup("open");
+    	
+    	
+    	var interval = setInterval(function() {
+    		$("#countdown-popup #countdown-time").html(--timeseconds);
+    		if(timeseconds === 0){
+    			$('#countdown-popup').remove();
+    			callback();
+    		}
+    	}, 1000);
+    	
+//    	var timeout = setTimeout(function() {
+//    		callback();
+//    	}, timeseconds*1000)
+    	
+    	
+    	$("#countdown-popup .annulla").unbind("click").on("click", function() {
+    		console.log("clearInterval");
+    		clearInterval(interval);
+//    		clearTimeout(timeout);
+    		$('#countdown-popup').remove();
+    	});
+    	
+    	
+
+    	
+    };    
+	this.hideCountdown = function() {
+		$('#countdown-popup').remove();
+	}; 	
+	
+	
     this.httpError = function(error) {	
     	
     	if(error.responseJSON === undefined ){
