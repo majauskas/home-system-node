@@ -74,7 +74,7 @@ function OnOffZone(){
 		internalFuntion(id,checked);
 	}else {
 		if(checked){
-			UTILITY.countdown("Attivazione Allarme", 3, function() {
+			UTILITY.countdown("Attivazione Allarme", 60, function() {
 				internalFuntion(id,checked);
 			});
 		}
