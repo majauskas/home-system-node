@@ -160,21 +160,6 @@ $(function() {
 var isUpdatedRemoteControlArea;
 function OnOffRemoteAreas(){
 	
-	
-	if(UTILITY.iPhone){
-		internalFuntion();
-	}else{
-
-		UTILITY.countdown("Allarme sarà attivato tra ", 60, function() {
-			internalFuntion();
-		});
-		
-	}
-	
-	
-	
-	function internalFuntion(){	
-	
 		isUpdatedRemoteControlArea = true;
 		var data = jQuery.parseJSON($("#EDIT-REMOTE-CONTROL-PAGE").attr("data"));
 		
@@ -205,8 +190,6 @@ function OnOffRemoteAreas(){
 		
 		setTimeout(function() { $("#EDIT-REMOTE-CONTROL-PAGE [data-role='flipswitch']").unbind("change").on("change",OnOffRemoteAreas); },10);	
 		
-	}
-	
 }	
 
 
@@ -220,8 +203,9 @@ socket.on('SOCKET-CHANGE-ALARM-STATE', function (data) {
 		UTILITY.hideKeyPad();
 	}
 	
+	$("#"+data._id).off("change");
 	$("#"+data._id).prop('checked', data.isActivated).flipswitch('refresh');
-	
+	setTimeout(function() { $("#"+data._id).unbind("change").on("change",OnOffZone); },10);
 });
 
 
@@ -332,87 +316,6 @@ function AlarmDetection (device, areaId){
 
 
 socket.on('ALARM_DETECTION', AlarmDetection);
-
-//var intervalBlink = null;
-//$(document).on("pagecreate","#HOME-PAGE", function(){
-//
-//	
-//	$.ajax({
-//		type : 'GET',
-//		url : "/home-page",
-//		success: function(response) {
-//
-//			var areas = response.areas;
-//			APPLICATION.areas = areas; 
-//			
-//			if(areas.length > 0){
-//				$("#fsSecurity, #fsTemperatura").show();
-//			}
-//			
-//			$("#controlgroup-alarm").html("");
-//			$("#template-controlgroup-alarm").tmpl( areas ).appendTo( "#controlgroup-alarm" );	
-//			$("#HOME-PAGE").trigger("create");
-//			
-//        	$("#SENSORI-WIFI-PAGE").page();	
-//        	$("#SENSORI-PIR-PAGE").page();	
-//        	$("#AREAS-PAGE").page();
-//
-//			
-//			
-//			$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change", OnOffZone);
-//			
-//				var area = $.grep(areas, function(target, i) {	
-//					 return (target.alarmActivate.state);
-//				})[0];	
-//				if(area){
-//					
-//					 var obj = $("#HOME-PAGE h1 font");
-//					 intervalBlink = setInterval(function() {
-//			                if ($(obj).css("visibility") === "visible") {
-//			                    $(obj).css('visibility', 'hidden');
-//			                }
-//			                else {
-//			                    $(obj).css('visibility', 'visible');
-//			                    $(obj).css('color', 'red');
-//			                }
-//			            }, 800);					
-//					
-//				}				
-//
-//			
-//        }
-//	});	
-//	
-//});	
-//
-//function OnOffZone(){
-//	
-//	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").off("change");
-//
-//	var id =  $(this).attr("id"); 
-//
-//	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").each(function( index, obj ) {
-//		if($(this).attr("id") !== id){
-//			$(this).prop('checked', false).flipswitch('refresh');
-//		}
-//	});	
-//	
-//	$.ajax({
-//		global: false,
-//		type: "PUT", url: "Area/isActivated/"+id,
-//		dataType : "json",
-//		data : { isActivated :  $(this).prop("checked")},
-//		error: UTILITY.httpError
-//	});					
-//	
-//	setTimeout(function() { $("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change",OnOffZone); },10);	
-//	clearInterval(intervalBlink);
-//	$("#HOME-PAGE h1 font").css('visibility', 'hidden');
-//	
-//}
-//
-//
-
 
 
 

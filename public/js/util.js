@@ -145,29 +145,25 @@ var UTILITY = new initutil();function initutil() {
 			$('<div data-role="header"><h1 class="countdown-popup-header">'+headerMsg+'</h1> </div>').appendTo( popup );	
 		}   
 		
-    	var content = $('<div style="text-align: center;" data-role="content" data-theme="b">  <table width="100%">  <tr>  <td id="countdown-time" style="font-size:76px; font-weight:bold; text-decoration:none; text-shadow: none; color: white">'+timeseconds+'</td>  </tr>  <tr style="text-align: center; width: 100%;">  <td style="text-align: center; width: 100%;">  <a style="max-width: 120px; width: 120px" href="javascript:void(0)" class="ui-btn ui-corner-all annulla" data-icon="delete">Annulla</a>  </td>  </tr>  </table>  </div>').appendTo( popup );
+    	var content = $('<div style="text-align: center;" data-role="content" data-theme="b">  <table width="100%">  <tr>  <td id="countdown-time" style="font-size:76px; font-weight:bold; text-decoration:none; text-shadow: none; color: white">'+timeseconds+'</td>  </tr>  <tr>  <td>  <a href="javascript:void(0)" class="ui-corner-all annulla" data-role="button" data-inline="true" data-icon="delete">Annulla</a>  </tr>  </table>  </div>').appendTo( popup );
     	popup.popup();
     	page.page('destroy').page();	
     	$('#countdown-popup').popup("open");
     	
-    	
+    	var countdown = timeseconds;
     	var interval = setInterval(function() {
-    		$("#countdown-popup #countdown-time").html(--timeseconds);
-    		if(timeseconds === 0){
+    		countdown = countdown-1;
+    		$("#countdown-popup #countdown-time").html(countdown);
+    		if(countdown === 0){
+    			clearInterval(interval);
     			$('#countdown-popup').remove();
-    			callback();
+    	    		callback();
     		}
     	}, 1000);
     	
-//    	var timeout = setTimeout(function() {
-//    		callback();
-//    	}, timeseconds*1000)
-    	
     	
     	$("#countdown-popup .annulla").unbind("click").on("click", function() {
-    		console.log("clearInterval");
     		clearInterval(interval);
-//    		clearTimeout(timeout);
     		$('#countdown-popup').remove();
     	});
     	

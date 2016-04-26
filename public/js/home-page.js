@@ -22,7 +22,6 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 			var areas = response.areas;
 			APPLICATION.areas = areas; 
 			
-			
 			$("#controlgroup-alarm").html("");
 			$("#template-controlgroup-alarm").tmpl( areas ).appendTo( "#controlgroup-alarm" );	
 			$("#HOME-PAGE").trigger("create");
@@ -67,27 +66,51 @@ $(document).on("pagecreate","#HOME-PAGE", function(){
 
 function OnOffZone(){
 	
-	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").off("change");
-
 	var id =  $(this).attr("id"); 
-
-	$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").each(function( index, obj ) {
-		if($(this).attr("id") !== id){
-			$(this).prop('checked', false).flipswitch('refresh');
+	var checked = $(this).prop("checked");
+	var name = $(this).prop("name");
+	
+	if(UTILITY.iPhone || !checked || name !== "Allarme Totale"){
+		internalFuntion(id,checked);
+	}else {
+		if(checked){
+			UTILITY.countdown("Attivazione Allarme", 3, function() {
+				internalFuntion(id,checked);
+			});
 		}
-	});	
+	}
 	
-	$.ajax({
-		global: false,
-		type: "PUT", url: "Area/isActivated/"+id,
-		dataType : "json",
-		data : { isActivated :  $(this).prop("checked")},
-		error: UTILITY.httpError
-	});					
 	
-	setTimeout(function() { $("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change",OnOffZone); },10);	
-	clearInterval(intervalBlink);
-	$("#HOME-PAGE h1 font").css('visibility', 'hidden');
+	function internalFuntion(id,checked){
+		
+		$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").off("change");
+
+
+		$("#HOME-PAGE #fsSecurity [data-role='flipswitch']").each(function( index, obj ) {
+			if($(this).attr("id") !== id){
+				$(this).prop('checked', false).flipswitch('refresh');
+			}
+		});	
+		
+		$.ajax({
+			global: false,
+			type: "PUT", url: "Area/isActivated/"+id,
+			dataType : "json",
+			data : { isActivated :  checked},
+			success: function(response) {
+				setTimeout(function() { $("#HOME-PAGE #fsSecurity [data-role='flipswitch']").unbind("change").on("change",OnOffZone); },10);	
+				clearInterval(intervalBlink);
+				$("#HOME-PAGE h1 font").css('visibility', 'hidden');
+			},
+			error: UTILITY.httpErrors
+		});		
+		
+		
+
+	}
+	
+	
+
 	
 }
 
