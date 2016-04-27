@@ -1228,7 +1228,7 @@ schedulers.execute(database, LightsController);
 //wa.sendMessageWithBody({ content: "Message Content", to: "00393473834506"});
 
 var latestNewsletter=null;
-BASKETUISP.readContent(function(data) {
+BASKETUISP.readContent(database, function(data) {
 	console.log("BASKETUISP",new Date(),data.newsletter);
 	if(latestNewsletter!==null && latestNewsletter !== data.newsletter){
 		console.log("send email",data.newsletter);
