@@ -21,6 +21,8 @@ var request = require('request');
 var child_process = require('child_process');
 var SunCalc = require('suncalc');
 var exec = child_process.exec;
+var BASKETUISP = require('./lib/BASKETUISP.js');
+
 //var arp = null; try { arp = require('arp-a'); } catch (e) {}
 
 
@@ -1224,3 +1226,14 @@ schedulers.execute(database, LightsController);
 ////var password = crypto.createHash('md5').update('329051160070235').digest("hex");
 //var wa = new waApi(393473834506, password, { displayName: 'Minde', debug: true });
 //wa.sendMessageWithBody({ content: "Message Content", to: "00393473834506"});
+
+var latestNewsletter=null;
+BASKETUISP.readContent(function(data) {
+	
+	if(latestNewsletter!==null && latestNewsletter !== data.newsletter){
+		console.log("send email");
+		 email("UISP newsletter", data.newsletter);
+	}
+	latestNewsletter = data.newsletter;
+//	console.log("MINDE",data.newsletter);
+});

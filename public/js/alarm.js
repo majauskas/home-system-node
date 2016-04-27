@@ -304,7 +304,8 @@ function AlarmDetection (device, areaId){
 		var password = "";
 		UTILITY.keypad("Sicurezza violata! "+device.name, function(number) {
 			password += number;
-			document.getElementById("sound-beep-07").play();
+			//document.getElementById("sound-beep-07").play();
+//			MyJavaInterface.beep();
 			if(password.indexOf("2244") > -1){
 				password ="";
 				socket.emit('disarm', areaId);
