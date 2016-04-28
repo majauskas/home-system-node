@@ -1227,12 +1227,18 @@ schedulers.execute(database, LightsController);
 //var wa = new waApi(393473834506, password, { displayName: 'Minde', debug: true });
 //wa.sendMessageWithBody({ content: "Message Content", to: "00393473834506"});
 
-var latestNewsletter=null;
-BASKETUISP.readContent(database, function(data) {
-	console.log("BASKETUISP",new Date(),data.newsletter);
-	if(latestNewsletter!==null && latestNewsletter !== data.newsletter){
-		console.log("send email",data.newsletter);
-		 email("UISP newsletter", data.newsletter);
-	}
-	latestNewsletter = data.newsletter;
-});
+
+
+
+
+
+
+//var latestNewsletter=null;
+//BASKETUISP.readContent(database, function(data) {
+//	console.log("BASKETUISP",new Date(),data.newsletter);
+//	if(latestNewsletter!==null && latestNewsletter !== data.newsletter){
+//		console.log("send email",data.newsletter);
+//		 email("UISP newsletter", data.newsletter);
+//	}
+//	latestNewsletter = data.newsletter;
+//});
