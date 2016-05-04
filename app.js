@@ -1233,12 +1233,12 @@ schedulers.execute(database, LightsController);
 
 
 
-//var latestNewsletter=null;
-//BASKETUISP.readContent(database, function(data) {
-//	console.log("BASKETUISP",new Date(),data.newsletter);
-//	if(latestNewsletter!==null && latestNewsletter !== data.newsletter){
-//		console.log("send email",data.newsletter);
-//		 email("UISP newsletter", data.newsletter);
-//	}
-//	latestNewsletter = data.newsletter;
-//});
+var latestNewsletter=null;
+BASKETUISP.readContent(database, function(data) {
+	console.log("BASKETUISP",new Date(),data.newsletter);
+	if(latestNewsletter!==null && latestNewsletter !== data.newsletter){
+		console.log("send email",data.newsletter);
+		 email("UISP newsletter", data.newsletter);
+	}
+	latestNewsletter = data.newsletter;
+});
