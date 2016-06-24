@@ -1142,7 +1142,7 @@ schedulers.execute(database, LightsController);
 
 
 
-new CronJob("00 05 13 * * 5", function(){
+new CronJob("00 30 18 * * 5", function(){
 	io.sockets.emit("SOCKET-HOME-INFO", {msg:"Portare fuori la spazzatura!"});
 },null, true, null, null);
 
