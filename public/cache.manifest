@@ -1,6 +1,6 @@
 CACHE MANIFEST
 # This is a comment.
-# Cache manifest version 26-04-2016 09:00
+# Cache manifest version 24-06-2016 09:00
 # If you change the version number in this comment,
 # the cache manifest is no longer byte-for-byte identical.
 
@@ -61,6 +61,7 @@ js/alarm-auto-on-off.js
 js/zone.js
 js/light-controllers.js
 js/schedulers.js
+js/tablet-implementation.js
 jquery/images/ajax-loader.gif
 images/Wifi-02-24-1C95FF.png
 images/1c95ff-infrared-sensor-24.png
