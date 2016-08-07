@@ -6,9 +6,13 @@
 .menu ul li a{ font-size:14px; font-weight:bold; text-decoration:none; text-shadow: none; color: white}
 .menu ul li a img{padding:0px; width:56px; height:56px;}
 
-
 .ui-page-theme-a {
   background-image: url('../images/carbon_fibre.png');
+}
+
+.ui-page-theme-g {
+  /*background-image: url('../images/carbon_fibre.png');*/
+   background-color: black;
 }
 
 
