@@ -21,7 +21,7 @@ var request = require('request');
 var child_process = require('child_process');
 var SunCalc = require('suncalc');
 var exec = child_process.exec;
-var BASKETUISP = require('./lib/BASKETUISP.js');
+//var BASKETUISP = require('./lib/BASKETUISP.js');
 
 //var arp = null; try { arp = require('arp-a'); } catch (e) {}
 
@@ -886,72 +886,63 @@ app.post('/433mhz/:binCode', function(req, res) {
 //sudo arp -n -D -i wlan0 | grep 'ether'
 
 
-//ip -s -s neigh flush all
+//var semaforoNmap = true;
+//setInterval(function() {
 //
-var semaforoNmap = true;
-setInterval(function() {
-
-	if(!semaforoNmap){return;}
-	semaforoNmap = false;
-	try {
-//	    exec("sudo ip neighbor show dev wlan0 | grep REACHABLE | awk '{print $1,$3}'", function(err, stdout,stderr) {
-		exec("sudo nmap -sP -n -PE -PA -T5 -e wlan0 192.168.0.2-24 --exclude "+host+" | grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}|([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | tr '\n' '#'", function(err, stdout,stderr) {
-	    	
-	    	if(stdout){
-	    		
-	    		var entries = stdout.split('#');
-	    		var macs = "";
-	    		for (var int = 0; int < entries.length; int++) {
-					var ip = entries[int++];
-					var mac = entries[int];
-					if(ip && mac){
-						macs += mac; 
-						database.LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
-					}
-				} 
-
-	    		
-//	    		setTimeout(function(entries) {
-	
-					database.LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
-						io.sockets.emit("SOCKET-LAN-DEVICES", data);
-						if(data && data.length > 0){
-							
-							data.forEach(function(device) {
-								var obj = {exists : false};
-								if(macs.indexOf(device.mac) >= 0){
-									obj.exists = true;
-									obj.lastLogin = new Date();
-								}	
-								database.LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
-								
-								
-								if(!device.manufacturer){
-									var macaddress = device.mac;
-									request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
-									    if (!error && response.statusCode === 200) {
-									        var arr = body.split('|');
-									        if(arr.length === 2){
-	    								        var manufacturer = arr[1].trim();
-	    								        database.LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer}, function (err, doc) {});
-									        }
-									    }
-								    });    								
-								}
-								
-							});	
-						}
-				});	         			
-//	    		}, 500,entries);
-	    	}
-	    	
-	    	semaforoNmap = true;
-	   });
-		
-	} catch (e) {
-		console.log("ERROR LAN_DEVICE NMAP", e);
-	}
-}, 1000);
+//	if(!semaforoNmap){return;}
+//	semaforoNmap = false;
+//	try {
+//		exec("sudo nmap -sP -n -PE -PA -T5 -e wlan0 192.168.0.2-24 --exclude "+host+" | grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}|([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}' | tr '\n' '#'", function(err, stdout,stderr) {
+//	    	
+//	    	if(stdout){
+//	    		
+//	    		var entries = stdout.split('#');
+//	    		var macs = "";
+//	    		for (var int = 0; int < entries.length; int++) {
+//					var ip = entries[int++];
+//					var mac = entries[int];
+//					if(ip && mac){
+//						macs += mac; 
+//						database.LAN_DEVICE.findOneAndUpdate({mac : mac}, {mac:mac, ip:ip, exists:true, lastLogin:new Date()}, {upsert : true }, function (err, data) {});
+//					}
+//				} 
+//	
+//					database.LAN_DEVICE.find({}).sort('-lastLogin').exec(function(err, data) {
+//						io.sockets.emit("SOCKET-LAN-DEVICES", data);
+//						if(data && data.length > 0){
+//							
+//							data.forEach(function(device) {
+//								var obj = {exists : false};
+//								if(macs.indexOf(device.mac) >= 0){
+//									obj.exists = true;
+//									obj.lastLogin = new Date();
+//								}	
+//								database.LAN_DEVICE.findOneAndUpdate({mac : device.mac}, obj, function (err, doc) {});	
+//								
+//								
+//								if(!device.manufacturer){
+//									var macaddress = device.mac;
+//									request({'url':'http://www.admin-toolkit.com/php/mac-lookup-vendor.php?maclist='+macaddress}, function (error, response, body) {
+//									    if (!error && response.statusCode === 200) {
+//									        var arr = body.split('|');
+//									        if(arr.length === 2){
+//	    								        var manufacturer = arr[1].trim();
+//	    								        database.LAN_DEVICE.findOneAndUpdate({mac : macaddress}, {manufacturer:manufacturer}, function (err, doc) {});
+//									        }
+//									    }
+//								    });    								
+//								}
+//							});	
+//						}
+//				});	         			
+//	    	}
+//	    	semaforoNmap = true;
+//	   });
+//		
+//	} catch (e) {
+//		console.log("ERROR LAN_DEVICE NMAP", e);
+//	}
+//}, 1000);
 
 
 
@@ -1253,3 +1244,6 @@ new CronJob("00 30 18 * * 5", function(){
 //	}
 //	latestNewsletter = data.newsletter;
 //});
+
+
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<!-- <html manifest="cache.manifest"> -->
+<!-- <html manifest="cache.manifest" type="text/cache-manifest"> -->
+<html>
+<head> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
+	
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<link rel="apple-touch-icon" href="images/security.png"/>
+	<link  rel="apple-touch-startup-image" href="images/security.png"/>		
+
+	<link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css" />
+	
+
+
+	
+		
+	<link rel="stylesheet" href="css/main.css" />
+	
+
+	<script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="jquery/jquery.mobile-1.4.5.min.js"></script>
+
+	
+
+
+	<script type="text/javascript" src="jquery/jquery.youtube-inview-autoplay.js"></script>
+
+
+<script type="text/javascript">
+  // Load the IFrame Player API code asynchronously.
+//   https://developers.google.com/youtube/iframe_api_reference
+  //https://developers.google.com/youtube/player_parameters#Parameters
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/player_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  function onYouTubeIframeAPIReady() {
+    $('.youtube-video').inViewAutoplay({
+      autohide: 1,
+      autoplay: 1,
+      modestbranding: 1,
+      controls: 0,
+      rel: 0,
+      quality: 'hd720',
+      loop: 1,
+      showinfo: 0
+    });
+  }
+</script>
+	
+</head>
+
+	<body>
+
+
+<div id="HOME-PAGE" data-role="page" class="ui-page-active" data-theme="g">
+
+
+	
+<div class="ui-content" style="padding: 5px"> 	
+		<div class="youtube-video" 
+	     id="menorca-faro-de-favarix" 
+	     data-video-id="o2Fs6SoRHCk" 
+	     width="1000" 
+	     height="563"></div>
+		</div>	 
+
+</div>	 
+</body></html>
